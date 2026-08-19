@@ -34,8 +34,8 @@ export default function Home() {
       </div>
 
       <footer className="flex flex-col items-center gap-[0.1em] pt-[6vw] pb-[max(1.5rem,1.5vh)] text-center text-[clamp(0.8125rem,0.7rem+0.55vw,1.0625rem)] leading-[1.25]">
-        <p>Nuestra nueva web esta en construcción</p>
-        <p>¡volve pronto!</p>
+        <p>Nuestra nueva web está en construcción</p>
+        <p>¡volvé pronto!</p>
         <p>
           <a
             href="https://www.instagram.com/btarquitectas/"

@@ -10,7 +10,7 @@ const workSans = Work_Sans({
 
 export const metadata: Metadata = {
   title: "BT Arquitectas",
-  description: "Nuestra nueva web esta en construccion. Volve pronto.",
+  description: "Nuestra nueva web está en construcción. Volvé pronto.",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
