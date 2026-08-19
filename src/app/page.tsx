@@ -1,38 +1,59 @@
 import Image from "next/image";
 
+function InstagramIcon() {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth={1.8}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+      className="h-[1.15em] w-[1.15em] shrink-0"
+    >
+      <rect x="2.5" y="2.5" width="19" height="19" rx="5.5" />
+      <circle cx="12" cy="12" r="4.2" />
+      <circle cx="17.5" cy="6.5" r="1.15" fill="currentColor" stroke="none" />
+    </svg>
+  );
+}
+
 export default function Home() {
   return (
     <main className="flex flex-1 flex-col bg-background text-foreground">
-      <div className="flex flex-1 items-center justify-center px-6 py-16">
+      <div className="flex flex-1 items-center justify-center px-[6vw] py-[8vh]">
         <Image
           src="/logo.png"
           alt="Berthet + Taranto"
           width={547}
           height={92}
           priority
-          className="h-auto w-full max-w-md"
+          className="h-auto w-full max-w-[min(88vw,clamp(20rem,52vw,46rem))]"
         />
       </div>
 
-      <footer className="flex flex-col items-center gap-2 px-6 pb-10 text-center text-sm leading-relaxed sm:text-base">
+      <footer className="flex flex-col items-center gap-[0.1em] px-[6vw] pb-[max(2rem,6vh)] text-center text-[clamp(0.8125rem,0.7rem+0.55vw,1.0625rem)] leading-[1.25]">
         <p>nuestra nueva web esta en construccion</p>
-        <p>volve pronto</p>
+        <p>¡volve pronto!</p>
         <p>
           <a
-            href="https://www.instagram.com/bmarquitectas/"
+            href="https://www.instagram.com/btarquitectas/"
             target="_blank"
             rel="noopener noreferrer"
-            className="text-inherit no-underline hover:underline"
+            className="group inline-flex items-center gap-[0.4em] text-inherit no-underline"
           >
-            visitanos en instagram
+            <span className="group-hover:underline">visitanos en</span>
+            <InstagramIcon />
+            <span className="group-hover:underline">btarquitectas</span>
           </a>
         </p>
         <p>
           <a
-            href="mailto:info@bmarquitectas.com.uy"
+            href="mailto:info@btarquitectas.com.uy"
             className="text-inherit no-underline hover:underline"
           >
-            info@bmarquitectas.com.uy
+            info@btarquitectas.com.uy
           </a>
         </p>
       </footer>
