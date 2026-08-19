@@ -22,7 +22,7 @@ function InstagramIcon() {
 export default function Home() {
   return (
     <main className="flex flex-1 flex-col bg-background text-foreground">
-      <div className="flex flex-1 items-center justify-center px-[6vw] py-[8vh]">
+      <div className="flex flex-1 items-center justify-center pt-[5vw]">
         <Image
           src="/logo.png"
           alt="Berthet + Taranto"
@@ -33,8 +33,8 @@ export default function Home() {
         />
       </div>
 
-      <footer className="flex flex-col items-center gap-[0.1em] px-[6vw] pb-[max(2rem,6vh)] text-center text-[clamp(0.8125rem,0.7rem+0.55vw,1.0625rem)] leading-[1.25]">
-        <p>nuestra nueva web esta en construccion</p>
+      <footer className="flex flex-col items-center gap-[0.1em] pt-[6vw] pb-[max(1.5rem,1.5vh)] text-center text-[clamp(0.8125rem,0.7rem+0.55vw,1.0625rem)] leading-[1.25]">
+        <p>Nuestra nueva web esta en construcción</p>
         <p>¡volve pronto!</p>
         <p>
           <a
