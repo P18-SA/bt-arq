@@ -35,25 +35,25 @@ export default function Home() {
 
       <footer className="flex flex-col items-center gap-[0.1em] pt-[6vw] pb-[max(1.5rem,1.5vh)] text-center text-[clamp(0.8125rem,0.7rem+0.55vw,1.0625rem)] leading-[1.25]">
         <p>Nuestra nueva web está en construcción</p>
-        <p>¡volvé pronto!</p>
+        <p>¡Volvé pronto!</p>
         <p>
           <a
-            href="https://www.instagram.com/btarquitectas/"
+            href="https://www.instagram.com/berthet-taranto/"
             target="_blank"
             rel="noopener noreferrer"
             className="group inline-flex items-center gap-[0.4em] text-inherit no-underline"
           >
-            <span className="group-hover:underline">visitanos en</span>
+            <span className="group-hover:underline">Visitanos en</span>
             <InstagramIcon />
-            <span className="group-hover:underline">btarquitectas</span>
+            <span className="group-hover:underline">berthet-taranto</span>
           </a>
         </p>
         <p>
           <a
-            href="mailto:info@btarquitectas.com.uy"
+            href="mailto:info@berthet-taranto.uy"
             className="text-inherit no-underline hover:underline"
           >
-            info@btarquitectas.com.uy
+            info@berthet-taranto.uy
           </a>
         </p>
       </footer>
