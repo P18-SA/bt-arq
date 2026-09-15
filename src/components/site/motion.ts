@@ -156,6 +156,16 @@ export function reveals(root: HTMLElement) {
   all(root, "[data-reveal]").forEach(revealFrame);
 }
 
+/** "+" grandes que se dibujan al entrar: primero el trazo horizontal, después el vertical. */
+export function plusDraws(root: HTMLElement) {
+  all(root, "[data-plus-draw]").forEach((plus) => {
+    gsap
+      .timeline({ defaults: { ease: "expo.inOut", duration: 1.1 }, scrollTrigger: { trigger: plus, start: "top 85%" } })
+      .fromTo(one(plus, "[data-plus-draw-h]"), { scaleX: 0 }, { scaleX: 1 })
+      .fromTo(one(plus, "[data-plus-draw-v]"), { scaleY: 0 }, { scaleY: 1 }, 0.15);
+  });
+}
+
 /** Frases que se "encienden" palabra por palabra al ritmo del scroll. */
 export function statements(root: HTMLElement) {
   all(root, "[data-statement]").forEach((p) => {

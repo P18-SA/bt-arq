@@ -49,6 +49,7 @@ export default function SiteMotion({ fixed, children, smooth = true }: Props) {
           if (has("[data-contact-page]")) motion.contactPage(el);
           motion.statements(el);
           motion.reveals(el);
+          motion.plusDraws(el);
           motion.contactLines(el);
 
           const cleanups = [

@@ -1,9 +1,10 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { Fragment } from "react";
 import { Contact } from "@/components/site/Contact";
 import { VILLA, type Tone } from "@/components/site/content";
 import { Media } from "@/components/site/Media";
-import { PlusLabel } from "@/components/site/Plus";
+import { Plus, PlusLabel } from "@/components/site/Plus";
 import { Shell } from "@/components/site/Shell";
 
 export const metadata: Metadata = {
@@ -62,35 +63,46 @@ export default function Estudio() {
           <h2 className="mb-[8vh] border-t border-ink pt-5 text-[clamp(1.75rem,4.2vw,4.25rem)] leading-none font-light tracking-[-0.015em]">
             Socias
           </h2>
-          <div className="grid gap-x-(--gutter) gap-y-[10vh] md:grid-cols-12">
+          {/*
+            Retratos en las columnas 1-5 y 8-12, con el "+" del logo en las dos columnas del medio.
+            El "+" queda a la altura media entre las dos fotos (la segunda baja 22vh):
+            alto de foto = ancho de 5 columnas × 4/3, medido con cqw sobre la grilla.
+          */}
+          <div className="@container grid justify-items-center gap-x-(--gutter) gap-y-[10vh] md:grid-cols-12 md:justify-items-stretch">
             {partners.map((p, i) => (
-              <article
-                key={p.name}
-                data-reveal
-                className={i === 0 ? "md:col-span-5" : "md:col-span-5 md:col-start-8 md:mt-[22vh]"}
-              >
-                {/* Placeholder con silueta hasta tener las fotos de las socias */}
-                <Media
-                  placeholder="person"
-                  tone={p.tone}
-                  label={`Retrato, ${p.name}`}
-                  ratio="3 / 4"
-                  bleed="y"
-                  speed="auto"
-                  marks
-                />
-                <h3 className="mt-5 overflow-hidden text-[clamp(1.2rem,1.8vw,1.6rem)]">
-                  <span data-reveal-line className="block">
-                    {p.name}
-                  </span>
-                </h3>
-                <p className="overflow-hidden text-sm text-graphite">
-                  <span data-reveal-line className="block">
-                    {p.role}
-                  </span>
-                </p>
-                <p className="mt-5 max-w-[52ch] text-[0.975rem] leading-relaxed text-graphite">{lorem}</p>
-              </article>
+              <Fragment key={p.name}>
+                {i === 1 && (
+                  <div className="md:col-span-2 md:col-start-6 md:row-start-1 md:mt-[calc((22vh_+_(5_*_(100cqw_-_11_*_var(--gutter))_/_12_+_4_*_var(--gutter))_*_4_/_3)_/_2)] md:-translate-y-1/2 md:self-start md:justify-self-center">
+                    <Plus thin draw className="block text-[clamp(4rem,7.4vw,10rem)]" />
+                  </div>
+                )}
+                <article
+                  data-reveal
+                  className={`w-full ${i === 0 ? "md:col-span-5 md:row-start-1" : "md:col-span-5 md:col-start-8 md:row-start-1 md:mt-[22vh]"}`}
+                >
+                  {/* Placeholder con silueta hasta tener las fotos de las socias */}
+                  <Media
+                    placeholder="person"
+                    tone={p.tone}
+                    label={`Retrato, ${p.name}`}
+                    ratio="3 / 4"
+                    bleed="y"
+                    speed="auto"
+                    marks
+                  />
+                  <h3 className="mt-5 overflow-hidden text-[clamp(1.2rem,1.8vw,1.6rem)]">
+                    <span data-reveal-line className="block">
+                      {p.name}
+                    </span>
+                  </h3>
+                  <p className="overflow-hidden text-sm text-graphite">
+                    <span data-reveal-line className="block">
+                      {p.role}
+                    </span>
+                  </p>
+                  <p className="mt-5 max-w-[52ch] text-[0.975rem] leading-relaxed text-graphite">{lorem}</p>
+                </article>
+              </Fragment>
             ))}
           </div>
         </section>
