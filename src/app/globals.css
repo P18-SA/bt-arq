@@ -3,11 +3,22 @@
 :root {
   --background: #ffffff;
   --foreground: #000000;
+  --concrete: #cfcdc7;
+  --fog: #ebeae6;
+  --graphite: #5e5d59;
+  --shadow: #3b3a37;
+  --gutter: clamp(1rem, 3vw, 2.75rem);
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+  --color-paper: var(--background);
+  --color-ink: var(--foreground);
+  --color-concrete: var(--concrete);
+  --color-fog: var(--fog);
+  --color-graphite: var(--graphite);
+  --color-shadow: var(--shadow);
   --font-sans: var(--font-work-sans);
 }
 
@@ -15,3 +26,100 @@ body {
   background: var(--background);
   color: var(--foreground);
 }
+
+::selection {
+  background: var(--foreground);
+  color: var(--background);
+}
+
+:focus-visible {
+  outline: 1px solid currentColor;
+  outline-offset: 4px;
+}
+
+/* Elementos que la intro revela; sin movimiento reducido quedan visibles */
+@media (prefers-reduced-motion: no-preference) {
+  [data-hero-media],
+  [data-hero-intro],
+  [data-header-item],
+  [data-header-logo],
+  [data-page-title],
+  [data-page-in],
+  [data-contact-bg],
+  [data-location-card] {
+    visibility: hidden;
+  }
+}
+
+/* Placeholder de imagen: el "vacío" de un plano (rectángulo cruzado) */
+.ph-x line {
+  vector-effect: non-scaling-stroke;
+}
+
+/* Marcas de corte en forma de "+" en las esquinas */
+.ph-mark {
+  position: absolute;
+  width: 0.75rem;
+  height: 0.75rem;
+  pointer-events: none;
+}
+.ph-mark::before,
+.ph-mark::after {
+  content: "";
+  position: absolute;
+  background: currentColor;
+}
+.ph-mark::before {
+  left: 0;
+  right: 0;
+  top: calc(50% - 0.5px);
+  height: 1px;
+}
+.ph-mark::after {
+  top: 0;
+  bottom: 0;
+  left: calc(50% - 0.5px);
+  width: 1px;
+}
+
+/* Índice: al pasar por una fila, las demás se apagan */
+@media (hover: hover) and (pointer: fine) {
+  [data-index-list]:hover [data-row]:not(:hover) {
+    opacity: 0.28;
+  }
+  [data-row]:hover [data-row-name] {
+    transform: translateX(0.6rem);
+  }
+}
+
+/* Subrayado que se dibuja al pasar el cursor */
+.link-draw {
+  background-image: linear-gradient(currentColor, currentColor);
+  background-size: 0% 1px;
+  background-position: 100% 100%;
+  background-repeat: no-repeat;
+  transition: background-size 0.5s cubic-bezier(0.65, 0, 0.35, 1);
+}
+.link-draw:hover,
+.link-draw:focus-visible,
+.group:hover .link-draw,
+.group:focus-visible .link-draw,
+.link-draw[aria-current="page"],
+[aria-pressed="true"] .link-draw {
+  background-size: 100% 1px;
+  background-position: 0% 100%;
+}
+
+/*
+ * Correo grande (pie y página de contacto). El tamaño sale del ancho de la sección para que el texto
+ * termine un margen antes de la línea vertical (62%): mismo espacio a la derecha de la línea que el
+ * margen izquierdo de la pantalla. --email-em es el ancho del correo medido en em con este tracking.
+ */
+.email-fit {
+  --email-line: 62cqw;
+  --email-em: 10.42;
+  font-size: calc((var(--email-line) - 2 * var(--gutter)) / var(--email-em));
+  letter-spacing: -0.04em;
+  white-space: nowrap;
+}
+

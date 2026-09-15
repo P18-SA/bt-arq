@@ -9,14 +9,20 @@ const workSans = Work_Sans({
 });
 
 export const metadata: Metadata = {
-  title: "BT Arquitectas",
-  description: "Nuestra nueva web está en construcción. Volvé pronto.",
+  title: { default: "BT Arquitectas", template: "%s | BT Arquitectas" },
+  description:
+    "Berthet + Taranto, estudio de arquitectura. Casas, espacios de trabajo y lugares compartidos.",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html lang="es" className={`${workSans.variable} h-full antialiased`}>
-      <body className="min-h-full flex flex-col font-sans">{children}</body>
+      <body className="min-h-full flex flex-col font-sans">
+        <noscript>
+          <style>{`[data-hero-media],[data-hero-intro],[data-header-item],[data-header-logo],[data-page-title],[data-page-in],[data-contact-bg],[data-location-card]{visibility:visible!important}`}</style>
+        </noscript>
+        {children}
+      </body>
     </html>
   );
 }
