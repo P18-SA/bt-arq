@@ -6,7 +6,7 @@ import { Shell } from "@/components/site/Shell";
 
 export const metadata: Metadata = {
   title: "Todos los proyectos",
-  description: "Casas, espacios de trabajo, reformas y lugares públicos proyectados por Berthet + Taranto.",
+  description: "Obra nueva, reformas, oficinas y otros proyectos de Berthet + Taranto Arquitectas.",
 };
 
 export default function TodosLosProyectos() {
@@ -18,12 +18,12 @@ export default function TodosLosProyectos() {
         <div className="mb-[6vh] flex flex-wrap items-end justify-between gap-x-10 gap-y-4">
           <h1
             data-page-title
-            className="max-w-[12ch] text-[clamp(3rem,9vw,11rem)] leading-[0.98] font-light tracking-[-0.03em]"
+            className="max-w-[12ch] text-title"
           >
             Todos los proyectos
           </h1>
-          <p data-page-in className="pb-[1.2vw] text-sm text-graphite tabular-nums">
-            {projects.length} proyectos
+          <p data-page-in className="pb-[1.2vw] text-meta text-graphite tabular-nums">
+            ({projects.length}) proyectos
           </p>
         </div>
 

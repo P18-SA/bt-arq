@@ -96,7 +96,7 @@ export function Media({
           )}
         </div>
         {!src && placeholder === "void" && (
-          <figcaption className={`absolute left-3 text-xs ${labelAt === "top" ? "top-20" : "bottom-3"} ${t.ink}`}>
+          <figcaption className={`absolute left-3 text-label ${labelAt === "top" ? "top-20" : "bottom-3"} ${t.ink}`}>
             {label}
           </figcaption>
         )}

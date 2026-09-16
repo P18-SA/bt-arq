@@ -125,7 +125,7 @@ export function Header({ words, intro = false }: Props) {
                   tabIndex={open ? 0 : -1}
                   aria-current={isCurrent(item.href) ? "page" : undefined}
                   onClick={() => setOpen(false)}
-                  className="block py-1 text-[clamp(2.5rem,12vw,4rem)] leading-[1.05] font-light tracking-[-0.02em] aria-[current=page]:text-paper/45"
+                  className="block py-1 text-title aria-[current=page]:text-paper/45"
                 >
                   {item.label}
                 </Link>
@@ -133,7 +133,7 @@ export function Header({ words, intro = false }: Props) {
             ))}
           </ul>
         </nav>
-        <div data-menu-meta className="grid gap-1 text-sm text-paper/60">
+        <div data-menu-meta className="grid gap-1 text-meta text-paper/60">
           <a href={`mailto:${contact.email}`} tabIndex={open ? 0 : -1} className="text-paper">
             {contact.email}
           </a>

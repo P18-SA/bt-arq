@@ -1,11 +1,12 @@
-// Contenido provisorio: nombres, lugares y años son placeholders hasta tener el material real.
+// Contenido real recuperado de la web anterior del estudio (bmtarquitectas.uy, archivo 2023).
+// Lo que no se pudo recuperar queda marcado como `null` y se muestra como pendiente en el wireframe.
+// Las fotos se cargan desde public/obras/<slug>/NN.jpg con scripts/import-photos.mjs (ver DESIGN.md).
+
+import { photos } from "./photos";
 
 export type Tone = "concrete" | "fog" | "graphite" | "shadow";
 
-/** Imagen provisoria para toda la home; cada uso elige un encuadre distinto con object-position. */
-export const VILLA = "/villa.png";
-
-export const programs = ["Vivienda", "Trabajo", "Público", "Reforma", "Comercio"] as const;
+export const programs = ["Obra nueva", "Reforma", "Oficinas y otros"] as const;
 export type Program = (typeof programs)[number];
 
 export type Project = {
@@ -13,16 +14,169 @@ export type Project = {
   name: string;
   program: Program;
   place: string;
-  year: string;
-  /** Superficie construida, provisoria */
-  area: string;
-  status: "Terminado" | "En obra";
+  /** Superficie construida, cuando la web anterior la informaba */
+  area: string | null;
+  /** Superficie del terreno, cuando se conoce */
+  site: string | null;
+  /** Frase de apertura del detalle */
+  statement: string | null;
+  /** Texto del proyecto (resumen de la web anterior) */
+  text: string | null;
+  /** Carpeta en imgs/ de la web anterior, para importar las fotos */
+  source: string;
+  /** Cantidad de fotos que tenía la galería anterior (define los huecos del wireframe) */
+  shots: number;
   tone: Tone;
-  /** Encuadre de la imagen provisoria */
-  crop: string;
-  /** Algunos proyectos tienen video (placeholder por ahora) */
-  video?: boolean;
 };
+
+type Seed = Omit<Project, "slug" | "tone">;
+
+const list: Seed[] = [
+  {
+    name: "Casa en Punta del Este",
+    program: "Obra nueva",
+    place: "Punta del Este, Maldonado",
+    area: "270 m²",
+    site: "1.000 m²",
+    statement: "Una casa de veraneo escalonada que acompaña un frente de 33 metros.",
+    text: "En una manzana enjardinada, en las paradas de la playa Mansa, el terreno de proporciones excepcionales llevó a una volumetría escalonada que se abre a lo largo de todo el frente.",
+    source: "obra-nueva/casa-punta-del-este",
+    shots: 11,
+  },
+  {
+    name: "Cabaña en Punta Rubia",
+    program: "Obra nueva",
+    place: "Punta Rubia, Rocha",
+    area: null,
+    site: null,
+    statement: "Una cabaña de madera sobre pilotes, frente a las dunas.",
+    text: "Junto a La Pedrera, donde la calle termina en la arena. Diseño cuidado, recursos acotados y mano de obra local; los pilotes de madera preservan el terreno natural.",
+    source: "obra-nueva/cabana-punta-rubia",
+    shots: 6,
+  },
+  {
+    name: "Hotel de campo en José Ignacio",
+    program: "Obra nueva",
+    place: "José Ignacio, Maldonado",
+    area: null,
+    site: "3,7 ha",
+    statement: "Una casa con sabor a campo, inspirada en los viejos cascos de estancia.",
+    text: "Cerca de la ruta 10, la planta en herradura resguarda del viento y organiza las alas laterales alrededor de un patio abierto al horizonte.",
+    source: "obra-nueva/hotel-de-campo",
+    shots: 9,
+  },
+  {
+    name: "Casa en Carrasco III",
+    program: "Reforma",
+    place: "Carrasco, Montevideo",
+    area: null,
+    site: "892 m²",
+    statement: "Una casa de temporada, oscura y cerrada, abierta a la luz del oeste.",
+    text: "Las construcciones antiguas de Carrasco se pensaban para el verano: ventanas chicas y grandes aleros. La reforma y ampliación fue radical para ganar luz y relación con el jardín.",
+    source: "reforma/casa-carrasco-iii",
+    shots: 8,
+  },
+  {
+    name: "Casa en Carrasco I",
+    program: "Obra nueva",
+    place: "Carrasco, Montevideo",
+    area: "400 m²",
+    site: "1.280 m²",
+    statement: "Lo tradicional y lo contemporáneo, en dos volúmenes asimétricos.",
+    text: "Diseñada para una familia en un barrio privado. El acceso queda retranqueado entre dos volúmenes coronados por techos a cuatro aguas; al fondo, un estar exterior.",
+    source: "obra-nueva/casa-carrasco",
+    shots: 9,
+  },
+  {
+    name: "Casa en Punta Carretas III",
+    program: "Obra nueva",
+    place: "Punta Carretas, Montevideo",
+    area: null,
+    site: null,
+    statement: "Una obra nueva donde lo viejo y lo nuevo conviven sin sobresaltos.",
+    text: "Las puertas interiores vienen de una casona demolida y la escalera de hierro forjado perteneció a un convento. Se proyectó desde el inicio para integrar esas piezas.",
+    source: "obra-nueva/casa-punta-carretas-iii",
+    shots: 8,
+  },
+  {
+    name: "Casa en Punta Gorda",
+    program: "Reforma",
+    place: "Punta Gorda, Montevideo",
+    area: null,
+    site: null,
+    statement: "Sobre la loma de la rambla, mirando al río y al atardecer.",
+    text: "Una casa ya reformada varias veces, con la planta baja siete metros por encima de la vereda. El primer desafío fue resolver ese acceso.",
+    source: "reforma/casa-punta-gorda",
+    shots: 7,
+  },
+  {
+    name: "Casa en Buceo I",
+    program: "Obra nueva",
+    place: "Buceo, Montevideo",
+    area: "280 m²",
+    site: "280 m²",
+    statement: "Una casa completa en un frente de diez metros.",
+    text: "Planta baja con estar, cocina y servicios; subsuelo con acceso vehicular por rampa y escalera de servicio.",
+    source: "obra-nueva/casa-buceo",
+    shots: 9,
+  },
+  {
+    name: "Apartamento en Punta Carretas",
+    program: "Reforma",
+    place: "Punta Carretas, Montevideo",
+    area: null,
+    site: null,
+    statement: "Un primer piso con patio, frente a la rambla.",
+    text: "En un edificio de los años 80 con el río siempre presente. Reforma total: locales, instalaciones y terminaciones, con un lenguaje contemporáneo.",
+    source: "reforma/apto-punta-carretas",
+    shots: 10,
+  },
+  {
+    name: "Barbacoa en Punta Gorda",
+    program: "Obra nueva",
+    place: "Punta Gorda, Montevideo",
+    area: "128 m²",
+    site: "1.440 m²",
+    statement: "Barbacoa y piscina climatizada en steel framing.",
+    text: "Proyectada junto a una gran casa de inspiración española que el estudio reformó y amplió después. El sistema se eligió por su relación calidad-precio y rapidez de obra.",
+    source: "obra-nueva/barbacoa-punta-gorda",
+    shots: 9,
+  },
+  {
+    name: "Casa Quinta de Berro",
+    program: "Reforma",
+    place: "Prado, Montevideo",
+    area: null,
+    site: null,
+    statement: "La restauración de una casa quinta de 140 años.",
+    text: "Sobre la avenida Agraciada; fue embajada argentina durante un siglo. Proyecto de restauración y reforma realizado en asociación.",
+    source: "reforma/quinta-de-berro",
+    shots: 6,
+  },
+  {
+    name: "Montevideo College",
+    program: "Oficinas y otros",
+    place: "Pocitos, Montevideo",
+    area: "1.700 m²",
+    site: "750 m²",
+    statement: "Un colegio construido en seis meses.",
+    text: "Hormigón prefabricado modular: pilares, vigas, losas y fachadas se fabrican en planta y se ensamblan en obra.",
+    source: "oficinas/montevideo-college",
+    shots: 15,
+  },
+  // Sin texto recuperado: quedan como pendientes en el wireframe
+  { name: "Casa en Solanas", program: "Obra nueva", place: "Solanas, Maldonado", area: null, site: null, statement: null, text: null, source: "obra-nueva/casa-solanas", shots: 6 },
+  { name: "Casa en Las Piedras", program: "Obra nueva", place: "Las Piedras, Canelones", area: null, site: null, statement: null, text: null, source: "obra-nueva/casa-las-piedras", shots: 6 },
+  { name: "Casa en Punta del Este II", program: "Obra nueva", place: "Punta del Este, Maldonado", area: null, site: null, statement: null, text: null, source: "obra-nueva/casa-punta-del-este-ii", shots: 6 },
+  { name: "Notable Publicidad", program: "Oficinas y otros", place: "Montevideo", area: null, site: null, statement: null, text: null, source: "oficinas/notable", shots: 6 },
+  { name: "Casa en Puerto del Buceo II", program: "Reforma", place: "Buceo, Montevideo", area: null, site: null, statement: null, text: null, source: "reforma/casa-puerto-del-buceo", shots: 6 },
+  { name: "Casa en Carrasco II", program: "Reforma", place: "Carrasco, Montevideo", area: null, site: null, statement: null, text: null, source: "reforma/casa-carrasco", shots: 6 },
+  { name: "Casa en Punta Carretas I", program: "Reforma", place: "Punta Carretas, Montevideo", area: null, site: null, statement: null, text: null, source: "reforma/casa-punta-carretas", shots: 6 },
+  { name: "Casa en Punta Carretas II", program: "Reforma", place: "Punta Carretas, Montevideo", area: null, site: null, statement: null, text: null, source: "reforma/casa-punta-carretas-ii", shots: 6 },
+  { name: "Casa en Parque Batlle", program: "Reforma", place: "Parque Batlle, Montevideo", area: null, site: null, statement: null, text: null, source: "reforma/casa-parque-batlle", shots: 6 },
+  { name: "Casa en Pocitos", program: "Reforma", place: "Pocitos, Montevideo", area: null, site: null, statement: null, text: null, source: "reforma/casa-pocitos", shots: 6 },
+  { name: "Apartamento en Pocitos", program: "Reforma", place: "Pocitos, Montevideo", area: null, site: null, statement: null, text: null, source: "reforma/apto-pocitos", shots: 6 },
+];
 
 const slugify = (text: string) =>
   text
@@ -32,108 +186,90 @@ const slugify = (text: string) =>
     .replace(/[^a-z0-9]+/g, "-")
     .replace(/(^-|-$)/g, "");
 
-const list: Omit<Project, "slug">[] = [
-  { name: "Casa en la costa", program: "Vivienda", place: "Maldonado", year: "2025", area: "240 m²", status: "En obra", tone: "graphite", crop: "50% 50%", video: true },
-  { name: "Casa patio", program: "Vivienda", place: "Montevideo", year: "2024", area: "180 m²", status: "Terminado", tone: "concrete", crop: "18% 55%" },
-  { name: "Oficinas en Cordón", program: "Trabajo", place: "Montevideo", year: "2024", area: "620 m²", status: "Terminado", tone: "shadow", crop: "72% 25%", video: true },
-  { name: "Refugio de monte", program: "Vivienda", place: "Lavalleja", year: "2023", area: "95 m²", status: "Terminado", tone: "fog", crop: "55% 88%" },
-  { name: "Biblioteca barrial", program: "Público", place: "Canelones", year: "2023", area: "410 m²", status: "Terminado", tone: "concrete", crop: "35% 40%" },
-  { name: "Reforma en Pocitos", program: "Reforma", place: "Montevideo", year: "2022", area: "130 m²", status: "Terminado", tone: "graphite", crop: "92% 70%" },
-  { name: "Local en Ciudad Vieja", program: "Comercio", place: "Montevideo", year: "2022", area: "85 m²", status: "Terminado", tone: "fog", crop: "5% 50%" },
-  { name: "Casa de los aromos", program: "Vivienda", place: "Rocha", year: "2021", area: "160 m²", status: "Terminado", tone: "shadow", crop: "66% 62%" },
-  { name: "Cowork en Parque Rodó", program: "Trabajo", place: "Montevideo", year: "2021", area: "350 m²", status: "Terminado", tone: "concrete", crop: "40% 70%" },
-  { name: "Plaza de la estación", program: "Público", place: "Florida", year: "2020", area: "2.400 m²", status: "Terminado", tone: "graphite", crop: "80% 45%", video: true },
-  { name: "Reforma en Malvín", program: "Reforma", place: "Montevideo", year: "2020", area: "110 m²", status: "Terminado", tone: "fog", crop: "25% 30%" },
-  { name: "Panadería de barrio", program: "Comercio", place: "Colonia", year: "2019", area: "70 m²", status: "Terminado", tone: "shadow", crop: "60% 35%" },
-];
+const toneCycle: Tone[] = ["graphite", "concrete", "shadow", "fog"];
 
-export const projects: Project[] = list.map((p) => ({ ...p, slug: slugify(p.name) }));
+export const projects: Project[] = list.map((p, i) => ({ ...p, slug: slugify(p.name), tone: toneCycle[i % 4] }));
 
 export const projectHref = (p: Project) => `/proyectos/${p.slug}`;
 
-const toneCycle: Tone[] = ["graphite", "concrete", "shadow", "fog"];
+/** Foto n (0 = portada) del proyecto si ya fue importada; si no, undefined y se dibuja el placeholder. */
+export const photo = (p: Project, n = 0): string | undefined => photos[p.slug]?.[n];
 
-export type Shot = { label: string; tone: Tone; ratio: string };
-export type BeforeShot = { title: string; text: string; tone: Tone };
+export const bySlug = (slug: string) => projects.find((p) => p.slug === slug)!;
 
-/** Material de la página de detalle: fotos, texto y, en las reformas, el "antes". Todo provisorio. */
-export function projectDetail(p: Project) {
-  const start = toneCycle.indexOf(p.tone);
-  const tone = (i: number) => toneCycle[(start + i) % toneCycle.length];
-  const reform = p.program === "Reforma";
-
-  const gallery: Shot[] = [
-    { label: reform ? "Después, living" : "Vista exterior", tone: tone(1), ratio: "4 / 5" },
-    { label: reform ? "Después, cocina" : "Interior", tone: tone(2), ratio: "1 / 1" },
-    { label: "Detalle constructivo", tone: tone(3), ratio: "3 / 4" },
-    { label: reform ? "Después, fachada" : "Vista general", tone: tone(0), ratio: "21 / 9" },
-  ];
-
-  const before: BeforeShot[] | null = reform
-    ? [
-        { title: "Fachada", text: "Revoque deteriorado y aberturas originales sin aislación.", tone: "fog" },
-        { title: "Cocina", text: "Ambiente cerrado, sin luz natural directa.", tone: "concrete" },
-        { title: "Living", text: "Tabiques que dividían el espacio en tres cuartos chicos.", tone: "graphite" },
-        { title: "Baño", text: "Instalaciones sanitarias a renovar por completo.", tone: "shadow" },
-      ]
-    : null;
-
-  const statement: Record<Program, string> = {
-    Vivienda: "Una casa abierta al paisaje, con ambientes que cambian con la luz del día.",
-    Trabajo: "Un lugar de trabajo flexible, con luz natural y espacios para encontrarse.",
-    Público: "Un espacio para el barrio, abierto y fácil de recorrer.",
-    Reforma: "Recuperamos la estructura existente y abrimos la planta para ganar luz y amplitud.",
-    Comercio: "Un local que se lee desde la vereda y ordena el recorrido de quien entra.",
-  };
-
-  const index = projects.findIndex((x) => x.slug === p.slug);
-  const next = projects[(index + 1) % projects.length];
-
-  return { gallery, before, next, statement: statement[p.program] };
-}
+/** Proyecto del hero y las cuatro mejores casas (regla de 4). */
+export const hero = bySlug("casa-en-punta-del-este");
 
 export const featured = [
-  { project: projects[0], ratio: "4 / 5" },
-  { project: projects[1], ratio: "3 / 4" },
-  { project: projects[2], ratio: "16 / 10" },
-  { project: projects[3], ratio: "4 / 5" },
+  { project: bySlug("cabana-en-punta-rubia"), ratio: "4 / 5" },
+  { project: bySlug("hotel-de-campo-en-jose-ignacio"), ratio: "3 / 4" },
+  { project: bySlug("casa-en-carrasco-iii"), ratio: "16 / 10" },
+  { project: bySlug("casa-en-punta-carretas-iii"), ratio: "4 / 5" },
 ];
+
+export type Shot = { label: string; tone: Tone; ratio: string; src?: string };
+
+const ratios = ["4 / 5", "1 / 1", "3 / 4", "21 / 9"];
+
+/** Material del detalle: galería con los huecos de la web anterior y el siguiente proyecto. */
+export function projectDetail(p: Project) {
+  const start = toneCycle.indexOf(p.tone);
+  const gallery: Shot[] = Array.from({ length: Math.max(p.shots - 1, 0) }, (_, i) => ({
+    label: `Foto ${String(i + 2).padStart(2, "0")}`,
+    tone: toneCycle[(start + i + 1) % 4],
+    ratio: ratios[i % ratios.length],
+    src: photo(p, i + 1),
+  }));
+  const index = projects.findIndex((x) => x.slug === p.slug);
+  const next = projects[(index + 1) % projects.length];
+  return { gallery, next };
+}
+
+export const studio = {
+  founded: "1995",
+  intro:
+    "Estudio de arquitectura en Montevideo. Desde 1995 damos forma a los deseos y necesidades de cada cliente, en obra nueva, reformas e interiores.",
+  statement: "Nos apasiona la arquitectura y cómo interactúa con quienes la usan. Volúmenes, espacios, funciones.",
+  paragraphs: [
+    "Abrimos el estudio después de recorrer juntas la carrera universitaria, y siempre concebimos los diseños en conjunto, seguras de lo que aporta esa forma de trabajo.",
+    "Hacemos anteproyectos, proyectos y direcciones de obra de construcciones nuevas y de edificios a reformar, además de diseño de interiores. También desarrollamos proyectos ejecutivos para colegas.",
+  ],
+  partners: [
+    { name: "Marcela Berthet", role: "Arquitecta, socia fundadora" },
+    { name: "Perla Taranto", role: "Arquitecta, socia fundadora" },
+  ],
+  team: ["Patricia Carreira", "Halinna Egaña", "Pablo Cortada", "Mariana Valladares", "Leticia Dellepiane", "Elisa Varela"],
+  languages: ["Español", "English", "Français", "Português", "Italiano"],
+};
 
 export const steps = [
   {
-    title: "Escuchar",
-    text: "Visitamos el terreno y conversamos sobre cómo querés vivir o trabajar.",
+    title: "Anteproyecto",
+    text: "Con planos, perspectivas y renders, para que cada cliente entienda a fondo cómo va a ser su obra.",
     tone: "fog",
   },
   {
-    title: "Anteproyecto",
-    text: "Dibujamos alternativas, armamos maquetas y estimamos el costo de obra.",
+    title: "Proyecto",
+    text: "La etapa técnica: planos, detalles y memorias junto a los asesores, para presupuestar con precisión.",
     tone: "concrete",
   },
   {
-    title: "Proyecto ejecutivo",
-    text: "Resolvemos cada detalle constructivo y tramitamos los permisos.",
-    tone: "graphite",
-  },
-  {
     title: "Dirección de obra",
-    text: "Acompañamos la construcción, semana a semana, hasta la entrega.",
-    tone: "shadow",
+    text: "Seguimos la construcción de cerca y con exigencia, hasta la entrega.",
+    tone: "graphite",
   },
 ] satisfies { title: string; text: string; tone: Tone }[];
 
 export const contact = {
   email: "info@berthet-taranto.uy",
+  phone: "2622 0558",
   instagram: { handle: "berthet-taranto", href: "https://www.instagram.com/berthet-taranto/" },
   city: "Montevideo, Uruguay",
-  /** Dirección provisoria: reemplazar por la real (el enlace al mapa usa mapsQuery) */
   address: {
-    street: "Calle Ejemplo 1234",
+    street: "Edificio Yacht Club, piso 6",
+    detail: "Av. Rep. Federal de Alemania s/n",
     city: "Montevideo, Uruguay",
-    mapsQuery: "Montevideo, Uruguay",
-    /** Por ahora la villa; más adelante, foto del edificio u oficina */
-    photo: VILLA,
-    photoCrop: "22% 50%",
+    mapsQuery: "Edificio Yacht Club Uruguayo, Montevideo",
   },
 };
 

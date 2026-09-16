@@ -1,19 +1,14 @@
 import Link from "next/link";
 import { Contact } from "@/components/site/Contact";
-import { projectDetail, projectHref, type Project, type Shot } from "@/components/site/content";
+import { photo, projectDetail, projectHref, projects, type Project, type Shot } from "@/components/site/content";
 import { Media } from "@/components/site/Media";
 import { PlusLabel } from "@/components/site/Plus";
-import { Process } from "@/components/site/Process";
 import { Shell } from "@/components/site/Shell";
-import { VideoFrame } from "@/components/site/VideoFrame";
 
 // El markup vive acá y no en app/proyectos/[slug]: Tailwind no escanea carpetas con corchetes.
 // Las imágenes del detalle no tienen animación de entrada, solo parallax (speed="auto").
 
-const lorem =
-  "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer posuere erat a ante venenatis dapibus posuere velit aliquet. Donec ullamcorper nulla non metus auctor fringilla.";
-
-// Grilla de fotos: posiciones en 12 columnas, alternando para que el recorrido no sea una lista pareja
+// Recorrido de fotos en 12 columnas; se repite cada cuatro para que la galería no sea una lista pareja
 const shotLayout = [
   "md:col-span-5",
   "md:col-span-6 md:col-start-7 md:mt-[24vh]",
@@ -34,96 +29,101 @@ function Fact({ text }: { text: string }) {
   );
 }
 
-function ShotFigure({ shot, className }: { shot: Shot; className: string }) {
+function ShotFigure({ shot, index, className }: { shot: Shot; index: number; className: string }) {
   return (
     <figure className={`m-0 ${className}`}>
-      <Media label={shot.label} tone={shot.tone} ratio={shot.ratio} bleed="y" speed="auto" />
-      <figcaption className="mt-3 text-sm text-graphite">{shot.label}</figcaption>
+      <Media src={shot.src} label={shot.label} tone={shot.tone} ratio={shot.ratio} bleed="y" speed="auto" sizes="(min-width: 768px) 60vw, 100vw" />
+      <figcaption className="mt-3 flex justify-between text-meta text-graphite tabular-nums">
+        <span>({String(index + 2).padStart(2, "0")})</span>
+      </figcaption>
     </figure>
   );
 }
 
-/** Página de detalle de un proyecto: datos, fotos, video opcional y, en reformas, el antes y el después. */
+/** Pendiente del wireframe: se ve como hueco a completar, no como texto final. */
+function Pending({ children }: { children: string }) {
+  return <span className="border border-dashed border-ink/30 px-2 py-1 text-meta text-graphite">{children}</span>;
+}
+
+/** Página de detalle: datos, portada, texto y galería con la cantidad de fotos de la web anterior. */
 export function ProjectDetail({ project }: { project: Project }) {
-  const { gallery, before, next, statement } = projectDetail(project);
-  const facts = [
+  const { gallery, next } = projectDetail(project);
+  const index = projects.findIndex((p) => p.slug === project.slug);
+  const facts: [string, string | null][] = [
     ["Programa", project.program],
     ["Lugar", project.place],
-    ["Año", project.year],
     ["Superficie", project.area],
-    ["Estado", project.status],
+    ["Terreno", project.site],
   ];
 
   return (
     <Shell>
       <main>
         <section className="px-(--gutter) pt-[18vh] pb-[8vh]">
-          <Link href="/todos-los-proyectos" data-page-in className="text-sm text-graphite hover:text-ink">
-            <span className="link-draw pb-0.5">Todos los proyectos</span>
-          </Link>
-          <h1
-            data-page-title
-            className="mt-[5vh] max-w-[14ch] text-[clamp(2.75rem,8vw,9.5rem)] leading-[0.98] font-light tracking-[-0.03em]"
-          >
+          <div data-page-in className="flex items-baseline justify-between gap-6 text-meta text-graphite">
+            <Link href="/todos-los-proyectos" className="hover:text-ink">
+              <span className="link-draw pb-0.5">Todos los proyectos</span>
+            </Link>
+            <span className="tabular-nums">
+              {String(index + 1).padStart(2, "0")} / {projects.length}
+            </span>
+          </div>
+          <h1 data-page-title className="mt-[5vh] max-w-[14ch] text-title">
             {project.name}
           </h1>
           <dl
             data-page-in
-            className="mt-[6vh] grid grid-cols-2 gap-x-(--gutter) gap-y-5 border-t border-ink/15 pt-5 sm:grid-cols-3 lg:grid-cols-5"
+            className="mt-[6vh] grid grid-cols-2 gap-x-(--gutter) gap-y-5 border-t border-ink/15 pt-5 lg:grid-cols-4"
           >
             {facts.map(([term, value]) => (
               <div key={term}>
-                <dt className="text-xs text-graphite">{term}</dt>
-                <dd className="mt-1">
-                  <Fact text={value} />
-                </dd>
+                <dt className="text-label text-graphite">{term}</dt>
+                <dd className="mt-1 text-body">{value ? <Fact text={value} /> : <span className="text-graphite">—</span>}</dd>
               </div>
             ))}
           </dl>
         </section>
 
         <div className="px-(--gutter)">
-          <Media label={`${project.name}, vista principal`} tone={project.tone} ratio="16 / 9" bleed="y" speed="auto" />
+          <Media
+            src={photo(project)}
+            label={`${project.name}, portada`}
+            tone={project.tone}
+            ratio="16 / 9"
+            bleed="y"
+            speed="auto"
+            preload
+          />
         </div>
 
         <section className="grid grid-cols-12 gap-x-(--gutter) px-(--gutter) py-[18vh]">
-          <p
-            data-statement
-            className="col-span-12 max-w-[26ch] text-[clamp(1.6rem,3.4vw,3.5rem)] leading-[1.1] font-light tracking-[-0.015em] md:col-span-8"
-          >
-            {statement}
-          </p>
-          <div className="col-span-12 mt-[8vh] grid gap-8 leading-relaxed text-graphite sm:grid-cols-2 md:col-span-7 md:col-start-6">
-            <p>{lorem}</p>
-            <p>{lorem}</p>
+          <p className="col-span-12 mb-8 text-label text-graphite md:col-span-3 md:mb-0 md:pt-[0.7em]">(Proyecto)</p>
+          <div className="col-span-12 md:col-span-9">
+            {project.statement ? (
+              <p data-statement className="max-w-[24ch] text-heading text-balance">
+                {project.statement}
+              </p>
+            ) : (
+              <Pending>Frase del proyecto pendiente</Pending>
+            )}
+            <div className="mt-[8vh] max-w-[60ch] text-body text-graphite">
+              {project.text ? <p>{project.text}</p> : <Pending>Texto del proyecto pendiente</Pending>}
+            </div>
           </div>
         </section>
 
-        {before && (
-          <Process
-            id="antes"
-            title="Antes de la reforma"
-            aside={`${before.length} ambientes`}
-            items={before}
-            numbered={false}
-            mediaLabel="Antes"
-          />
-        )}
-
-        <section className="px-(--gutter) pb-[18vh]">
-          {before && (
-            <h2 className="mt-[18vh] mb-[8vh] border-t border-ink pt-5 text-[clamp(1.75rem,4.2vw,4.25rem)] leading-none font-light tracking-[-0.015em]">
-              Después
+        {gallery.length > 0 && (
+          <section className="px-(--gutter) pb-[18vh]">
+            <h2 className="mb-[8vh] flex items-baseline justify-between border-t border-ink pt-5 text-heading">
+              Galería <span className="text-meta text-graphite tabular-nums">({project.shots} fotos)</span>
             </h2>
-          )}
-          <div className="grid grid-cols-1 gap-x-(--gutter) gap-y-[10vh] md:grid-cols-12">
-            <ShotFigure shot={gallery[0]} className={shotLayout[0]} />
-            <ShotFigure shot={gallery[1]} className={shotLayout[1]} />
-            {project.video && <VideoFrame label={`Video, ${project.name}`} reveal={false} speed="auto" className="md:col-span-12" />}
-            <ShotFigure shot={gallery[2]} className={shotLayout[2]} />
-            <ShotFigure shot={gallery[3]} className={shotLayout[3]} />
-          </div>
-        </section>
+            <div className="grid grid-cols-1 gap-x-(--gutter) gap-y-[10vh] md:grid-cols-12">
+              {gallery.map((shot, i) => (
+                <ShotFigure key={shot.label} shot={shot} index={i} className={shotLayout[i % shotLayout.length]} />
+              ))}
+            </div>
+          </section>
+        )}
 
         <section className="px-(--gutter) pb-[14vh]">
           <Link
@@ -131,13 +131,13 @@ export function ProjectDetail({ project }: { project: Project }) {
             className="group grid items-end gap-8 border-t border-ink/15 pt-6 md:grid-cols-12"
           >
             <div className="md:col-span-8">
-              <p className="text-sm text-graphite">Siguiente proyecto</p>
-              <p className="mt-5 flex items-center gap-[0.3em] text-[clamp(2.25rem,6vw,6.5rem)] leading-none font-light tracking-[-0.03em]">
+              <p className="text-meta text-graphite">Siguiente proyecto</p>
+              <p className="mt-5 flex items-center gap-[0.3em] text-title">
                 <PlusLabel>{next.name}</PlusLabel>
               </p>
             </div>
             <div className="md:col-span-3 md:col-start-10">
-              <Media label={next.name} tone={next.tone} ratio="4 / 3" bleed="y" speed="auto" />
+              <Media src={photo(next)} label={next.name} tone={next.tone} ratio="4 / 3" bleed="y" speed="auto" />
             </div>
           </Link>
         </section>

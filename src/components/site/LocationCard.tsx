@@ -1,4 +1,3 @@
-import Image from "next/image";
 import type { ReactNode } from "react";
 import { contact } from "./content";
 import { PlusLabel } from "./Plus";
@@ -31,15 +30,12 @@ export function LocationCard({ className = "" }: { className?: string }) {
       className={`group flex aspect-square flex-col gap-[clamp(0.6rem,1cqw,0.9rem)] border border-paper/15 bg-ink/45 p-[clamp(0.5rem,0.8cqw,0.75rem)] text-paper shadow-[0_1.5rem_4rem_-1rem_rgb(0_0_0/0.6)] backdrop-blur-xl backdrop-saturate-150 ${className}`}
     >
       <div className="relative flex-1 overflow-hidden">
-        <div data-location-photo className="absolute inset-y-0 -inset-x-[12%] will-change-transform">
-          <Image
-            src={address.photo}
-            alt=""
-            fill
-            sizes="(min-width: 768px) 24vw, 60vw"
-            className="object-cover brightness-[0.8] transition-[transform,filter] duration-[1.2s] ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-105 group-hover:brightness-95"
-            style={{ objectPosition: address.photoCrop }}
-          />
+        {/* Wireframe: foto del edificio pendiente */}
+        <div data-location-photo className="absolute inset-y-0 -inset-x-[12%] bg-paper/10 text-paper/30 will-change-transform">
+          <svg className="ph-x absolute inset-0 h-full w-full" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
+            <line x1="0" y1="0" x2="100" y2="100" stroke="currentColor" strokeWidth="1" />
+            <line x1="100" y1="0" x2="0" y2="100" stroke="currentColor" strokeWidth="1" />
+          </svg>
         </div>
       </div>
 
@@ -47,6 +43,7 @@ export function LocationCard({ className = "" }: { className?: string }) {
         <address className="not-italic">
           <Line className="text-paper/55">Estudio</Line>
           <Line>{address.street}</Line>
+          <Line>{address.detail}</Line>
           <Line>{address.city}</Line>
         </address>
         <Line>

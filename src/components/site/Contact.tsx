@@ -21,7 +21,7 @@ export function EmailLink({ className = "" }: { className?: string }) {
     <a
       href={`mailto:${contact.email}`}
       data-roll
-      className={`email-fit inline-block leading-[1.05] font-light ${className}`}
+      className={`email-fit inline-block leading-[1.05] ${className}`}
     >
       <span className="sr-only">Escribinos a {contact.email}</span>
       <RollText text={contact.email} />
@@ -41,12 +41,12 @@ export function Contact() {
       <div className="relative flex min-h-svh flex-col justify-between px-(--gutter) pt-[16vh] pb-[calc(env(safe-area-inset-bottom,0px)+1.5rem)]">
         <div className="flex flex-wrap items-baseline justify-between gap-6">
           <div>
-            <h2 className="text-sm text-paper/60">Contacto</h2>
-            <p className="mt-6 max-w-[18ch] text-[clamp(1.75rem,4.2vw,4.25rem)] leading-[1.05] font-light tracking-[-0.015em]">
+            <h2 className="text-label text-paper/60">(Contacto)</h2>
+            <p className="mt-6 max-w-[18ch] text-heading">
               Contanos qué querés construir.
             </p>
           </div>
-          <Link href="/contacto" className="group flex items-center gap-2 text-sm">
+          <Link href="/contacto" className="group flex items-center gap-2 text-meta">
             <PlusLabel>Ir a contacto</PlusLabel>
           </Link>
         </div>
@@ -55,8 +55,17 @@ export function Contact() {
           <EmailLink />
         </div>
 
-        <div className="grid gap-8 border-t border-paper/20 pt-6 text-sm sm:grid-cols-3">
-          <p className="text-paper/60">{contact.city}</p>
+        <div className="grid gap-8 border-t border-paper/20 pt-6 text-meta sm:grid-cols-4">
+          <p className="text-paper/60">
+            {contact.address.street}
+            <br />
+            {contact.address.city}
+          </p>
+          <p>
+            <a href={`tel:+598${contact.phone.replace(/\s/g, "")}`} className="link-draw pb-0.5">
+              Tel. {contact.phone}
+            </a>
+          </p>
           <p>
             <a href={contact.instagram.href} target="_blank" rel="noopener noreferrer" className="link-draw pb-0.5">
               Instagram, {contact.instagram.handle}

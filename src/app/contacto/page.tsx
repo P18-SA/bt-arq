@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
-import Image from "next/image";
 import { EmailLink } from "@/components/site/Contact";
-import { contact, VILLA } from "@/components/site/content";
+import { contact, hero, photo } from "@/components/site/content";
+import { Media } from "@/components/site/Media";
 import { LocationCard } from "@/components/site/LocationCard";
 import { Shell } from "@/components/site/Shell";
 
@@ -16,14 +16,12 @@ export default function Contacto() {
       <main data-contact-page className="@container relative min-h-svh overflow-hidden bg-ink text-paper md:h-svh">
         {/* Foto de fondo: más tenue, medio desaturada y algo más oscura, sin perder el color */}
         <div data-contact-bg aria-hidden="true" className="absolute inset-0">
-          <Image
-            src={VILLA}
-            alt=""
-            fill
-            loading="eager"
-            fetchPriority="high"
-            sizes="100vw"
-            className="object-cover opacity-75 brightness-[0.8] grayscale-[45%]"
+          <Media
+            src={photo(hero)}
+            tone="shadow"
+            label=""
+            placeholder={photo(hero) ? "void" : "blank"}
+            className="h-full w-full opacity-75 brightness-[0.8] grayscale-[45%]"
           />
           <div className="absolute inset-0 bg-linear-to-t from-ink/75 via-ink/15 to-ink/35" />
         </div>
@@ -36,11 +34,11 @@ export default function Contacto() {
           <div>
             <h1
               data-page-title
-              className="max-w-[16ch] text-[clamp(2.4rem,6vw,6.5rem)] leading-[1.02] font-light tracking-[-0.025em]"
+              className="max-w-[16ch] text-title"
             >
               Contanos qué querés construir.
             </h1>
-            <p data-page-in className="mt-6 max-w-[40ch] text-paper/75">
+            <p data-page-in className="mt-6 max-w-[40ch] text-lead text-paper/75">
               Escribinos con una idea de lo que buscás y coordinamos una primera charla.
             </p>
           </div>
@@ -60,8 +58,12 @@ export default function Contacto() {
             <LocationCard className="w-[calc(62cqw_-_2_*_var(--gutter))] justify-self-end md:w-[min(calc(38cqw_-_2_*_var(--gutter)),22rem,34svh)]" />
           </div>
 
-          <div data-page-in className="grid gap-4 border-t border-paper/25 pt-5 text-sm sm:grid-cols-3">
-            <p className="text-paper/75">{contact.city}</p>
+          <div data-page-in className="grid gap-4 border-t border-paper/25 pt-5 text-meta sm:grid-cols-3">
+            <p>
+              <a href={`tel:+598${contact.phone.replace(/\s/g, "")}`} className="link-draw pb-0.5">
+                Tel. {contact.phone}
+              </a>
+            </p>
             <p>
               <a href={contact.instagram.href} target="_blank" rel="noopener noreferrer" className="link-draw pb-0.5">
                 Instagram, {contact.instagram.handle}

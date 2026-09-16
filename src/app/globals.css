@@ -20,6 +20,39 @@
   --color-graphite: var(--graphite);
   --color-shadow: var(--shadow);
   --font-sans: var(--font-areal);
+
+  /*
+   * Escala tipográfica por ROL (ver DESIGN.md). Una sola fuente, ABC Areal (400–700).
+   * Saltos obvios entre pasos; el line-height baja a medida que sube el tamaño.
+   */
+  --text-display: clamp(3.25rem, 12.5vw, 15rem);
+  --text-display--line-height: 0.9;
+  --text-display--letter-spacing: -0.035em;
+
+  --text-title: clamp(2.5rem, 7.5vw, 9.5rem);
+  --text-title--line-height: 0.96;
+  --text-title--letter-spacing: -0.03em;
+
+  --text-heading: clamp(1.75rem, 4.2vw, 4.25rem);
+  --text-heading--line-height: 1.05;
+  --text-heading--letter-spacing: -0.015em;
+
+  --text-subheading: clamp(1.3rem, 2.4vw, 2.25rem);
+  --text-subheading--line-height: 1.15;
+  --text-subheading--letter-spacing: -0.01em;
+
+  --text-lead: clamp(1.1rem, 1.6vw, 1.45rem);
+  --text-lead--line-height: 1.3;
+
+  --text-body: 1rem;
+  --text-body--line-height: 1.6;
+
+  --text-meta: 0.875rem;
+  --text-meta--line-height: 1.4;
+
+  --text-label: 0.75rem;
+  --text-label--line-height: 1.3;
+  --text-label--letter-spacing: 0.02em;
 }
 
 body {

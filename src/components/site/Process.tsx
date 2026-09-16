@@ -22,7 +22,7 @@ type Props = {
 export function Process({
   id = "proceso",
   title = "Cómo trabajamos",
-  aside = "Cuatro etapas",
+  aside = "Tres etapas",
   items = steps,
   numbered = true,
   mediaLabel = "Imagen de la etapa",
@@ -31,8 +31,8 @@ export function Process({
     <section id={id} data-process className="relative overflow-hidden bg-fog md:h-svh">
       <div className="flex h-full flex-col px-(--gutter) pt-[12vh] pb-[8vh] md:pt-[14vh]">
         <div className="flex items-baseline justify-between gap-6">
-          <h2 className="text-[clamp(1.75rem,4.2vw,4.25rem)] leading-none font-light tracking-[-0.015em]">{title}</h2>
-          <p className="hidden text-sm text-graphite md:block">{aside}</p>
+          <h2 className="text-heading">{title}</h2>
+          <p className="hidden text-meta text-graphite md:block">({aside})</p>
         </div>
 
         <div className="relative mt-8 hidden h-px bg-ink/15 md:block">
@@ -51,10 +51,10 @@ export function Process({
             >
               <div className="md:w-[42%]">
                 {numbered && (
-                  <p className="mb-6 text-[clamp(3.5rem,8vw,8rem)] leading-[0.8] font-extralight tabular-nums">{i + 1}</p>
+                  <p className="mb-6 text-title tabular-nums">{String(i + 1).padStart(2, "0")}</p>
                 )}
-                <h3 className="text-[clamp(1.3rem,2vw,1.9rem)]">{s.title}</h3>
-                <p className="mt-3 max-w-[34ch] text-graphite">{s.text}</p>
+                <h3 className="text-subheading">{s.title}</h3>
+                <p className="mt-3 max-w-[34ch] text-body text-graphite">{s.text}</p>
               </div>
               <Media
                 label={`${mediaLabel}, ${s.title.toLowerCase()}`}

@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useRef, useState } from "react";
 import { Flip, gsap, ScrollTrigger, useGSAP } from "@/lib/gsap";
-import { projectHref, programs, type Program, type Project } from "@/components/site/content";
+import { photo, projectHref, programs, type Program, type Project } from "@/components/site/content";
 import { Media } from "@/components/site/Media";
 
 type Filter = Program | "Todos";
@@ -112,7 +112,7 @@ export function ProjectGrid({ projects }: { projects: Project[] }) {
                 type="button"
                 aria-pressed={filter === o.label}
                 onClick={() => choose(o.label)}
-                className="group flex items-start gap-1 text-[clamp(1rem,1.4vw,1.25rem)] text-white/55 transition-colors duration-300 hover:text-white aria-pressed:text-white"
+                className="group flex items-start gap-1 text-lead text-white/55 transition-colors duration-300 hover:text-white aria-pressed:text-white"
               >
                 <span className="link-draw pb-0.5">{o.label}</span>
                 <sup className="text-[0.6em] tabular-nums">{o.count}</sup>
@@ -128,22 +128,22 @@ export function ProjectGrid({ projects }: { projects: Project[] }) {
           return (
             <li key={p.name} data-card data-reveal className={visible ? "" : "hidden"}>
               <Link href={projectHref(p)} className="group block">
-                <Media label={`Imagen, ${p.name}`} tone={p.tone} ratio="4 / 5" bleed="y" />
+                <Media src={photo(p)} label={`${p.name}, portada`} tone={p.tone} ratio="4 / 5" bleed="y" sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw" />
                 <div className="mt-4 flex items-baseline justify-between gap-4">
-                  <h2 className="overflow-hidden text-[clamp(1.1rem,1.5vw,1.35rem)]">
+                  <h2 className="overflow-hidden text-lead">
                     <span data-reveal-line className="link-draw block w-fit pb-0.5">
                       {p.name}
                     </span>
                   </h2>
-                  <p className="overflow-hidden text-sm text-graphite tabular-nums">
+                  <p className="overflow-hidden text-meta text-graphite">
                     <span data-reveal-line className="block">
-                      {p.year}
+                      {p.program}
                     </span>
                   </p>
                 </div>
-                <p className="overflow-hidden text-sm text-graphite">
+                <p className="overflow-hidden text-meta text-graphite">
                   <span data-reveal-line className="block">
-                    {p.program}, {p.place}
+                    {p.place}
                   </span>
                 </p>
               </Link>

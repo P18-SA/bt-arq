@@ -2,74 +2,69 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { Fragment } from "react";
 import { Contact } from "@/components/site/Contact";
-import { VILLA, type Tone } from "@/components/site/content";
+import { hero, photo, studio, type Tone } from "@/components/site/content";
 import { Media } from "@/components/site/Media";
 import { Plus, PlusLabel } from "@/components/site/Plus";
+import { Process } from "@/components/site/Process";
 import { Shell } from "@/components/site/Shell";
 
 export const metadata: Metadata = {
   title: "Estudio",
-  description: "Berthet + Taranto es un estudio de arquitectura en Montevideo, Uruguay.",
+  description: studio.intro,
 };
 
-const partners: { name: string; role: string; tone: Tone }[] = [
-  { name: "Marcela Berthet", role: "Arquitecta, socia fundadora", tone: "concrete" },
-  { name: "Perla Taranto", role: "Arquitecta, socia fundadora", tone: "fog" },
-];
-
-const lorem =
-  "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer posuere erat a ante venenatis dapibus posuere velit aliquet. Donec ullamcorper nulla non metus auctor fringilla, vestibulum id ligula porta felis euismod semper.";
+const tones: Tone[] = ["concrete", "fog"];
 
 export default function Estudio() {
   return (
     <Shell>
       <main>
         <section className="grid grid-cols-12 gap-x-(--gutter) px-(--gutter) pt-[20vh] pb-[10vh]">
-          <h1
-            data-page-title
-            className="col-span-12 text-[clamp(3.5rem,13vw,15rem)] leading-[0.9] font-light tracking-[-0.035em]"
-          >
+          <h1 data-page-title className="col-span-12 text-display">
             Estudio
           </h1>
-          <p
-            data-page-in
-            className="col-span-12 mt-8 max-w-[34ch] text-[clamp(1.1rem,1.7vw,1.5rem)] leading-snug md:col-span-5 md:col-start-8 md:mt-[4vh]"
-          >
-            Berthet + Taranto es un estudio de arquitectura con base en Montevideo. Trabajamos en todo Uruguay.
+          <p data-page-in className="col-span-12 mt-8 max-w-[34ch] text-lead md:col-span-5 md:col-start-8 md:mt-[4vh]">
+            {studio.intro}
           </p>
         </section>
 
         <div data-reveal className="px-(--gutter)">
-          <Media src={VILLA} label="Casa en la costa, Maldonado" preload ratio="16 / 8" bleed="y" speed="auto" />
+          <Media
+            src={photo(hero)}
+            tone="graphite"
+            label={`${hero.name}, ${hero.place}`}
+            preload
+            ratio="16 / 8"
+            bleed="y"
+            speed="auto"
+          />
         </div>
 
         <section className="grid grid-cols-12 gap-x-(--gutter) px-(--gutter) pt-[20vh] pb-[14vh]">
-          <h2 className="col-span-12 mb-8 text-sm text-graphite md:col-span-3 md:mb-0 md:pt-[0.7em]">Enfoque</h2>
+          <h2 className="col-span-12 mb-8 text-label text-graphite md:col-span-3 md:mb-0 md:pt-[0.7em]">(Enfoque)</h2>
           <div className="col-span-12 md:col-span-9">
-            <p
-              data-statement
-              className="max-w-[24ch] text-[clamp(1.75rem,4.2vw,4.25rem)] leading-[1.08] font-light tracking-[-0.015em] text-balance"
-            >
-              Una buena casa empieza por entender cómo se va a vivir en ella. Por eso escuchamos antes de dibujar.
+            <p data-statement className="max-w-[22ch] text-heading text-balance">
+              {studio.statement}
             </p>
-            <div className="mt-[10vh] grid gap-10 text-[0.975rem] leading-relaxed text-graphite sm:grid-cols-2 lg:max-w-4xl">
-              <p className="max-w-[60ch]">{lorem}</p>
-              <p className="max-w-[60ch]">{lorem}</p>
+            <div className="mt-[10vh] grid gap-10 text-body text-graphite sm:grid-cols-2 lg:max-w-4xl">
+              {studio.paragraphs.map((text) => (
+                <p key={text} className="max-w-[60ch]">
+                  {text}
+                </p>
+              ))}
             </div>
           </div>
         </section>
 
         <section className="px-(--gutter) pb-[18vh]">
-          <h2 className="mb-[8vh] border-t border-ink pt-5 text-[clamp(1.75rem,4.2vw,4.25rem)] leading-none font-light tracking-[-0.015em]">
-            Socias
-          </h2>
+          <h2 className="mb-[8vh] border-t border-ink pt-5 text-heading">Socias</h2>
           {/*
             Retratos en las columnas 1-5 y 8-12, con el "+" del logo en las dos columnas del medio.
             El "+" queda a la altura media entre las dos fotos (la segunda baja 22vh):
             alto de foto = ancho de 5 columnas × 4/3, medido con cqw sobre la grilla.
           */}
           <div className="@container grid justify-items-center gap-x-(--gutter) gap-y-[10vh] md:grid-cols-12 md:justify-items-stretch">
-            {partners.map((p, i) => (
+            {studio.partners.map((p, i) => (
               <Fragment key={p.name}>
                 {i === 1 && (
                   <div className="md:col-span-2 md:col-start-6 md:row-start-1 md:mt-[calc((22vh_+_(5_*_(100cqw_-_11_*_var(--gutter))_/_12_+_4_*_var(--gutter))_*_4_/_3)_/_2)] md:-translate-y-1/2 md:self-start md:justify-self-center">
@@ -80,38 +75,48 @@ export default function Estudio() {
                   data-reveal
                   className={`w-full ${i === 0 ? "md:col-span-5 md:row-start-1" : "md:col-span-5 md:col-start-8 md:row-start-1 md:mt-[22vh]"}`}
                 >
-                  {/* Placeholder con silueta hasta tener las fotos de las socias */}
                   <Media
                     placeholder="person"
-                    tone={p.tone}
+                    tone={tones[i]}
                     label={`Retrato, ${p.name}`}
                     ratio="3 / 4"
                     bleed="y"
                     speed="auto"
                     marks
                   />
-                  <h3 className="mt-5 overflow-hidden text-[clamp(1.2rem,1.8vw,1.6rem)]">
+                  <h3 className="mt-5 overflow-hidden text-lead">
                     <span data-reveal-line className="block">
                       {p.name}
                     </span>
                   </h3>
-                  <p className="overflow-hidden text-sm text-graphite">
+                  <p className="overflow-hidden text-meta text-graphite">
                     <span data-reveal-line className="block">
                       {p.role}
                     </span>
                   </p>
-                  <p className="mt-5 max-w-[52ch] text-[0.975rem] leading-relaxed text-graphite">{lorem}</p>
                 </article>
               </Fragment>
             ))}
           </div>
         </section>
 
-        <section className="px-(--gutter) pb-[20vh]">
-          <Link
-            href="/todos-los-proyectos"
-            className="group inline-flex items-center gap-3 text-[clamp(1.35rem,2.4vw,2.25rem)] font-light"
-          >
+        <section className="grid grid-cols-12 gap-x-(--gutter) gap-y-10 border-t border-ink/15 px-(--gutter) pt-8 pb-[18vh]">
+          <h2 className="col-span-12 text-label text-graphite md:col-span-3">(Equipo)</h2>
+          <ul className="col-span-12 grid gap-x-(--gutter) gap-y-3 text-subheading sm:grid-cols-2 md:col-span-6">
+            {studio.team.map((name) => (
+              <li key={name}>{name}</li>
+            ))}
+          </ul>
+          <div className="col-span-12 md:col-span-3">
+            <h3 className="text-label text-graphite">(Idiomas)</h3>
+            <p className="mt-3 text-body">{studio.languages.join(", ")}</p>
+          </div>
+        </section>
+
+        <Process title="Cómo trabajamos" aside="Tres etapas" />
+
+        <section className="px-(--gutter) py-[20vh]">
+          <Link href="/todos-los-proyectos" className="group inline-flex items-center gap-3 text-subheading">
             <PlusLabel>Ver proyectos</PlusLabel>
           </Link>
         </section>

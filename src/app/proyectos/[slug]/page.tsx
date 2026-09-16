@@ -20,7 +20,7 @@ export async function generateMetadata({ params }: PageProps<"/proyectos/[slug]"
   if (!project) return {};
   return {
     title: project.name,
-    description: `${project.program} en ${project.place}, ${project.year}. Proyecto de Berthet + Taranto Arquitectas.`,
+    description: project.statement ?? `${project.program} en ${project.place}. Proyecto de Berthet + Taranto Arquitectas.`,
   };
 }
 

@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { featured, projectHref, projects, VILLA } from "@/components/site/content";
+import { featured, hero, photo, projectHref, projects, studio } from "@/components/site/content";
 import { Media } from "@/components/site/Media";
 import { PlusLabel } from "@/components/site/Plus";
 import { Word } from "@/components/site/Word";
@@ -56,7 +56,14 @@ export function Hero() {
       <HeroWordmark />
 
       <div data-hero-media className="absolute inset-0">
-        <Media src={VILLA} label="Casa en la costa, Maldonado" preload className="h-full w-full" />
+        <Media
+          src={photo(hero)}
+          tone="shadow"
+          label={`${hero.name}, ${hero.place}`}
+          labelAt="top"
+          preload
+          className="h-full w-full"
+        />
         <div aria-hidden="true" className="absolute inset-0 bg-linear-to-b from-ink/25 via-ink/5 to-ink/45" />
         <HeroWordmark inverted />
       </div>
@@ -64,7 +71,7 @@ export function Hero() {
       <p
         data-hero-hint
         data-hero-intro
-        className="absolute bottom-[calc(env(safe-area-inset-bottom,0px)+1.25rem)] left-1/2 -translate-x-1/2 text-xs text-paper/80"
+        className="absolute bottom-[calc(env(safe-area-inset-bottom,0px)+1.25rem)] left-1/2 -translate-x-1/2 text-label text-paper/80"
       >
         Deslizá para entrar
       </p>
@@ -73,8 +80,8 @@ export function Hero() {
         data-hero-caption
         className="absolute inset-x-0 bottom-0 flex items-end justify-between gap-4 px-(--gutter) pb-[calc(env(safe-area-inset-bottom,0px)+1.5rem)] text-white"
       >
-        <p className="text-[clamp(1rem,1.6vw,1.35rem)]">Casa en la costa</p>
-        <p className="text-sm text-white/80">Maldonado, 2025</p>
+        <p className="text-lead">{hero.name}</p>
+        <p className="text-meta text-white/80">{hero.place}</p>
       </div>
     </section>
   );
@@ -91,10 +98,10 @@ export function Featured() {
   return (
     <section id="proyectos" className="px-(--gutter) pt-[10vh] pb-[18vh]">
       <div className="mb-[10vh] flex items-baseline justify-between gap-6 border-t border-ink pt-5">
-        <h2 className="text-[clamp(1.75rem,4.2vw,4.25rem)] leading-none font-light tracking-[-0.015em]">
-          Proyectos seleccionados
+        <h2 className="text-heading">
+          Proyectos seleccionados <span className="text-graphite">(04)</span>
         </h2>
-        <a href="#indice" className="link-draw shrink-0 pb-0.5 text-sm">
+        <a href="#indice" className="link-draw shrink-0 pb-0.5 text-meta">
           Ver todos
         </a>
       </div>
@@ -104,8 +111,8 @@ export function Featured() {
           <article key={p.name} data-reveal className={featuredLayout[i]}>
             <Link href={projectHref(p)} className="group block">
               <Media
-                src={VILLA}
-                crop={p.crop}
+                src={photo(p)}
+                tone={p.tone}
                 label={`${p.name}, ${p.place}`}
                 sizes="(min-width: 768px) 55vw, 100vw"
                 ratio={ratio}
@@ -114,14 +121,14 @@ export function Featured() {
                 marks
               />
               <div className="mt-4 flex items-baseline justify-between gap-4">
-                <h3 className="overflow-hidden text-[clamp(1.1rem,1.7vw,1.5rem)]">
+                <h3 className="overflow-hidden text-lead">
                   <span data-reveal-line className="link-draw block w-fit pb-0.5">
                     {p.name}
                   </span>
                 </h3>
-                <p className="overflow-hidden text-sm text-graphite">
+                <p className="overflow-hidden text-meta text-graphite">
                   <span data-reveal-line className="block">
-                    {p.place}, {p.year}
+                    {p.place.split(",")[0]}
                   </span>
                 </p>
               </div>
@@ -139,17 +146,16 @@ export function ProjectIndex() {
   return (
     <section id="indice" className="px-(--gutter) pt-[18vh] pb-[20vh]">
       <div className="mb-10 flex items-baseline justify-between gap-6">
-        <h2 className="text-[clamp(1.75rem,4.2vw,4.25rem)] leading-none font-light tracking-[-0.015em]">
-          Todos los proyectos
+        <h2 className="text-heading">
+          Todos los proyectos <span className="text-graphite tabular-nums">({projects.length})</span>
         </h2>
-        <p className="text-sm text-graphite tabular-nums">{projects.length}</p>
       </div>
 
-      <div className="hidden grid-cols-12 gap-x-(--gutter) border-b border-ink/15 pb-3 text-xs text-graphite md:grid">
+      <div className="hidden grid-cols-12 gap-x-(--gutter) border-b border-ink/15 pb-3 text-label text-graphite md:grid">
+        <span className="col-span-1">N.º</span>
         <span className="col-span-6">Proyecto</span>
         <span className="col-span-2">Programa</span>
-        <span className="col-span-3">Lugar</span>
-        <span className="col-span-1 text-right">Año</span>
+        <span className="col-span-3 text-right">Lugar</span>
       </div>
 
       <ul data-index-list>
@@ -164,15 +170,17 @@ export function ProjectIndex() {
               href={projectHref(p)}
               className="grid grid-cols-12 items-baseline gap-x-(--gutter) py-[clamp(0.9rem,2.2vh,1.5rem)]"
             >
+              <span className="col-span-2 text-meta text-graphite tabular-nums md:col-span-1">
+                {String(i + 1).padStart(2, "0")}
+              </span>
               <span
                 data-row-name
-                className="col-span-9 text-[clamp(1.15rem,2.4vw,2.25rem)] font-light transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] md:col-span-6"
+                className="col-span-10 text-subheading transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] md:col-span-6"
               >
                 {p.name}
               </span>
-              <span className="col-span-2 hidden text-sm text-graphite md:block">{p.program}</span>
-              <span className="col-span-3 hidden text-sm text-graphite md:block">{p.place}</span>
-              <span className="col-span-3 text-right text-sm text-graphite tabular-nums md:col-span-1">{p.year}</span>
+              <span className="col-span-2 hidden text-meta text-graphite md:block">{p.program}</span>
+              <span className="col-span-3 hidden text-right text-meta text-graphite md:block">{p.place}</span>
             </Link>
           </li>
         ))}
@@ -181,9 +189,9 @@ export function ProjectIndex() {
       <div className="mt-10 flex justify-end">
         <Link
           href="/todos-los-proyectos"
-          className="group inline-flex items-center gap-3 text-[clamp(1.35rem,2.4vw,2.25rem)] font-light"
+          className="group inline-flex items-center gap-3 text-subheading"
         >
-          <PlusLabel>Ver más</PlusLabel>
+          <PlusLabel>Ver los {projects.length}</PlusLabel>
         </Link>
       </div>
     </section>
@@ -202,8 +210,8 @@ export function IndexPreview() {
         {indexed.map((p) => (
           <Media
             key={p.name}
-            src={VILLA}
-            crop={p.crop}
+            src={photo(p)}
+            tone={p.tone}
             label=""
             sizes="20vw"
             className="w-full"
@@ -212,5 +220,40 @@ export function IndexPreview() {
         ))}
       </div>
     </div>
+  );
+}
+
+/**
+ * Corte duro entre las obras y el índice (TIWD: "crear el borde de la página"): banda de ancho completo
+ * con el estudio en una frase y los datos que la sostienen.
+ */
+export function StudioBreak() {
+  const facts = [
+    ["Desde", studio.founded],
+    ["Obras publicadas", String(projects.length)],
+    ["Con base en", "Montevideo"],
+  ];
+  return (
+    <section id="estudio" className="bg-fog px-(--gutter) py-[16vh]">
+      <div className="grid grid-cols-12 gap-x-(--gutter) gap-y-10">
+        <p className="col-span-12 text-label text-graphite md:col-span-3">(Estudio)</p>
+        <div className="col-span-12 md:col-span-9">
+          <p data-statement className="max-w-[22ch] text-heading text-balance">
+            {studio.statement}
+          </p>
+          <dl className="mt-[10vh] grid grid-cols-3 gap-x-(--gutter) border-t border-ink/15 pt-5">
+            {facts.map(([term, value]) => (
+              <div key={term}>
+                <dt className="text-label text-graphite">{term}</dt>
+                <dd className="mt-2 text-subheading tabular-nums">{value}</dd>
+              </div>
+            ))}
+          </dl>
+          <Link href="/estudio" className="group mt-[8vh] inline-flex items-center gap-3 text-lead">
+            <PlusLabel>Conocé el estudio</PlusLabel>
+          </Link>
+        </div>
+      </div>
+    </section>
   );
 }
