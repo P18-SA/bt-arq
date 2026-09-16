@@ -12,7 +12,9 @@ export const metadata: Metadata = {
 export default function TodosLosProyectos() {
   return (
     <Shell>
-      <main className="px-(--gutter) pt-[20vh] pb-[18vh]">
+      {/* Fondo explícito: la barra de filtros se invierte contra lo que tiene detrás y, dentro del
+          contenedor de scroll suave, sin este fondo no tendría contra qué mezclarse. */}
+      <main className="bg-paper px-(--gutter) pt-[20vh] pb-[18vh]">
         <div className="mb-[6vh] flex flex-wrap items-end justify-between gap-x-10 gap-y-4">
           <h1
             data-page-title

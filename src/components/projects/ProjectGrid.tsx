@@ -14,6 +14,8 @@ export function ProjectGrid({ projects }: { projects: Project[] }) {
   const scope = useRef<HTMLDivElement>(null);
   const list = useRef<HTMLUListElement>(null);
   const flipState = useRef<Flip.FlipState | null>(null);
+  const barSlot = useRef<HTMLDivElement>(null);
+  const bar = useRef<HTMLDivElement>(null);
 
   const options: { label: Filter; count: number }[] = [
     { label: "Todos", count: projects.length },
@@ -52,21 +54,72 @@ export function ProjectGrid({ projects }: { projects: Project[] }) {
     { dependencies: [filter], scope },
   );
 
+  /**
+   * La barra de filtros queda fija debajo del header mientras se recorre la grilla y el pie la empuja
+   * hacia arriba al entrar, para no quedar encima del cierre de contacto.
+   * Se mueve con transform y no con position:fixed: dentro del contenedor de scroll suave (que usa
+   * transform) un elemento fijo se posiciona contra ese contenedor, no contra la ventana.
+   */
+  useGSAP(
+    () => {
+      const slot = barSlot.current;
+      const el = bar.current;
+      if (!slot || !el) return;
+
+      const header = document.querySelector("header");
+      const footer = document.querySelector("footer");
+      const setY = gsap.quickSetter(el, "y", "px");
+      const gap = 10;
+      let last = 0;
+
+      const update = () => {
+        const slotBox = slot.getBoundingClientRect();
+        const under = (header?.getBoundingClientRect().height ?? 0) + gap;
+        // Con el pie a la vista, el tope baja hasta sacar la barra de pantalla
+        const ceiling = footer ? footer.getBoundingClientRect().top - slotBox.height - gap : Infinity;
+        const y = Math.max(0, Math.min(under, ceiling) - slotBox.top);
+        if (Math.abs(y - last) < 0.5) return;
+        last = y;
+        setY(y);
+        if (y > 0.5) el.setAttribute("data-stuck", "");
+        else el.removeAttribute("data-stuck");
+      };
+
+      gsap.ticker.add(update);
+      return () => gsap.ticker.remove(update);
+    },
+    { scope },
+  );
+
   return (
     <div ref={scope}>
-      <div data-page-in className="mb-[8vh] flex flex-wrap gap-x-6 gap-y-2 border-b border-ink/15 pb-4">
-        {options.map((o) => (
-          <button
-            key={o.label}
-            type="button"
-            aria-pressed={filter === o.label}
-            onClick={() => choose(o.label)}
-            className="group flex items-start gap-1 text-[clamp(1rem,1.4vw,1.25rem)] text-graphite transition-colors duration-300 hover:text-ink aria-pressed:text-ink"
-          >
-            <span className="link-draw pb-0.5">{o.label}</span>
-            <sup className="text-[0.6em] tabular-nums">{o.count}</sup>
-          </button>
-        ))}
+      {/*
+        El hueco conserva el lugar de la barra en el flujo mientras ella se mueve.
+        La barra va sin fondo y se invierte contra lo que tenga detrás, igual que el header. Para que
+        eso funcione, entre ella y el contenedor del scroll suave no puede haber ningún elemento que
+        aísle la mezcla (transform, opacidad o filtro): por eso el hueco queda limpio y la animación
+        de entrada la lleva la fila de botones, adentro.
+      */}
+      <div ref={barSlot} className="mb-[8vh]">
+        <div
+          ref={bar}
+          className="relative z-30 border-b border-paper/25 pt-3 pb-4 text-white mix-blend-difference"
+        >
+          <div data-page-in className="flex flex-wrap gap-x-6 gap-y-2">
+            {options.map((o) => (
+              <button
+                key={o.label}
+                type="button"
+                aria-pressed={filter === o.label}
+                onClick={() => choose(o.label)}
+                className="group flex items-start gap-1 text-[clamp(1rem,1.4vw,1.25rem)] text-white/55 transition-colors duration-300 hover:text-white aria-pressed:text-white"
+              >
+                <span className="link-draw pb-0.5">{o.label}</span>
+                <sup className="text-[0.6em] tabular-nums">{o.count}</sup>
+              </button>
+            ))}
+          </div>
+        </div>
       </div>
 
       <ul ref={list} className="grid gap-x-(--gutter) gap-y-[8vh] sm:grid-cols-2 lg:grid-cols-3">

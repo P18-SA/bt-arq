@@ -1,11 +1,15 @@
 import type { Metadata } from "next";
-import { Work_Sans } from "next/font/google";
+import localFont from "next/font/local";
 import "./globals.css";
 
-const workSans = Work_Sans({
-  variable: "--font-work-sans",
-  subsets: ["latin"],
+// ABC Areal (Dinamo), variable. El eje de peso va de 400 a 700: no hay cortes light.
+const areal = localFont({
+  src: "../fonts/ABCArealVariable.woff2",
+  variable: "--font-areal",
+  weight: "400 700",
+  style: "normal",
   display: "swap",
+  fallback: ["Arial", "Helvetica", "sans-serif"],
 });
 
 export const metadata: Metadata = {
@@ -16,7 +20,7 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html lang="es" className={`${workSans.variable} h-full antialiased`}>
+    <html lang="es" className={`${areal.variable} h-full antialiased`}>
       <body className="min-h-full flex flex-col font-sans">
         <noscript>
           <style>{`[data-hero-media],[data-hero-intro],[data-header-item],[data-header-logo],[data-page-title],[data-page-in],[data-contact-bg],[data-location-card]{visibility:visible!important}`}</style>

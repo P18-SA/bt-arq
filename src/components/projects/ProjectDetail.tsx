@@ -21,6 +21,19 @@ const shotLayout = [
   "md:col-span-12",
 ];
 
+/** ABC Areal dibuja el "²" a la altura de la base; el superíndice se arma con <sup> para que se lea. */
+function Fact({ text }: { text: string }) {
+  const [head, ...rest] = text.split("²");
+  if (!rest.length) return <>{text}</>;
+  return (
+    <>
+      {head}
+      <sup className="text-[0.62em]">2</sup>
+      {rest.join("²")}
+    </>
+  );
+}
+
 function ShotFigure({ shot, className }: { shot: Shot; className: string }) {
   return (
     <figure className={`m-0 ${className}`}>
@@ -61,7 +74,9 @@ export function ProjectDetail({ project }: { project: Project }) {
             {facts.map(([term, value]) => (
               <div key={term}>
                 <dt className="text-xs text-graphite">{term}</dt>
-                <dd className="mt-1">{value}</dd>
+                <dd className="mt-1">
+                  <Fact text={value} />
+                </dd>
               </div>
             ))}
           </dl>

@@ -19,7 +19,7 @@
   --color-fog: var(--fog);
   --color-graphite: var(--graphite);
   --color-shadow: var(--shadow);
-  --font-sans: var(--font-work-sans);
+  --font-sans: var(--font-areal);
 }
 
 body {
@@ -113,11 +113,11 @@ body {
 /*
  * Correo grande (pie y página de contacto). El tamaño sale del ancho de la sección para que el texto
  * termine un margen antes de la línea vertical (62%): mismo espacio a la derecha de la línea que el
- * margen izquierdo de la pantalla. --email-em es el ancho del correo medido en em con este tracking.
+ * margen izquierdo de la pantalla. --email-em es el ancho del correo medido en em con este tracking (ABC Areal).
  */
 .email-fit {
   --email-line: 62cqw;
-  --email-em: 10.42;
+  --email-em: 9.77;
   font-size: calc((var(--email-line) - 2 * var(--gutter)) / var(--email-em));
   letter-spacing: -0.04em;
   white-space: nowrap;
