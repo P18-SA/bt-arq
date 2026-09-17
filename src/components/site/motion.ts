@@ -6,7 +6,6 @@ type Ctx = gsap.Context;
 // y GSAP no puede interpolar entre cantidades distintas de valores.
 const poly = (...pts: [number, number][]) => `polygon(${pts.map(([x, y]) => `${x}% ${y}%`).join(", ")})`;
 const FULL = poly([0, 0], [100, 0], [100, 100], [0, 100]);
-const POINT = poly([50, 50], [50, 50], [50, 50], [50, 50]);
 const FLOOR = poly([0, 100], [100, 100], [100, 100], [0, 100]);
 
 const all = <T extends Element = HTMLElement>(root: ParentNode, sel: string) =>
@@ -15,98 +14,127 @@ const one = <T extends Element = HTMLElement>(root: ParentNode, sel: string) =>
   root.querySelector<T>(sel)!;
 
 /**
- * Hero de la home. Intro: una cruz ocupa toda la pantalla, se repliega hasta ser el "+" del logo,
- * los dos nombres salen desde ahí y, tras una pausa corta, la foto se abre sola desde el mismo punto.
- * Scroll: sin pin; el hero se va con la página mientras el logo grande se desvanece.
- * Hay dos copias del logo: negra sobre el blanco y blanca dentro de la foto (recortada con ella).
+ * Hero de la home. Carga: la banda negra ocupa toda la pantalla, la cruz se abre de lado a lado
+ * y se repliega hasta ser el "+" del logo (en el centro de la pantalla), los nombres salen desde ahí
+ * y el logo sube rápido con el negro hasta su posición de titular.
+ * Apertura: al primer scroll se dispara sola, de una y sin vuelta atrás: la banda se cierra,
+ * la foto crece hasta ocupar la sección y el header baja a su lugar con el logo chico.
  */
 export function hero(root: HTMLElement, smoother: ScrollSmoother, playIntro: boolean, onIntroDone: () => void) {
   const section = one(root, "[data-hero]");
+  const band = one(root, "[data-hero-band]");
+  const word = one(root, "[data-hero-word]");
+  const meta = one(root, "[data-hero-meta]");
+  const count = one(root, "[data-hero-count]");
   const plus = one(root, "[data-plus]");
-  const lineH = all(root, "[data-plus-h]");
-  const lineV = all(root, "[data-plus-v]");
-  const left = all(root, "[data-name-left]");
-  const right = all(root, "[data-name-right]");
-  const blocks = all(root, "[data-hero-block]");
-  const wordmarks = all(root, "[data-hero-block] [data-hero-intro]");
-  const hint = one(root, "[data-hero-hint]");
-  const media = one(root, "[data-hero-media]");
-  const mediaInner = one(media, "[data-ph-inner]");
+  const lineH = one(root, "[data-plus-h]");
+  const lineV = one(root, "[data-plus-v]");
+  const left = one(root, "[data-name-left]");
+  const right = one(root, "[data-name-right]");
+  const frame = one(root, "[data-hero-frame]");
+  const frameInner = one(frame, "[data-ph-inner]");
   const caption = one(root, "[data-hero-caption]");
+  const hint = one(root, "[data-hero-hint]");
+  const header = one(root, "[data-header]");
   const headerItems = all(root, "[data-header-item]");
   const logo = one(root, "[data-header-logo]");
-  // Cada letra de ARQUITECTAS es un <g data-glyph> dentro del SVG
-  const glyphs = all<SVGGElement>(root, "[data-hero-sub] [data-glyph]");
-  const glyphDrop = (_: number, g: SVGGElement) => g.ownerSVGElement!.viewBox.baseVal.height;
+  const clock = root.querySelector<HTMLElement>("[data-header-clock]");
 
-  // Estado inicial: la foto reducida a un punto en el centro del "+" (que siempre queda al centro de la pantalla)
-  gsap.set(media, { clipPath: POINT, autoAlpha: 1 });
+  // La banda se anima en altura. Su medida final es la del logo con sus márgenes mínimos:
+  // no sirve medir la banda, que arranca a pantalla completa (los datos de carga van absolutos).
+  const bandHeight = word.offsetHeight;
+  gsap.set(band, { height: innerHeight });
+  gsap.set(header, { y: bandHeight });
   gsap.set([caption, logo], { autoAlpha: 0 });
+  // El reloj arranca pegado a la izquierda y se corre cuando aparece el logo chico del header
+  // 24px es el gap del header: el reloj ocupa el lugar del logo hasta que este aparece
+  if (clock) gsap.set(clock, { x: -(logo.getBoundingClientRect().width + 24) });
 
-  // --- Scroll (sin pin): el hero se va con la página; el logo grande sube y se desvanece mientras sale
-  gsap.fromTo(
-    blocks,
-    { yPercent: 0, autoAlpha: 1 },
-    {
-      yPercent: -30,
-      autoAlpha: 0,
-      ease: "power1.in",
-      immediateRender: false,
-      scrollTrigger: { trigger: section, start: "top top", end: "60% top", scrub: true },
-    },
-  );
-  // "Deslizá para entrar" se va al empezar a scrollear (con callbacks: un scrub lo mostraría antes de la intro)
-  ScrollTrigger.create({
-    trigger: section,
-    start: "12% top",
-    onEnter: () => gsap.to(hint, { autoAlpha: 0, duration: 0.3, overwrite: true }),
-    onLeaveBack: () => gsap.to(hint, { autoAlpha: 1, duration: 0.4, overwrite: true }),
-  });
-  // El logo del header aparece cuando el hero ya casi salió
-  ScrollTrigger.create({
-    trigger: section,
-    start: "70% top",
-    onEnter: () => gsap.to(logo, { autoAlpha: 1, duration: 0.5, overwrite: true }),
-    onLeaveBack: () => gsap.to(logo, { autoAlpha: 0, duration: 0.3, overwrite: true }),
-  });
+  // Con la banda a pantalla completa, el logo baja al centro: ahí se arma la cruz
+  const wordBox = word.getBoundingClientRect();
+  const drop = innerHeight / 2 - (wordBox.top + wordBox.height / 2);
+  gsap.set(word, { y: drop, autoAlpha: 1 });
 
-  // --- Intro: cruz → "+" → nombres → pausa corta con el logo → la foto se abre sola desde el "+"
+  // --- Apertura: se reproduce sola, una sola vez (no la maneja el scroll, no vuelve atrás)
+  const open = gsap
+    .timeline({
+      paused: true,
+      defaults: { ease: "expo.inOut", duration: 1.3 },
+      onComplete: () => {
+        smoother.paused(false);
+        ScrollTrigger.refresh();
+      },
+    })
+    .to(hint, { autoAlpha: 0, duration: 0.3, ease: "power2.in" }, 0)
+    .to(band, { height: 0 }, 0)
+    .to(header, { y: 0 }, 0)
+    // La foto termina midiendo la ventana entera, no el 100% del card (que todavía es más angosto
+    // mientras corre el tween): así nunca asoma blanco al costado. Lo que sobra lo recorta el stage.
+    .to(frame, { width: () => innerWidth, height: () => section.clientHeight }, 0)
+    // El card se abre a sangre junto con la foto: el negro lateral existe solo durante la apertura
+    .to(section, { marginLeft: 0, marginRight: 0 }, 0)
+    .fromTo(frameInner, { scale: 1.18 }, { scale: 1, duration: 1.5, ease: "expo.out" }, 0)
+    .to(logo, { autoAlpha: 1, duration: 0.5, ease: "power2.out" }, 0.8)
+    .to(caption, { autoAlpha: 1, duration: 0.5, ease: "power2.out" }, 0.65);
+  if (clock) open.to(clock, { x: 0, duration: 0.8 }, 0.15);
+
+  // El primer gesto de scroll la dispara; después el scroll vuelve a ser normal
   const cover = (axis: "x" | "y") => () =>
     axis === "x" ? (innerWidth * 2.2) / plus.offsetWidth : (innerHeight * 2.2) / plus.offsetHeight;
 
+  const counter = { v: 0 };
   const intro = gsap
     .timeline({ defaults: { ease: "expo.inOut" }, onComplete: onIntroDone })
-    .set(wordmarks, { autoAlpha: 1 })
-    .fromTo(lineH, { scaleX: 0 }, { scaleX: cover("x"), duration: 1.0 })
-    .fromTo(lineV, { scaleY: 0 }, { scaleY: cover("y"), duration: 1.0 }, 0.08)
-    .to(lineH, { scaleX: 1, duration: 0.95 }, "+=0.05")
-    .to(lineV, { scaleY: 1, duration: 0.95 }, "<0.06")
-    .addLabel("names", "-=0.4")
-    .fromTo(left, { xPercent: 102 }, { xPercent: 0, duration: 1.35, ease: "expo.out" }, "names")
-    .fromTo(right, { xPercent: -102 }, { xPercent: 0, duration: 1.35, ease: "expo.out" }, "names")
-    .fromTo(glyphs, { y: glyphDrop }, { y: 0, duration: 0.95, ease: "power3.out", stagger: 0.035 }, "names+=0.25")
+    .fromTo(meta, { autoAlpha: 0, y: 8 }, { autoAlpha: 1, y: 0, duration: 0.7, ease: "expo.out" })
+    .to(counter, {
+      v: 100,
+      duration: 2.2,
+      ease: "power1.inOut",
+      onUpdate: () => (count.textContent = String(Math.round(counter.v))),
+    }, 0)
+    // La cruz es lo rápido de la intro; lo que sigue respira más
+    .fromTo(lineH, { scaleX: 0 }, { scaleX: cover("x"), duration: 0.65 }, 0.05)
+    .fromTo(lineV, { scaleY: 0 }, { scaleY: cover("y"), duration: 0.65 }, 0.12)
+    .to(lineH, { scaleX: 1, duration: 0.7 }, "+=0.04")
+    .to(lineV, { scaleY: 1, duration: 0.7 }, "<0.05")
+    .addLabel("names", "-=0.32")
+    .fromTo(left, { xPercent: 102 }, { xPercent: 0, duration: 1.6, ease: "expo.out" }, "names")
+    .fromTo(right, { xPercent: -102 }, { xPercent: 0, duration: 1.6, ease: "expo.out" }, "names")
+    // Ya armado, el logo sube rápido con el negro hasta su posición final
+    .addLabel("lift", "names+=1.5")
+    .to(meta, { autoAlpha: 0, y: -8, duration: 0.4, ease: "power2.in" }, "lift-=0.2")
+    .to(word, { y: 0, duration: 1.05 }, "lift")
+    .to(band, { height: bandHeight, duration: 1.05 }, "lift")
     .fromTo(
       headerItems,
       { autoAlpha: 0, y: -10 },
       { autoAlpha: 1, y: 0, duration: 0.7, ease: "power2.out", stagger: 0.05 },
-      "names+=0.4",
+      "lift+=0.5",
     )
-    // ARQUITECTAS termina de subir en names+1.55; la foto arranca apenas antes, sin pausa con el logo quieto
-    .addLabel("expand", "names+=1.45")
-    .fromTo(media, { clipPath: POINT }, { clipPath: FULL, duration: 1.1 }, "expand")
-    .fromTo(mediaInner, { scale: 1.35 }, { scale: 1, duration: 1.6, ease: "expo.out" }, "expand")
-    .fromTo(caption, { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.6, ease: "power1.out" }, "expand+=0.8")
-    .fromTo(hint, { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.6, ease: "power1.out" }, "expand+=0.9");
+    .fromTo(hint, { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.6, ease: "power1.out" }, "lift+=0.65");
+
+  const events = ["wheel", "touchmove", "keydown"] as const;
+  const trigger = (e: Event) => {
+    if (e.type === "wheel" && (e as WheelEvent).deltaY <= 0) return;
+    if (e.type === "keydown" && !["ArrowDown", "PageDown", " ", "End"].includes((e as KeyboardEvent).key)) return;
+    disarm();
+    open.play();
+  };
+  const disarm = () => events.forEach((type) => window.removeEventListener(type, trigger));
+  const arm = () => events.forEach((type) => window.addEventListener(type, trigger, { passive: true }));
 
   if (playIntro && smoother.scrollTop() < 10) {
+    // El scroll queda tomado hasta que termina la apertura: es un solo movimiento, sin vuelta atrás
     smoother.paused(true);
-    // El scroll se libera cuando la foto ya casi terminó de abrirse
-    intro.call(() => smoother.paused(false), [], "expand+=0.75");
+    intro.call(arm, [], "lift+=0.7");
   } else {
     intro.progress(1);
     onIntroDone();
+    open.progress(1);
     smoother.paused(false);
   }
+
+  return disarm;
 }
 
 /** Páginas interiores: el título sube línea por línea y lo acompañan sus datos. */
@@ -183,74 +211,139 @@ export function statements(root: HTMLElement) {
   });
 }
 
-/** Proceso (escritorio): la sección se fija y las etapas avanzan en horizontal. */
-export function process(root: HTMLElement) {
-  const section = one(root, "[data-process]");
-  const track = one(section, "[data-process-track]");
-  const progress = one(section, "[data-process-progress]");
-  const distance = () => Math.max(0, track.scrollWidth - (section.clientWidth - track.offsetLeft * 2));
+/**
+ * Cómo trabajamos (escritorio). Las obras no se mueven: cada una ocupa su pantalla y se scrollea
+ * como cualquier foto. Lo que se fija es la columna de texto:
+ * - la pila de etapas se clava arriba y va creciendo. La etapa ya leída se queda, pero se cierra
+ *   hasta su numeral: **solo la etapa en la que estamos dice su nombre**, así siempre se sabe qué
+ *   se está leyendo. Las que faltan todavía no están en la pila;
+ * - el párrafo acompaña a su obra y se suelta justo cuando entra la siguiente.
+ * Se hace con pines de ScrollTrigger y no con `position: sticky`: con ScrollSmoother la página no
+ * scrollea de verdad (el contenido se mueve por transform) y el sticky nunca se dispara.
+ */
+export function work(root: HTMLElement) {
+  const block = one(root, "[data-work]");
+  const stack = one(block, "[data-work-stack]");
+  const rows = all(stack, "[data-work-row]");
+  const titles = all(stack, "[data-work-title]");
+  const copies = all(block, "[data-work-copy]");
+  const shots = all(block, "[data-work-cell] [data-ph-wrap]");
+  if (!rows.length) return;
 
-  const tl = gsap
-    .timeline({
-      defaults: { ease: "none" },
-      scrollTrigger: {
-        trigger: section,
-        start: "top top",
-        end: () => `+=${distance()}`,
-        pin: true,
-        scrub: true,
-        invalidateOnRefresh: true,
-      },
-    })
-    .to(track, { x: () => -distance() }, 0)
-    .fromTo(progress, { scaleX: 0 }, { scaleX: 1 }, 0);
+  // El primer renglón arranca debajo del header
+  const top = () => innerHeight * 0.14;
 
-  all(section, "[data-process-step]").forEach((step) => {
-    gsap.fromTo(
-      one(step, "[data-ph-inner]"),
-      { xPercent: -7 },
-      {
-        xPercent: 7,
-        ease: "none",
-        scrollTrigger: { trigger: step, containerAnimation: tl, start: "left right", end: "right left", scrub: true },
-      },
-    );
+  // Al empezar, en la pila solo está la primera etapa
+  gsap.set(rows.slice(1), { height: 0, autoAlpha: 0 });
+
+  let active = -1;
+  const setActive = (i: number) => {
+    if (i === active) return;
+    active = i;
+    const open = (el: HTMLElement, show: boolean) =>
+      gsap.to(el, {
+        height: show ? "auto" : 0,
+        autoAlpha: show ? 1 : 0,
+        duration: 0.5,
+        ease: "power2.inOut",
+        overwrite: "auto",
+      });
+    // Las etapas pasadas quedan en la pila; las que faltan, todavía no
+    rows.forEach((row, j) => open(row, j <= i));
+    // El nombre lo lleva solo la etapa en curso
+    titles.forEach((title, j) => open(title, j === i));
+  };
+  setActive(0);
+
+  // La pila se clava arriba y acompaña hasta el final de la sección
+  ScrollTrigger.create({
+    trigger: stack,
+    start: () => `top top+=${top()}`,
+    endTrigger: block,
+    end: "bottom bottom",
+    pin: true,
+    pinSpacing: false,
+    invalidateOnRefresh: true,
+  });
+
+  shots.forEach((shot, i) => {
+    // Mientras esta obra pasa por el renglón de arriba, la etapa es esta
+    ScrollTrigger.create({
+      trigger: shot,
+      start: () => `top top+=${top()}`,
+      end: () => `bottom top+=${top()}`,
+      invalidateOnRefresh: true,
+      onToggle: (self) => self.isActive && setActive(i),
+    });
+
+    const copy = copies[i];
+    ScrollTrigger.create({
+      trigger: copy,
+      start: () => `top top+=${top()}`,
+      // Hasta que la obra de esta etapa termina de pasar: ahí entra el párrafo siguiente
+      endTrigger: shot,
+      end: () => `bottom top+=${top() + copy.offsetHeight}`,
+      pin: true,
+      pinSpacing: false,
+      invalidateOnRefresh: true,
+    });
   });
 }
 
-/** Índice: una ventana sigue al cursor y desliza la tira de imágenes hasta el proyecto señalado. */
+/** Índice: una ventana sigue al cursor y cada obra se abre desde el centro hacia afuera. */
 export function indexPreview(root: HTMLElement, ctx: Ctx) {
   const list = one(root, "[data-index-list]");
   const preview = one(root, "[data-index-preview]");
-  const strip = one(preview, "[data-index-strip]");
-  const rows = all(list, "[data-row]");
+  const items = all(preview, "[data-index-item]");
+  const inners = items.map((it) => one(it, "[data-ph-inner]"));
+  const OPEN = "inset(0% 0% 0% 0%)";
+  const SHUT = "inset(50% 50% 50% 50%)";
 
-  gsap.set(preview, { xPercent: -50, yPercent: -50, scale: 0.4, autoAlpha: 0 });
-  const xTo = gsap.quickTo(preview, "x", { duration: 0.8, ease: "power3" });
-  const yTo = gsap.quickTo(preview, "y", { duration: 0.8, ease: "power3" });
-  const tilt = gsap.quickTo(preview, "rotation", { duration: 1, ease: "power3" });
-  let lastX = 0;
+  // Sin rotación: la ventana se mantiene recta, sólo sigue al cursor
+  gsap.set(preview, { xPercent: -50, yPercent: -50, autoAlpha: 0, rotation: 0, clipPath: SHUT });
+  gsap.set(items, { clipPath: SHUT, zIndex: 0 });
+  gsap.set(inners, { scale: 1.16 });
+
+  const xTo = gsap.quickTo(preview, "x", { duration: 0.9, ease: "power3" });
+  const yTo = gsap.quickTo(preview, "y", { duration: 0.9, ease: "power3" });
+  let current = -1;
+  let z = 1;
+
+  const reveal = (i: number, duration: number) => {
+    if (i === current || !items[i]) return;
+    current = i;
+    gsap.set(items[i], { zIndex: z++ });
+    gsap.to(items[i], { clipPath: OPEN, duration, ease: "expo.out", overwrite: "auto" });
+    gsap.to(inners[i], { scale: 1, duration: duration * 1.3, ease: "expo.out", overwrite: "auto" });
+    // las anteriores vuelven a cerrarse por debajo, listas para reabrirse
+    items.forEach((it, j) => {
+      if (j === i) return;
+      gsap.to(it, { clipPath: SHUT, duration: duration * 0.9, ease: "expo.inOut", overwrite: "auto" });
+      gsap.to(inners[j], { scale: 1.16, duration: duration * 0.9, ease: "expo.inOut", overwrite: "auto" });
+    });
+  };
 
   const onMove = ctx.add("indexMove", (e: PointerEvent) => {
     xTo(e.clientX);
     yTo(e.clientY);
-    tilt(gsap.utils.clamp(-4, 4, (e.clientX - lastX) * 0.25));
-    lastX = e.clientX;
   }) as (e: PointerEvent) => void;
 
   const onEnterList = ctx.add("indexEnter", (e: PointerEvent) => {
     gsap.set(preview, { x: e.clientX, y: e.clientY });
-    lastX = e.clientX;
-    gsap.to(preview, { autoAlpha: 1, scale: 1, duration: 0.6, ease: "expo.out", overwrite: "auto" });
+    // se abre ya con una obra dentro, para que nunca se vea la ventana vacía
+    const row = (e.target as HTMLElement)?.closest?.("[data-row]") as HTMLElement | null;
+    reveal(Number(row?.dataset.rowIndex ?? 0) || 0, 1.1);
+    gsap.to(preview, { autoAlpha: 1, clipPath: OPEN, duration: 1.1, ease: "expo.out", overwrite: "auto" });
   }) as (e: PointerEvent) => void;
 
   const onLeaveList = ctx.add("indexLeave", () => {
-    gsap.to(preview, { autoAlpha: 0, scale: 0.4, duration: 0.45, ease: "power3.in", overwrite: "auto" });
+    gsap.to(preview, { clipPath: SHUT, duration: 0.7, ease: "expo.inOut", overwrite: "auto" });
+    gsap.to(preview, { autoAlpha: 0, duration: 0.5, ease: "power2.in", delay: 0.2, overwrite: "auto" });
+    current = -1;
   }) as () => void;
 
   const onEnterRow = ctx.add("indexRow", (e: PointerEvent) => {
-    const i = Number((e.currentTarget as HTMLElement).dataset.rowIndex);
-    gsap.to(strip, { yPercent: (-100 * i) / rows.length, duration: 0.9, ease: "expo.out", overwrite: true });
+    reveal(Number((e.currentTarget as HTMLElement).dataset.rowIndex), 1);
   }) as (e: PointerEvent) => void;
 
   // Si se scrollea fuera del índice sin mover el mouse, no llega pointerleave: se oculta igual
@@ -259,6 +352,7 @@ export function indexPreview(root: HTMLElement, ctx: Ctx) {
   list.addEventListener("pointermove", onMove);
   list.addEventListener("pointerenter", onEnterList);
   list.addEventListener("pointerleave", onLeaveList);
+  const rows = all(list, "[data-row]");
   rows.forEach((r) => r.addEventListener("pointerenter", onEnterRow));
 
   return () => {

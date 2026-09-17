@@ -24,7 +24,7 @@ export function Shell({ children, fixed, intro = false, smooth = true }: Props) 
         </>
       }
     >
-      {children}
+      <div className="relative bg-paper">{children}</div>
     </SiteMotion>
   );
 }

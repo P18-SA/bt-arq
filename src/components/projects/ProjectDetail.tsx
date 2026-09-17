@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { Contact } from "@/components/site/Contact";
+import { EditorialNote } from "@/components/site/EditorialNote";
 import { photo, projectDetail, projectHref, projects, type Project, type Shot } from "@/components/site/content";
 import { Media } from "@/components/site/Media";
 import { PlusLabel } from "@/components/site/Plus";
@@ -96,24 +97,18 @@ export function ProjectDetail({ project }: { project: Project }) {
           />
         </div>
 
-        <section className="grid grid-cols-12 gap-x-(--gutter) px-(--gutter) py-[18vh]">
-          <p className="col-span-12 mb-8 text-label text-graphite md:col-span-3 md:mb-0 md:pt-[0.7em]">(Proyecto)</p>
-          <div className="col-span-12 md:col-span-9">
-            {project.statement ? (
-              <p data-statement className="max-w-[24ch] text-heading text-balance">
-                {project.statement}
-              </p>
-            ) : (
-              <Pending>Frase del proyecto pendiente</Pending>
-            )}
-            <div className="mt-[8vh] max-w-[60ch] text-body text-graphite">
-              {project.text ? <p>{project.text}</p> : <Pending>Texto del proyecto pendiente</Pending>}
-            </div>
-          </div>
-        </section>
+        <EditorialNote
+          eyebrow="El proyecto"
+          lead={project.statement}
+          leadFallback={<Pending>Frase del proyecto pendiente</Pending>}
+          paragraphs={project.text ? [project.text] : []}
+          fallback={<Pending>Texto del proyecto pendiente</Pending>}
+          aside={{ src: photo(project), label: `${project.name}, detalle`, tone: project.tone }}
+          wide={{ src: gallery[0]?.src ?? photo(project), label: `${project.name}, ${project.place}`, tone: project.tone }}
+        />
 
         {gallery.length > 0 && (
-          <section className="px-(--gutter) pb-[18vh]">
+          <section className="px-(--gutter) pt-[18vh] pb-[18vh]">
             <h2 className="mb-[8vh] flex items-baseline justify-between border-t border-ink pt-5 text-heading">
               Galería <span className="text-meta text-graphite tabular-nums">({project.shots} fotos)</span>
             </h2>
@@ -125,7 +120,7 @@ export function ProjectDetail({ project }: { project: Project }) {
           </section>
         )}
 
-        <section className="px-(--gutter) pb-[14vh]">
+        <section className="px-(--gutter) pt-[10vh] pb-[14vh]">
           <Link
             href={projectHref(next)}
             className="group grid items-end gap-8 border-t border-ink/15 pt-6 md:grid-cols-12"

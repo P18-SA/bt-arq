@@ -2,11 +2,11 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { Fragment } from "react";
 import { Contact } from "@/components/site/Contact";
-import { hero, photo, studio, type Tone } from "@/components/site/content";
+import { featured, hero, photo, projects, studio, type Tone } from "@/components/site/content";
 import { Media } from "@/components/site/Media";
 import { Plus, PlusLabel } from "@/components/site/Plus";
-import { Process } from "@/components/site/Process";
 import { Shell } from "@/components/site/Shell";
+import { Spread } from "@/components/site/Spread";
 
 export const metadata: Metadata = {
   title: "Estudio",
@@ -14,6 +14,10 @@ export const metadata: Metadata = {
 };
 
 const tones: Tone[] = ["concrete", "fog"];
+
+/** Obra que abre el spread de servicios, y la foto chica que lo cierra. */
+const cover = featured[0].project;
+const aside = projects.find((p) => p.slug !== cover.slug)!;
 
 export default function Estudio() {
   return (
@@ -44,7 +48,7 @@ export default function Estudio() {
           <h2 className="col-span-12 mb-8 text-label text-graphite md:col-span-3 md:mb-0 md:pt-[0.7em]">(Enfoque)</h2>
           <div className="col-span-12 md:col-span-9">
             <p data-statement className="max-w-[22ch] text-heading text-balance">
-              {studio.statement}
+              {studio.approach}
             </p>
             <div className="mt-[10vh] grid gap-10 text-body text-graphite sm:grid-cols-2 lg:max-w-4xl">
               {studio.paragraphs.map((text) => (
@@ -56,7 +60,16 @@ export default function Estudio() {
           </div>
         </section>
 
-        <section className="px-(--gutter) pb-[18vh]">
+        <Spread
+          eyebrow={`${cover.name}, ${cover.place}`}
+          indexLabel="Qué hacemos"
+          indexMeta={`(${String(studio.services.length).padStart(2, "0")})`}
+          rows={studio.services.map((s) => ({ title: s.title, note: s.note }))}
+          cover={{ src: photo(cover), label: `${cover.name}, ${cover.place}`, tone: cover.tone }}
+          inset={{ src: photo(aside), label: `${aside.name}, ${aside.place}`, tone: aside.tone }}
+        />
+
+        <section className="px-(--gutter) pt-[18vh] pb-[18vh]">
           <h2 className="mb-[8vh] border-t border-ink pt-5 text-heading">Socias</h2>
           {/*
             Retratos en las columnas 1-5 y 8-12, con el "+" del logo en las dos columnas del medio.
@@ -112,8 +125,6 @@ export default function Estudio() {
             <p className="mt-3 text-body">{studio.languages.join(", ")}</p>
           </div>
         </section>
-
-        <Process title="Cómo trabajamos" aside="Tres etapas" />
 
         <section className="px-(--gutter) py-[20vh]">
           <Link href="/todos-los-proyectos" className="group inline-flex items-center gap-3 text-subheading">

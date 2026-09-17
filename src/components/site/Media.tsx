@@ -2,7 +2,7 @@ import Image from "next/image";
 import type { CSSProperties } from "react";
 import type { Tone } from "./content";
 
-const tones: Record<Tone, { bg: string; ink: string }> = {
+export const tones: Record<Tone, { bg: string; ink: string }> = {
   fog: { bg: "bg-fog", ink: "text-ink/35" },
   concrete: { bg: "bg-concrete", ink: "text-ink/40" },
   graphite: { bg: "bg-graphite", ink: "text-white/45" },
@@ -12,16 +12,16 @@ const tones: Record<Tone, { bg: string; ink: string }> = {
 // Cuánto sobresale la capa interior, para poder moverla (parallax) sin mostrar bordes
 const bleeds = {
   none: "inset-0",
-  y: "inset-x-0 -inset-y-[12%]",
-  x: "inset-y-0 -inset-x-[10%]",
+  y: "inset-x-0 -inset-y-[22%]",
+  x: "inset-y-0 -inset-x-[18%]",
 };
 
 type Props = {
   /** Texto alternativo de la imagen, o rótulo del placeholder */
   label: string;
-  /** Con src muestra la imagen; sin src, el placeholder (rectángulo cruzado) */
+  /** Con src muestra la imagen; sin src, el placeholder (bloque de tono) */
   src?: string;
-  /** Dibujo del placeholder: "void" (rectángulo cruzado, obras), "person" (silueta, retratos) o "blank" (liso, p. ej. debajo de un video) */
+  /** Dibujo del placeholder: "void" (bloque de tono con rótulo, obras), "person" (silueta, retratos) o "blank" (liso, sin rótulo) */
   placeholder?: "void" | "person" | "blank";
   /** object-position de la imagen */
   crop?: string;
@@ -31,6 +31,8 @@ type Props = {
   ratio?: string;
   bleed?: keyof typeof bleeds;
   marks?: boolean;
+  /** Capa de grano finísimo sobre la foto (ver DESIGN.md §6) */
+  grain?: boolean;
   speed?: string;
   labelAt?: "bottom" | "top";
   className?: string;
@@ -48,6 +50,7 @@ export function Media({
   ratio,
   bleed = "none",
   marks = false,
+  grain = false,
   speed,
   labelAt = "bottom",
   className = "",
@@ -83,18 +86,9 @@ export function Media({
               <circle cx="50" cy="34" r="17" fill="currentColor" />
               <path d="M12 100 C12 70 28 58 50 58 C72 58 88 70 88 100 Z" fill="currentColor" />
             </svg>
-          ) : placeholder === "blank" ? null : (
-            <svg
-              className="ph-x absolute inset-0 h-full w-full"
-              viewBox="0 0 100 100"
-              preserveAspectRatio="none"
-              aria-hidden="true"
-            >
-              <line x1="0" y1="0" x2="100" y2="100" stroke="currentColor" strokeWidth="1" />
-              <line x1="100" y1="0" x2="0" y2="100" stroke="currentColor" strokeWidth="1" />
-            </svg>
-          )}
+          ) : null}
         </div>
+        {src && grain && <span aria-hidden="true" className="grain absolute inset-0" />}
         {!src && placeholder === "void" && (
           <figcaption className={`absolute left-3 text-label ${labelAt === "top" ? "top-20" : "bottom-3"} ${t.ink}`}>
             {label}

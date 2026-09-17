@@ -14,17 +14,19 @@ Una sola familia, **ABC Areal** (variable 400–700). Rol único para cada estil
 
 | Token (`text-*`) | Tamaño | LH | Tracking | Uso |
 |---|---|---|---|---|
-| `display` | clamp(3.25rem, 12.5vw, 15rem) | 0.9 | −0.035em | Título de página de sección (Estudio) |
-| `title` | clamp(2.5rem, 7.5vw, 9.5rem) | 0.96 | −0.03em | Nombre de proyecto, título de listado, menú móvil, numerales de etapas |
-| `heading` | clamp(1.75rem, 4.2vw, 4.25rem) | 1.05 | −0.015em | Títulos de sección y frases (statements) |
-| `subheading` | clamp(1.3rem, 2.4vw, 2.25rem) | 1.15 | −0.01em | Filas del índice, equipo, datos grandes, CTA "+" |
-| `lead` | clamp(1.1rem, 1.6vw, 1.45rem) | 1.3 | 0 | Intros, nombres en tarjetas, filtros |
-| `body` | 1rem | 1.6 | 0 | Texto de proyecto y estudio (máx. 60ch) |
-| `meta` | 0.875rem | 1.4 | 0 | Datos: programa, lugar, enlaces chicos |
-| `label` | 0.75rem | 1.3 | 0.02em | Rótulos de datos, encabezados de tabla |
+| `display` | clamp(2.75rem, 8vw, 7.5rem) | 0.9 | −0.035em | Título de página de sección (Estudio) |
+| `title` | clamp(2.25rem, 5.5vw, 5rem) | 0.96 | −0.03em | Nombre de proyecto, título de listado, menú móvil, numerales de etapas |
+| `heading` | clamp(1.75rem, 4.2vw, 4rem) | 1.05 | −0.015em | Títulos de sección y frases (statements) |
+| `subheading` | clamp(1.15rem, 1.9vw, 1.6rem) | 1.15 | −0.01em | Filas del índice, equipo, datos grandes, CTA "+" |
+| `lead` | clamp(1.05rem, 1.3vw, 1.25rem) | 1.3 | 0 | Intros, nombres en tarjetas, filtros |
+| `body` | 1rem | 1.6 | 0 | *450* | Texto de proyecto y estudio (máx. 60ch) |
+| `meta` | 0.875rem | 1.4 | 0 | *500* | Datos: programa, lugar, enlaces chicos |
+| `label` | 0.75rem | 1.3 | 0.02em | *500* | Rótulos de datos, encabezados de tabla |
 
 - Los tokens viven en `src/app/globals.css` (`@theme`). Prohibido `text-[clamp(...)]` suelto; la única excepción es el wordmark SVG y el "+" gráfico.
-- Saltos obvios entre pasos: display ≈ 1.7× title ≈ 1.8× heading ≈ 1.9× subheading.
+- Saltos obvios entre pasos: display ≈ 1.9× title ≈ 1.25× heading ≈ 2.5× subheading.
+- **Peso:** los textos grandes van en 400; los chicos (`body` 450, `meta` y `label` 500) van más negros. En tamaño chico el regular se deshilacha y pierde el carácter editorial.
+- **Mayúsculas:** solo en `label` (rótulos, eyebrows del spread). Los textos grandes van siempre en caja baja.
 - **Recursos editoriales:** paréntesis para información secundaria sin cambiar color: `(Estudio)`, `(04)`, `(11 fotos)`. Numerales tabulares `01 … 23` como sistema de índice.
 
 ## 3. Grilla [L03]
@@ -37,15 +39,45 @@ Una sola familia, **ABC Areal** (variable 400–700). Rol único para cada estil
 Dos tonos más neutros cálidos, **sin acento**: la jerarquía se consigue con escala, espacio y posición [L04, L05]. No hay más grises que estos; un gris nuevo es un error.
 
 ## 5. Jerarquía, ritmo y cortes [L01, L05]
-Secuencia de la home: **Hero** (obra + marca) → **Proyectos seleccionados (4)** → **corte de banda `fog` a ancho completo** (estudio en una frase + datos) → **Índice numerado (8 + ver todos)** → **Contacto negro** (corte final).
+Secuencia de la home: **Hero** (obra + marca) → **Proyectos seleccionados (4)** → **corte de banda `fog` a ancho completo** (estudio en una frase + datos) → **Índice numerado (8 + ver todos)** → **Nota editorial** (`EditorialNote`) → **Contacto negro** (corte final).
 - Cada cambio de sección tiene un borde: línea `border-ink`, banda de color o bloque negro.
-- Regla de 4 [L08]: 4 destacados, 3 ítems de nav, 3 filtros + Todos, 3 etapas, 4 datos por proyecto.
+- Regla de 4 [L08]: 4 destacados, 4 ítems de nav, 3 filtros + Todos, 4 etapas, 4 datos por proyecto.
 - Palancas coherentes: lo más grande es siempre lo más oscuro; los datos secundarios bajan a `graphite`.
+
+### Nota editorial (`EditorialNote`)
+Banda `fog` **compacta**: rótulo en mayúscula en las columnas 1–3, foto chica debajo en esas mismas columnas y texto en las 5–9, hombro con hombro y los dos arrancando arriba. Cierra una foto a sangre de `62svh`, pegada a la banda. El bloque entra casi entero en una pantalla.
+- Los separadores van en **rem o clamp con tope en rem**, nunca en `vh` suelto: con `vh` la banda se estira en monitores altos y el bloque pierde la compacidad, que es lo que le da el aire de página impresa.
+- El carácter lo da el **contraste de cuerpos**: una línea en `heading` y el resto en `body`, sin tamaños intermedios.
+- Se usa en la home (debajo del índice) y en el detalle de proyecto.
+
+### Cómo trabajamos (`HowWeWork`, página propia)
+Vista entera en `/como-trabajamos`, cuarto ítem de la nav. **No abre con título:** abre con una frase
+de marca en `heading` (columnas 1–9), como la última línea de una tapa. El título de la página vive
+solo en los metadatos y en la nav.
+
+Debajo, las cuatro etapas: cada una ocupa una fila de la grilla con el rótulo en las columnas 1–3, el
+texto en las 4–6 y la obra en las 8–12, a `100svh` y pegada a la de arriba y a la de abajo.
+- **Las obras no se mueven**: nada de parallax ni de cruces, se scrollean como una foto.
+- **El texto es lo que se fija:** el rótulo de cada etapa se clava arriba y se queda, de manera que
+  los cuatro se van apilando (cada uno un escalón más abajo); el párrafo acompaña a su obra y se
+  suelta cuando entra la siguiente.
+- Rótulo en `label` (`Etapa 01`), título de etapa en `lead`: la columna es un índice, no un titular.
+- Se hace con pines de ScrollTrigger (`motion.work`), **no** con `position: sticky`: con
+  ScrollSmoother la página no scrollea de verdad y el sticky nunca se dispara.
+- Solo en escritorio. En mobile no se fija nada: rótulo, texto y obra, uno debajo del otro.
+- Cada etapa se ilustra con una obra distinta, siempre de las carpetas en alta (≥ 2400 px).
+
+### Doble página (`Spread`)
+Patrón editorial de catálogo, usado en Estudio y en Proyectos: obra a sangre en la mitad izquierda, índice numerado a la derecha con guía punteada y numeral tabular, y una foto chica que cierra abajo alineada al borde derecho. Los dos rótulos (sobre la foto y sobre el índice) van en `label` y en mayúscula; todo lo demás, en caja baja.
 
 ## 6. Imágenes
 - Toda foto es **obra real del estudio**. Nada de renders genéricos ni IA (se eliminó `villa.png`).
-- **Wireframe:** mientras falte la foto, `Media` dibuja el rectángulo cruzado con el rótulo, en el tono del proyecto. Cuando exista, la reemplaza sola.
+- **Wireframe:** mientras falte la foto, `Media` dibuja un bloque liso en el tono del proyecto con el rótulo encima. Cuando exista, la reemplaza sola. Sin rectángulo cruzado: el aspa competía con la composición y ensuciaba el hero.
+- **Parallax:** las capas con `speed="auto"` sobresalen 22% en el eje del movimiento (`bleed`). Con menos, el recorrido destapa el borde del marco y las marcas "+" quedan separadas del vértice visible.
 - **Importar fotos** desde el repo de la web anterior (`bmtarq`): `node scripts/import-photos.mjs ../bmtarq`. Copia originales sin recomprimir a `public/obras/<slug>/NN.jpg`, regenera `src/components/site/photos.ts` y avisa las fotos de menos de 1600 px de ancho.
+- **Grano:** `Media` con `grain` pone una capa de ruido finísima sobre la foto (`overlay`, 7%), para
+  sacarle el brillo digital. Si se llega a *ver* el grano, está mal calibrada. Hoy se usa en las
+  obras de "Cómo trabajamos".
 - **Nitidez:** portada y hero ≥ 2400 px de ancho; galería ≥ 1600 px. Si la web anterior solo tiene versiones chicas, pedir originales al estudio antes de publicar.
 
 ## 7. Responsive [L10]
@@ -68,7 +100,7 @@ Fuente: web anterior `bmtarquitectas.uy` (archivo 2023) en `src/components/site/
 
 ## 10. Checklist antes de dar por terminada una página
 Correr `tfs-editorial-review`, más:
-- [ ] Solo tokens `text-*`; ningún `font-light`.
+- [ ] Solo tokens `text-*`; ningún `font-light`; mayúsculas solo en `label`.
 - [ ] Ningún gris fuera de la paleta.
 - [ ] Cada sección tiene rótulo o borde y el ritmo alterna contenido y corte.
 - [ ] Máximo 4 ítems por grupo visible.

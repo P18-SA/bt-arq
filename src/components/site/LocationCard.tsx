@@ -31,12 +31,7 @@ export function LocationCard({ className = "" }: { className?: string }) {
     >
       <div className="relative flex-1 overflow-hidden">
         {/* Wireframe: foto del edificio pendiente */}
-        <div data-location-photo className="absolute inset-y-0 -inset-x-[12%] bg-paper/10 text-paper/30 will-change-transform">
-          <svg className="ph-x absolute inset-0 h-full w-full" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
-            <line x1="0" y1="0" x2="100" y2="100" stroke="currentColor" strokeWidth="1" />
-            <line x1="100" y1="0" x2="0" y2="100" stroke="currentColor" strokeWidth="1" />
-          </svg>
-        </div>
+        <div data-location-photo className="absolute inset-y-0 -inset-x-[12%] bg-paper/10 will-change-transform" />
       </div>
 
       <div className="flex flex-col gap-3 px-[clamp(0.25rem,0.5cqw,0.5rem)] pb-[clamp(0.25rem,0.5cqw,0.5rem)] text-[clamp(0.8rem,1cqw,0.95rem)] leading-snug">

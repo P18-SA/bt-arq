@@ -40,10 +40,11 @@ export default function SiteMotion({ fixed, children, smooth = true }: Props) {
 
           // Primero las secciones fijadas (pin): los demás triggers calculan su posición contando ese espacio.
           // En dev, Strict Mode monta dos veces: la intro solo se marca como vista al completarse.
+          let heroCleanup: (() => void) | undefined;
           if (smoother && has("[data-hero]")) {
-            motion.hero(el, smoother, !introPlayed, () => (introPlayed = true));
+            heroCleanup = motion.hero(el, smoother, !introPlayed, () => (introPlayed = true));
           }
-          if (desktop && has("[data-process]")) motion.process(el);
+          if (desktop && has("[data-work]")) motion.work(el);
 
           if (has("[data-page-title]")) motion.pageIntro(el);
           if (has("[data-contact-page]")) motion.contactPage(el);
@@ -53,6 +54,7 @@ export default function SiteMotion({ fixed, children, smooth = true }: Props) {
           motion.contactLines(el);
 
           const cleanups = [
+            heroCleanup,
             smoother ? motion.capWheelSpeed(smoother) : undefined,
             finePointer && has("[data-index-list]") ? motion.indexPreview(el, ctx) : undefined,
             motion.rollLinks(el, ctx),

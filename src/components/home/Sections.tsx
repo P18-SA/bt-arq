@@ -1,32 +1,36 @@
 import Link from "next/link";
-import { featured, hero, photo, projectHref, projects, studio } from "@/components/site/content";
+import { featured, hero, heroPhoto, photo, projectHref, projects, studio } from "@/components/site/content";
 import { Media } from "@/components/site/Media";
 import { PlusLabel } from "@/components/site/Plus";
 import { Word } from "@/components/site/Word";
 import { wordmark } from "@/components/site/wordmark";
 
-/** Logo del hero. Se dibuja dos veces: negro sobre el blanco y blanco dentro de la foto. */
-function HeroWordmark({ inverted = false }: { inverted?: boolean }) {
+/**
+ * Apertura: la banda negra arranca a pantalla completa (pantalla de carga: la cruz se abre y
+ * se repliega en el "+", los nombres salen desde ahí) y después se cierra hacia arriba,
+ * dejando el logo con márgenes mínimos. Va a sangre: se sale del card blanco.
+ */
+function HeroBand() {
   return (
     <div
-      data-hero-block
-      aria-hidden={inverted || undefined}
-      className={`pointer-events-none absolute inset-0 ${inverted ? "text-paper" : "text-ink"}`}
+      data-hero-band
+      className="relative z-10 -mx-(--edge) flex flex-col overflow-hidden bg-ink text-paper"
     >
-      <div data-hero-intro className="absolute inset-x-0 top-1/2 -translate-y-1/2 px-(--gutter)">
-        {/* El h1 va solo en la copia principal; la copia blanca es decorativa */}
-        {inverted ? null : <h1 className="sr-only">Berthet + Taranto Arquitectas</h1>}
-        <div
-          aria-hidden="true"
-          className="grid grid-cols-[1fr_auto_1fr] items-center text-[clamp(2rem,7.4vw,10rem)] leading-[0.8]"
-        >
-          {/* Palabras en SVG (public/BERTHET.svg, etc.); alto = altura de mayúscula de Work Sans (0.66em) */}
+      <h1 className="sr-only">Berthet + Taranto Arquitectas</h1>
+
+      <div
+        data-hero-word
+        aria-hidden="true"
+        className="px-[calc(var(--gutter)+var(--edge))] pt-[clamp(0.2rem,0.5vw,0.6rem)] pb-[clamp(0.2rem,0.5vw,0.6rem)]"
+      >
+        <div className="flex items-center justify-between text-[8.6vw] leading-[0.8]">
+          {/* Palabras en SVG; alto = altura de mayúscula de la tipografía (0.66em) */}
           <span className="flex justify-end overflow-hidden py-[0.06em]">
             <span data-name-left className="block">
               <Word svg={wordmark.berthet} height="0.66em" />
             </span>
           </span>
-          <span data-plus className="relative mx-[0.15em] block size-[0.62em]">
+          <span data-plus className="relative mx-[0.06em] block size-[0.56em] shrink-0">
             <span data-plus-h className="absolute inset-x-0 top-[calc(50%-0.02em)] h-[0.04em] bg-current" />
             <span data-plus-v className="absolute inset-y-0 left-[calc(50%-0.02em)] w-[0.04em] bg-current" />
           </span>
@@ -37,13 +41,30 @@ function HeroWordmark({ inverted = false }: { inverted?: boolean }) {
             </span>
           </span>
         </div>
-        <p
-          aria-hidden="true"
-          data-hero-sub
-          className="absolute inset-x-0 top-full mt-[clamp(0.6rem,2vw,2rem)] flex justify-center overflow-hidden text-[clamp(0.85rem,2.3vw,3rem)]"
-        >
-          {/* 124 unidades de caja, 102.5 de mayúscula (la Q baja) */}
-          <Word svg={wordmark.arquitectas} height={`${(0.66 * wordmark.arquitectas.h) / 102.5}em`} />
+      </div>
+
+      {/* Datos de carga: al pie de la pantalla negra, se van cuando la banda se cierra */}
+      <div
+        data-hero-meta
+        aria-hidden="true"
+        className="absolute inset-x-0 bottom-0 flex items-end justify-between gap-6 px-[calc(var(--gutter)+var(--edge))] pb-[calc(env(safe-area-inset-bottom,0px)+1.4rem)] text-label"
+      >
+        <p className="text-paper/70">
+          Estudio de arquitectura
+          <br />
+          <span className="text-paper">Berthet + Taranto</span>
+        </p>
+        <p className="hidden text-paper/70 sm:block">
+          Montevideo
+          <br />
+          <span className="text-paper">Uruguay</span>
+        </p>
+        <p className="text-right text-paper/70">
+          Cargando
+          <br />
+          <span className="font-mono tabular-nums text-paper">
+            <span data-hero-count>0</span>%
+          </span>
         </p>
       </div>
     </div>
@@ -52,36 +73,45 @@ function HeroWordmark({ inverted = false }: { inverted?: boolean }) {
 
 export function Hero() {
   return (
-    <section id="inicio" data-hero className="relative h-svh overflow-hidden bg-paper">
-      <HeroWordmark />
+    // El card solo existe acá y en el cierre: el negro asoma a los costados mientras dura la apertura
+    <section id="inicio" data-hero className="relative mx-(--edge) flex h-svh flex-col bg-paper">
+      <HeroBand />
 
-      <div data-hero-media className="absolute inset-0">
-        <Media
-          src={photo(hero)}
-          tone="shadow"
-          label={`${hero.name}, ${hero.place}`}
-          labelAt="top"
-          preload
-          className="h-full w-full"
-        />
-        <div aria-hidden="true" className="absolute inset-0 bg-linear-to-b from-ink/25 via-ink/5 to-ink/45" />
-        <HeroWordmark inverted />
-      </div>
+      <div data-hero-stage className="relative min-h-0 flex-1 overflow-hidden">
+        {/*
+          Apoyada en el borde inferior del hero: al scrollear crece hacia arriba y a los lados.
+          Medida de la tira ANTES de expandirse, para ajustar a mano:
+            ancho = min(<alto de pantalla>svh, <ancho de pantalla>vw) — más chico = más fina
+            alto  = min(<alto de pantalla>svh, <ancho de pantalla>vw) — más grande = más alta
+          Manda el valor más chico de los dos, así no se desborda ni en pantallas anchas ni bajas.
+        */}
+        <div
+          data-hero-frame
+          className="absolute bottom-0 left-1/2 -translate-x-1/2 overflow-hidden"
+          style={{ width: "min(26svh, 19vw)", height: "min(58svh, 44vw)" }}
+        >
+          <Media
+            src={heroPhoto}
+            tone="shadow"
+            label={`${hero.name}, ${hero.place}`}
+            preload
+            className="h-full w-full"
+          />
+          <div
+            data-hero-caption
+            className="absolute inset-x-0 bottom-0 flex items-end justify-between gap-4 px-[clamp(0.9rem,2vw,2.5rem)] pb-[clamp(0.9rem,2vw,2.5rem)] text-white"
+          >
+            <p className="text-lead">{hero.name}</p>
+            <p className="text-meta text-white/80">{hero.place}</p>
+          </div>
+        </div>
 
-      <p
-        data-hero-hint
-        data-hero-intro
-        className="absolute bottom-[calc(env(safe-area-inset-bottom,0px)+1.25rem)] left-1/2 -translate-x-1/2 text-label text-paper/80"
-      >
-        Deslizá para entrar
-      </p>
-
-      <div
-        data-hero-caption
-        className="absolute inset-x-0 bottom-0 flex items-end justify-between gap-4 px-(--gutter) pb-[calc(env(safe-area-inset-bottom,0px)+1.5rem)] text-white"
-      >
-        <p className="text-lead">{hero.name}</p>
-        <p className="text-meta text-white/80">{hero.place}</p>
+        <p
+          data-hero-hint
+          className="absolute bottom-[calc(env(safe-area-inset-bottom,0px)+1.25rem)] left-(--gutter) text-label text-graphite"
+        >
+          [Deslizá para entrar]
+        </p>
       </div>
     </section>
   );
@@ -144,7 +174,7 @@ const indexed = projects.slice(0, 8);
 
 export function ProjectIndex() {
   return (
-    <section id="indice" className="px-(--gutter) pt-[18vh] pb-[20vh]">
+    <section id="indice" className="mx-(--edge) bg-paper px-(--gutter) pt-[18vh] pb-[20vh]">
       <div className="mb-10 flex items-baseline justify-between gap-6">
         <h2 className="text-heading">
           Todos los proyectos <span className="text-graphite tabular-nums">({projects.length})</span>
@@ -204,21 +234,25 @@ export function IndexPreview() {
     <div
       data-index-preview
       aria-hidden="true"
-      className="pointer-events-none invisible fixed top-0 left-0 z-40 hidden h-[clamp(14rem,24vw,22rem)] w-[clamp(11rem,19vw,17rem)] overflow-hidden [@media(hover:hover)_and_(pointer:fine)]:block"
+      className="pointer-events-none invisible fixed top-0 left-0 z-40 hidden h-[clamp(10rem,16vw,14rem)] w-[clamp(14rem,23vw,20rem)] overflow-hidden [@media(hover:hover)_and_(pointer:fine)]:block"
     >
-      <div data-index-strip className="absolute inset-x-0 top-0" style={{ height: `${indexed.length * 100}%` }}>
-        {indexed.map((p) => (
+      {indexed.map((p, i) => (
+        <div
+          key={p.name}
+          data-index-item
+          data-item-index={i}
+          className="absolute inset-0 overflow-hidden will-change-[clip-path]"
+        >
           <Media
-            key={p.name}
+
             src={photo(p)}
             tone={p.tone}
             label=""
-            sizes="20vw"
-            className="w-full"
-            style={{ height: `${100 / indexed.length}%` }}
+            sizes="24vw"
+            className="absolute inset-0 h-full w-full will-change-transform"
           />
-        ))}
-      </div>
+        </div>
+      ))}
     </div>
   );
 }

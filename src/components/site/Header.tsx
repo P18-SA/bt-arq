@@ -5,6 +5,8 @@ import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { gsap, ScrollSmoother, useGSAP } from "@/lib/gsap";
 import { contact, nav } from "./content";
+import { Clock } from "./Clock";
+import { ContactModal } from "./ContactModal";
 import { Plus } from "./Plus";
 import { Word, type WordSvg } from "./Word";
 
@@ -16,6 +18,7 @@ type Props = {
 
 export function Header({ words, intro = false }: Props) {
   const [open, setOpen] = useState(false);
+  const [contactOpen, setContactOpen] = useState(false);
   const pathname = usePathname();
   const scope = useRef<HTMLDivElement>(null);
   const menu = useRef<gsap.core.Timeline | null>(null);
@@ -64,8 +67,8 @@ export function Header({ words, intro = false }: Props) {
 
   return (
     <div ref={scope}>
-      <header className="pointer-events-none fixed inset-x-0 top-0 z-50 text-white mix-blend-difference">
-        <div className="flex items-center justify-between gap-6 px-(--gutter) pt-[calc(env(safe-area-inset-top,0px)+1.1rem)]">
+      <header data-header className="pointer-events-none fixed inset-x-0 top-0 z-50 text-white mix-blend-difference">
+        <div className="flex items-center justify-between gap-6 px-[calc(var(--gutter)+var(--edge))] pt-[calc(env(safe-area-inset-top,0px)+1.1rem)]">
           <Link
             href="/"
             {...introAttr("data-header-logo")}
@@ -78,19 +81,36 @@ export function Header({ words, intro = false }: Props) {
             <Word svg={words.taranto} height={`${(0.66 * words.taranto.h) / 154}em`} />
           </Link>
 
-          <nav aria-label="Principal" className="pointer-events-auto hidden md:block">
+          <span data-header-clock {...introAttr("data-header-item")} className="pointer-events-none hidden lg:block">
+            <Clock className="text-[0.9rem]" />
+          </span>
+
+          <nav aria-label="Principal" className="pointer-events-auto ml-auto hidden md:block">
             <ul className="flex gap-[clamp(0.9rem,2.4vw,2.25rem)] text-[0.9rem]">
-              {nav.map((item) => (
-                <li key={item.href} {...introAttr("data-header-item")}>
-                  <Link
-                    href={item.href}
-                    aria-current={isCurrent(item.href) ? "page" : undefined}
-                    className="link-draw pb-0.5"
-                  >
-                    {item.label}
-                  </Link>
-                </li>
-              ))}
+              {nav.map((item) =>
+                item.href === "/contacto" ? (
+                  <li key={item.href} {...introAttr("data-header-item")}>
+                    <button
+                      type="button"
+                      aria-expanded={contactOpen}
+                      onClick={() => setContactOpen(true)}
+                      className="link-draw pb-0.5"
+                    >
+                      {item.label}
+                    </button>
+                  </li>
+                ) : (
+                  <li key={item.href} {...introAttr("data-header-item")}>
+                    <Link
+                      href={item.href}
+                      aria-current={isCurrent(item.href) ? "page" : undefined}
+                      className="link-draw pb-0.5"
+                    >
+                      {item.label}
+                    </Link>
+                  </li>
+                ),
+              )}
             </ul>
           </nav>
 
@@ -117,7 +137,23 @@ export function Header({ words, intro = false }: Props) {
       >
         <nav aria-label="Menú">
           <ul className="flex flex-col gap-1">
-            {[{ href: "/", label: "Inicio" }, ...nav].map((item) => (
+            {[{ href: "/", label: "Inicio" }, ...nav].map((item) =>
+              item.href === "/contacto" ? (
+                <li key={item.href} className="overflow-hidden">
+                  <button
+                    type="button"
+                    data-menu-link
+                    tabIndex={open ? 0 : -1}
+                    onClick={() => {
+                      setOpen(false);
+                      setContactOpen(true);
+                    }}
+                    className="block py-1 text-title"
+                  >
+                    {item.label}
+                  </button>
+                </li>
+              ) : (
               <li key={item.href} className="overflow-hidden">
                 <Link
                   href={item.href}
@@ -130,7 +166,8 @@ export function Header({ words, intro = false }: Props) {
                   {item.label}
                 </Link>
               </li>
-            ))}
+              ),
+            )}
           </ul>
         </nav>
         <div data-menu-meta className="grid gap-1 text-meta text-paper/60">
@@ -140,6 +177,8 @@ export function Header({ words, intro = false }: Props) {
           <p>{contact.city}</p>
         </div>
       </div>
+
+      <ContactModal open={contactOpen} onClose={() => setContactOpen(false)} />
     </div>
   );
 }
