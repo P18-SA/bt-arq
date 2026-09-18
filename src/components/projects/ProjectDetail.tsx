@@ -87,7 +87,7 @@ export function ProjectDetail({ project }: { project: Project }) {
 
         <div className="px-(--gutter)">
           <Media
-            src={photo(project)}
+            src={gallery[0]?.src ?? photo(project)}
             label={`${project.name}, portada`}
             tone={project.tone}
             ratio="16 / 9"
@@ -97,18 +97,22 @@ export function ProjectDetail({ project }: { project: Project }) {
           />
         </div>
 
-        <EditorialNote
-          eyebrow="El proyecto"
-          lead={project.statement}
-          leadFallback={<Pending>Frase del proyecto pendiente</Pending>}
-          paragraphs={project.text ? [project.text] : []}
-          fallback={<Pending>Texto del proyecto pendiente</Pending>}
-          aside={{ src: photo(project), label: `${project.name}, detalle`, tone: project.tone }}
-          wide={{ src: gallery[0]?.src ?? photo(project), label: `${project.name}, ${project.place}`, tone: project.tone }}
-        />
+        {/* El gris queda suelto: aire contra la portada y contra la línea de la galería */}
+        <div className="my-[clamp(3rem,9vh,6rem)]">
+          <EditorialNote
+            eyebrow="El proyecto"
+            lead={project.statement}
+            leadFallback={<Pending>Frase del proyecto pendiente</Pending>}
+            paragraphs={project.text ? [project.text] : []}
+            fallback={<Pending>Texto del proyecto pendiente</Pending>}
+            aside={{ src: photo(project), label: `${project.name}, detalle`, tone: project.tone }}
+            // La foto a sangre repetía la portada (ahora la portada es gallery[0]); queda comentada
+            // wide={{ src: gallery[0]?.src ?? photo(project), label: `${project.name}, ${project.place}`, tone: project.tone }}
+          />
+        </div>
 
         {gallery.length > 0 && (
-          <section className="px-(--gutter) pt-[18vh] pb-[18vh]">
+          <section className="px-(--gutter) pb-[18vh]">
             <h2 className="mb-[8vh] flex items-baseline justify-between border-t border-ink pt-5 text-heading">
               Galería <span className="text-meta text-graphite tabular-nums">({project.shots} fotos)</span>
             </h2>

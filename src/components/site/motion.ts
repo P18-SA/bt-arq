@@ -47,7 +47,9 @@ export function hero(root: HTMLElement, smoother: ScrollSmoother, playIntro: boo
   // La banda se anima en altura. Su medida final es la del logo con sus márgenes mínimos:
   // no sirve medir la banda, que arranca a pantalla completa (los datos de carga van absolutos).
   const bandHeight = word.offsetHeight;
-  gsap.set(band, { height: innerHeight });
+  // Un par de píxeles de más: innerHeight es entero y, con escala de pantalla (DPR 1.05, 1.25…),
+  // queda por debajo del alto real y asoma un hilo del card blanco abajo durante la intro.
+  gsap.set(band, { height: innerHeight + 2 });
   gsap.set(header, { y: bandHeight });
   gsap.set([caption, logo], { autoAlpha: 0 });
   // Cada dato del header espera bajo su línea hasta que sube el lettering
@@ -77,7 +79,9 @@ export function hero(root: HTMLElement, smoother: ScrollSmoother, playIntro: boo
     .to(header, { y: 0 }, 0)
     // La foto termina midiendo la ventana entera, no el 100% del card (que todavía es más angosto
     // mientras corre el tween): así nunca asoma blanco al costado. Lo que sobra lo recorta el stage.
-    .to(frame, { width: () => innerWidth, height: () => section.clientHeight }, 0)
+    // Un par de píxeles de más: innerWidth y clientHeight son enteros redondeados y, con zoom o escala
+    // de pantalla, pueden quedar por debajo del ancho real y dejar asomar un hilo blanco al costado.
+    .to(frame, { width: () => innerWidth + 4, height: () => section.clientHeight + 2 }, 0)
     // El card se abre a sangre junto con la foto: el negro lateral existe solo durante la apertura
     .to(section, { marginLeft: 0, marginRight: 0 }, 0)
     .fromTo(frameInner, { scale: 1.18 }, { scale: 1, duration: 1.5, ease: "expo.out" }, 0)
@@ -86,37 +90,45 @@ export function hero(root: HTMLElement, smoother: ScrollSmoother, playIntro: boo
   if (clock) open.to(clock, { x: 0, duration: 0.8 }, 0.15);
 
   // El primer gesto de scroll la dispara; después el scroll vuelve a ser normal
-  const cover = (axis: "x" | "y") => () =>
-    axis === "x" ? (innerWidth * 2.2) / plus.offsetWidth : (innerHeight * 2.2) / plus.offsetHeight;
+  // Escala justa para que cada trazo llegue apenas más allá del borde de pantalla más lejano:
+  // con más, la cruz pasa un buen rato quieta fuera de cuadro antes de replegarse.
+  const cover = (axis: "x" | "y") => () => {
+    const box = plus.getBoundingClientRect();
+    const [center, size, screen] =
+      axis === "x" ? [box.left + box.width / 2, plus.offsetWidth, innerWidth] : [box.top + box.height / 2, plus.offsetHeight, innerHeight];
+    return (2 * Math.max(center, screen - center) * 1.04) / size;
+  };
 
   const counter = { v: 0 };
   const intro = gsap
     .timeline({ defaults: { ease: "expo.inOut" }, onComplete: onIntroDone })
-    .fromTo(meta, { autoAlpha: 0, y: 8 }, { autoAlpha: 1, y: 0, duration: 0.7, ease: "expo.out" })
+    .fromTo(meta, { autoAlpha: 0, y: 8 }, { autoAlpha: 1, y: 0, duration: 0.6, ease: "expo.out" })
     .to(counter, {
       v: 100,
-      duration: 2.2,
+      duration: 1.8,
       ease: "power1.inOut",
       onUpdate: () => (count.textContent = String(Math.round(counter.v))),
     }, 0)
     // La cruz es lo rápido de la intro; lo que sigue respira más
-    .fromTo(lineH, { scaleX: 0 }, { scaleX: cover("x"), duration: 0.65 }, 0.05)
-    .fromTo(lineV, { scaleY: 0 }, { scaleY: cover("y"), duration: 0.65 }, 0.12)
-    .to(lineH, { scaleX: 1, duration: 0.7 }, "+=0.04")
-    .to(lineV, { scaleY: 1, duration: 0.7 }, "<0.05")
-    .addLabel("names", "-=0.32")
-    .fromTo(left, { xPercent: 102 }, { xPercent: 0, duration: 1.6, ease: "expo.out" }, "names")
-    .fromTo(right, { xPercent: -102 }, { xPercent: 0, duration: 1.6, ease: "expo.out" }, "names")
+    // Crece y vuelve como un rebote, sin frenar en la punta: la subida acelera hasta el borde
+    // y el repliegue sale a toda velocidad y solo frena al llegar a su tamaño de logo.
+    .fromTo(lineH, { scaleX: 0 }, { scaleX: cover("x"), duration: 0.3, ease: "power2.in" }, 0.05)
+    .fromTo(lineV, { scaleY: 0 }, { scaleY: cover("y"), duration: 0.3, ease: "power2.in" }, 0.05)
+    .to(lineH, { scaleX: 1, duration: 0.75, ease: "power3.out" })
+    .to(lineV, { scaleY: 1, duration: 0.75, ease: "power3.out" }, "<")
+    .addLabel("names", "-=0.45")
+    .fromTo(left, { xPercent: 102 }, { xPercent: 0, duration: 1.45, ease: "expo.out" }, "names")
+    .fromTo(right, { xPercent: -102 }, { xPercent: 0, duration: 1.45, ease: "expo.out" }, "names")
     // Ya armado, el logo sube rápido con el negro hasta su posición final
-    .addLabel("lift", "names+=1.5")
-    .to(meta, { autoAlpha: 0, y: -8, duration: 0.4, ease: "power2.in" }, "lift-=0.2")
-    .to(word, { y: 0, duration: 1.05 }, "lift")
-    .to(band, { height: bandHeight, duration: 1.05 }, "lift")
-    .fromTo(headerItems, { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.5, ease: "power1.out" }, "lift+=0.45")
+    .addLabel("lift", "names+=1.3")
+    .to(meta, { autoAlpha: 0, y: -8, duration: 0.35, ease: "power2.in" }, "lift-=0.2")
+    .to(word, { y: 0, duration: 0.95 }, "lift")
+    .to(band, { height: bandHeight, duration: 0.95 }, "lift")
+    .fromTo(headerItems, { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.45, ease: "power1.out" }, "lift+=0.4")
     // Suben desde su propia línea, uno detrás de otro
-    .to(headerRise, { yPercent: 0, duration: 1.15, ease: "expo.out", stagger: 0.07 }, "lift+=0.45")
-    .fromTo(hint, { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.6, ease: "power1.out" }, "lift+=0.65")
-    .call(introDone, [], "lift+=0.45");
+    .to(headerRise, { yPercent: 0, duration: 1.05, ease: "expo.out", stagger: 0.06 }, "lift+=0.4")
+    .fromTo(hint, { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.55, ease: "power1.out" }, "lift+=0.6")
+    .call(introDone, [], "lift+=0.4");
 
   const events = ["wheel", "touchmove", "keydown"] as const;
   const trigger = (e: Event) => {
@@ -131,7 +143,7 @@ export function hero(root: HTMLElement, smoother: ScrollSmoother, playIntro: boo
   if (playIntro && smoother.scrollTop() < 10) {
     // El scroll queda tomado hasta que termina la apertura: es un solo movimiento, sin vuelta atrás
     smoother.paused(true);
-    intro.call(arm, [], "lift+=0.7");
+    intro.call(arm, [], "lift+=0.6");
   } else {
     introDone();
     intro.progress(1);
@@ -407,6 +419,53 @@ export function contactPage(root: HTMLElement) {
       .fromTo(one(card, "[data-location-photo]"), { xPercent: -8, scale: 1.2 }, { xPercent: 0, scale: 1, duration: 2.2 }, "<0.25")
       .fromTo(all(card, "[data-location-line]"), { yPercent: 105 }, { yPercent: 0, duration: 1.1, stagger: 0.07 }, "<0.55");
   }
+}
+
+/**
+ * 404: entra como Contacto (foto que aparece, cruz que se traza) y durante los primeros dos
+ * segundos tiene unos pocos cortes de señal en los textos y las líneas: el numeral se desfasa en
+ * franjas, algún texto se corre y se tuerce, las líneas saltan. La foto de fondo no se toca.
+ * Cada corte dura un par de cuadros; después todo queda quieto.
+ */
+export function notFoundPage(root: HTMLElement) {
+  const page = one(root, "[data-notfound-page]");
+  const lineH = one(page, "[data-notfound-h]");
+  const lineV = one(page, "[data-notfound-v]");
+  const base = one(page, "[data-glitch-base]");
+  const layers = all(page, "[data-glitch-layer]");
+  const texts = all(page, "[data-glitch-text]");
+  const { random, shuffle } = gsap.utils;
+
+  const tl = gsap
+    .timeline({ defaults: { ease: "expo.out" } })
+    .fromTo(one(page, "[data-notfound-bg]"), { autoAlpha: 0, scale: 1.12 }, { autoAlpha: 1, scale: 1, duration: 2.4 }, 0)
+    .fromTo(lineH, { scaleX: 0 }, { scaleX: 1, duration: 1.6, ease: "expo.inOut" }, 0.2)
+    .fromTo(lineV, { scaleY: 0 }, { scaleY: 1, duration: 1.6, ease: "expo.inOut" }, 0.3);
+
+  // Una franja horizontal al azar del numeral
+  const slice = () => {
+    const top = random(0, 78);
+    const h = random(8, 24);
+    return poly([0, top], [100, top], [100, top + h], [0, top + h]);
+  };
+
+  // Cortes agrupados al principio y más espaciados hacia el final, como una señal que se estabiliza
+  // Arrancan cuando los textos ya están asomando (pageIntro los sube desde 0.45 s)
+  [0.6, 0.7, 1.1, 1.5, 1.58, 2.2].forEach((at) => {
+    const hold = random(0.05, 0.1);
+    // En cada corte se mueven uno o dos textos, nunca todos juntos
+    const hit = shuffle([...texts]).slice(0, Math.round(random(1, 2)));
+    layers.forEach((layer, i) =>
+      tl.set(layer, { autoAlpha: 1, xPercent: random(-5, 5), clipPath: slice() }, at + i * 0.02),
+    );
+    tl.set(base, { xPercent: random(-1.5, 1.5), skewX: random(-4, 4) }, at)
+      .set(hit, { x: () => random(-10, 10), skewX: () => random(-5, 5) }, at)
+      .set(lineH, { y: random(-6, 6), opacity: random(0.3, 1) }, at)
+      .set(lineV, { x: random(-8, 8), opacity: random(0.3, 1) }, at)
+      .set(layers, { autoAlpha: 0 }, at + hold)
+      .set([base, ...hit], { x: 0, xPercent: 0, skewX: 0 }, at + hold)
+      .set([lineH, lineV], { x: 0, y: 0, opacity: 1 }, at + hold);
+  });
 }
 
 /**

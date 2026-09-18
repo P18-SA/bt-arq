@@ -1,0 +1,765 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>Decisiones de diseño del sitio · Berthet + Taranto</title>
+<link rel="stylesheet" href="styles.css">
+<style>
+  .mini { border: 0.6pt solid var(--line); height: 60pt; display: flex; align-items: center; justify-content: center; position: relative; background: #fff; }
+  .mini .cross::before, .mini .cross::after { content: ''; position: absolute; background: #cfcdc7; }
+  .mini .cross::before { left: 0; right: 0; top: 50%; height: 0.6pt; }
+  .mini .cross::after { top: 0; bottom: 0; left: 50%; width: 0.6pt; }
+  .mini .plus { font-size: 18pt; font-weight: 400; color: #111; line-height: 1; }
+  .mini .wm { font-size: 6.4pt; letter-spacing: 0.28em; }
+  .mini .arq { font-size: 6pt; letter-spacing: 0.3em; color: var(--graphite); }
+  .introsteps { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8pt; }
+  .introsteps .s .n { font-size: 6.3pt; color: var(--muted); margin: 4pt 0 2pt; }
+  .introsteps .s p { font-size: 6.6pt; line-height: 1.4; color: var(--ink); margin: 0; }
+  .grid-demo { position: relative; height: 120pt; }
+  .grid-demo .g { position: absolute; top: 0; height: 92pt; background: var(--fog); }
+  .grid-demo .g.a { left: 0; width: 57%; }
+  .grid-demo .g.b { right: 0; width: 33%; background: #e7e4de; }
+  .grid-demo .nums { position: absolute; bottom: 0; left: 0; right: 0; display: grid; grid-template-columns: repeat(12, 1fr); font-size: 6pt; color: var(--muted); }
+  .posgrid .row { display: flex; gap: 6pt; margin-bottom: 6pt; }
+  .posgrid .row .cell { background: var(--fog); border: 0.6pt solid var(--line); font-size: 6.4pt; color: var(--graphite); padding: 10pt 8pt; text-align: center; }
+  .swatchline { display: grid; grid-template-columns: repeat(6, 1fr); gap: 1pt; }
+</style>
+</head>
+<body>
+
+<!-- ============ COVER ============ -->
+<section class="cover">
+  <img class="bg" src="assets/cover.jpg" alt="">
+  <div class="shade"></div>
+  <div class="inner">
+    <div class="brand">Berthet + Taranto</div>
+    <div class="mid">
+      <div class="kicker">Documento técnico de diseño</div>
+      <h1>Decisiones<br>de diseño<br>del sitio</h1>
+      <p class="sub">Por qué cada página está armada como está: el orden de los bloques, las piezas que la componen, lo que se dejó afuera y qué se puede cambiar sin romper el sistema.</p>
+    </div>
+    <div class="foot">
+      <span>bt-arq-prev.vercel.app</span>
+      <span>Versión de preview · Septiembre 2026</span>
+    </div>
+  </div>
+</section>
+
+<!-- ============ ÍNDICE ============ -->
+<section class="page">
+  <div class="phead"><span>Índice</span><span>Berthet + Taranto · Decisiones de diseño</span></div>
+  <div class="pfoot"><span>Decisiones de diseño · bt-arq-prev.vercel.app</span><span>2</span></div>
+
+  <p class="eyebrow">Qué hay en este documento</p>
+  <h1 class="title">Qué hay en este documento</h1>
+  <p class="lead">Dos lectores: quien decide cómo se ve el sitio y quien lo programa.</p>
+
+  <div class="menu">
+    <div class="grp">A · El sistema</div>
+    <div class="item"><span class="n">01</span><span class="t">Las páginas del sitio y la tipografía</span><span class="pg">3</span></div>
+    <div class="item"><span class="n">02</span><span class="t">Color: por qué la web es blanco y negro</span><span class="pg">4</span></div>
+    <div class="item"><span class="n">03</span><span class="t">Grilla y márgenes</span><span class="pg">5</span></div>
+    <div class="item"><span class="n">04</span><span class="t">Movimiento: qué se anima y qué no</span><span class="pg">6</span></div>
+    <div class="item"><span class="n">05</span><span class="t">El «+» de la marca como sistema</span><span class="pg">7</span></div>
+
+    <div class="grp">B · Página por página</div>
+    <div class="item"><span class="n">06</span><span class="t">Home — estructura y orden de los bloques</span><span class="pg">8</span></div>
+    <div class="item"><span class="n">07</span><span class="t">Home — la apertura</span><span class="pg">9</span></div>
+    <div class="item"><span class="n">08</span><span class="t">Home — proyectos e índice</span><span class="pg">10</span></div>
+    <div class="item"><span class="n">09</span><span class="t">Home — cierre de contacto</span><span class="pg">11</span></div>
+    <div class="item"><span class="n">10</span><span class="t">Estudio y socias</span><span class="pg">12</span></div>
+    <div class="item"><span class="n">11</span><span class="t">Todos los proyectos y filtros</span><span class="pg">13</span></div>
+    <div class="item"><span class="n">12</span><span class="t">Detalle de proyecto — anatomía</span><span class="pg">14</span></div>
+    <div class="item"><span class="n">13</span><span class="t">Detalle — imágenes y casos especiales</span><span class="pg">15</span></div>
+    <div class="item"><span class="n">14</span><span class="t">Contacto</span><span class="pg">16</span></div>
+    <div class="item"><span class="n">15</span><span class="t">Celular: qué cambia</span><span class="pg">17</span></div>
+
+    <div class="grp">C · Criterio y pendientes</div>
+    <div class="item"><span class="n">16</span><span class="t">Lo que se dejó afuera, y por qué</span><span class="pg">18</span></div>
+    <div class="item"><span class="n">17</span><span class="t">Accesibilidad, SEO y próximos pasos</span><span class="pg">19</span></div>
+  </div>
+</section>
+
+<!-- ============ 01 LAS PÁGINAS + TIPOGRAFÍA ============ -->
+<section class="page">
+  <div class="phead"><span>A · 01–02 El sistema</span><span>Berthet + Taranto</span></div>
+  <div class="pfoot"><span>Decisiones de diseño · bt-arq-prev.vercel.app</span><span>3</span></div>
+
+  <p class="eyebrow">Punto de partida</p>
+  <h1 class="title">Las páginas del sitio</h1>
+  <p class="lead">Cada página responde a una sola pregunta del visitante. El resto del documento explica cómo.</p>
+
+  <div class="rows">
+    <div class="r"><div class="k">Home&nbsp;&nbsp;<span class="muted">/</span></div><div class="v">Presentación de la marca, proyectos destacados, índice de proyectos y cierre de contacto.</div></div>
+    <div class="r"><div class="k">Estudio&nbsp;&nbsp;<span class="muted">/estudio</span></div><div class="v">Quiénes son, enfoque y las dos socias.</div></div>
+    <div class="r"><div class="k">Proyectos&nbsp;&nbsp;<span class="muted">/todos-los-proyectos</span></div><div class="v">Grilla completa con filtro por programa.</div></div>
+    <div class="r"><div class="k">Detalle&nbsp;&nbsp;<span class="muted">/proyectos/[slug]</span></div><div class="v">Una página por proyecto, generadas en el build.</div></div>
+    <div class="r"><div class="k">Contacto&nbsp;&nbsp;<span class="muted">/contacto</span></div><div class="v">Una sola pantalla, sin scroll, con el mail gigante.</div></div>
+    <div class="r"><div class="k">En construcción&nbsp;&nbsp;<span class="muted">/en-construccion</span></div><div class="v">Página puente para publicar antes de que el sitio esté terminado.</div></div>
+  </div>
+
+  <p class="eyebrow" style="margin-top:26pt">02 · Tipografía</p>
+  <h1 class="title">Una sola familia, escala fluida</h1>
+  <p class="lead" style="max-width:60%">La web usa ABC Areal y nada más: en tamaños grandes se parece a la rotulación de un plano, que es el registro que buscábamos.</p>
+
+  <div class="cols">
+    <div>
+      <p class="label">El peso y para qué</p>
+      <div class="defs">
+        <div class="d"><div class="k"><strong>Regular 400</strong></div><div class="v">Todos los títulos, el texto corrido, los datos y la navegación. Es el peso del sitio.</div></div>
+        <div class="d"><div class="k"><strong>Medium 500</strong></div><div class="v">Se usa con cuentagotas, para un dato o un enlace puntual.</div></div>
+        <div class="d"><div class="k"><strong>Bold 700</strong></div><div class="v">Disponible en la familia, pero fuera del sistema: no se usa.</div></div>
+      </div>
+      <p class="note">No hay negritas en el contenido: si algo tiene que pesar más, crece de tamaño.</p>
+    </div>
+    <div>
+      <div style="font-size:26pt;font-weight:400;line-height:1;color:#111">01</div>
+      <p class="muted" style="margin:4pt 0 14pt">Números de etapa</p>
+      <div style="font-size:17pt;font-weight:400;color:#111">Casa en la costa</div>
+      <p class="muted" style="margin:4pt 0 14pt">Título de proyecto</p>
+      <div style="font-size:9pt;font-weight:400;color:#111">Vivienda · Maldonado · 2025</div>
+      <p class="muted" style="margin:4pt 0 0">Ficha: lugar, año, programa</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 02 COLOR ============ -->
+<section class="page">
+  <div class="phead"><span>A · 03 Color</span><span>Berthet + Taranto</span></div>
+  <div class="pfoot"><span>Decisiones de diseño · bt-arq-prev.vercel.app</span><span>4</span></div>
+
+  <p class="eyebrow">Sistema</p>
+  <h1 class="title">Blanco, negro y grises de obra</h1>
+  <p class="lead">No hay color de marca, y es a propósito: en un portfolio de arquitectura cualquier color corporativo pelea con las fotos, que ya traen el suyo —madera, hormigón, cielo, vegetación—. El sitio pone el marco; la obra pone el color.</p>
+
+  <div class="swatchline">
+    <div><div style="height:38pt;background:#ffffff;border:0.6pt solid var(--line)"></div><p class="muted" style="margin-top:4pt">#ffffff · paper</p></div>
+    <div><div style="height:38pt;background:#ebeae6;border:0.6pt solid var(--line)"></div><p class="muted" style="margin-top:4pt">#ebeae6 · fog</p></div>
+    <div><div style="height:38pt;background:#cfcdc7;border:0.6pt solid var(--line)"></div><p class="muted" style="margin-top:4pt">#cfcdc7 · concrete</p></div>
+    <div><div style="height:38pt;background:#5e5d59;border:0.6pt solid var(--line)"></div><p class="muted" style="margin-top:4pt">#5e5d59 · graphite</p></div>
+    <div><div style="height:38pt;background:#3b3a37;border:0.6pt solid var(--line)"></div><p class="muted" style="margin-top:4pt">#3b3a37 · shadow</p></div>
+    <div><div style="height:38pt;background:#000000;border:0.6pt solid var(--line)"></div><p class="muted" style="margin-top:4pt">#000000 · ink</p></div>
+  </div>
+
+  <div class="cols mt-lg">
+    <div>
+      <h2 class="sub">El negro es un lugar, no un acento</h2>
+      <p class="body" style="font-size:8.3pt">El negro aparece en bloques completos —el pie de página y la página de contacto—, nunca en un botón suelto. Funciona como el cambio de sala en una muestra: se termina el recorrido blanco y se entra a otra cosa.</p>
+
+      <h2 class="sub mt">Gris para el dato, negro para el nombre</h2>
+      <p class="body" style="font-size:8.3pt">Lo que nombra va en negro (título del proyecto, nombre de la socia); lo que informa va en graphite y un punto más chico (lugar, año, programa, superficie). Eso permite escanear una lista sin leerla entera.</p>
+    </div>
+    <div>
+      <div class="box">
+        <p class="label">Sobre el «modo oscuro»</p>
+        <p>No hay modo oscuro conmutable y no hace falta: la web ya alterna blanco y negro por diseño. Un modo oscuro automático obligaría a inventar una segunda versión y rompería la intención de las secciones negras, que es que se sientan distintas del resto.</p>
+      </div>
+      <div class="box mt">
+        <p class="label accent">La única excepción de color del proyecto</p>
+        <p>Es este documento. El capítulo del «+» usa un ocre cálido para señalar dónde aparece el signo en cada pieza. Es una herramienta de lectura del PDF, no un color que haya que llevar a la web.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 03 GRILLA ============ -->
+<section class="page">
+  <div class="phead"><span>A · 04 Grilla</span><span>Berthet + Taranto</span></div>
+  <div class="pfoot"><span>Decisiones de diseño · bt-arq-prev.vercel.app</span><span>5</span></div>
+
+  <p class="eyebrow">Sistema</p>
+  <h1 class="title">Doce columnas, un solo margen, mucho aire</h1>
+
+  <div class="cols">
+    <div>
+      <p class="label">El margen</p>
+      <p class="body" style="font-size:7.6pt;color:var(--graphite)">Una sola medida horizontal gobierna el sitio. Sirve de margen lateral, de separación entre columnas y de referencia. Cambiar ese valor reencuadra la web entera de forma coherente.</p>
+    </div>
+    <div>
+      <h2 class="sub">Por qué 12 columnas y por qué casi nunca se usan las 12</h2>
+      <p class="body" style="font-size:7.6pt">Las secciones editoriales (home, estudio, detalle) se apoyan en una grilla de 12 columnas, pero los bloques ocupan anchos distintos y arrancan en columnas distintas. Esa asimetría es la que produce la sensación de «maqueta de revista» en vez de «plantilla»: ningún bloque queda alineado con el anterior salvo cuando queremos que descanse.</p>
+    </div>
+  </div>
+
+  <div class="grid-demo mt-lg">
+    <div class="g a"></div>
+    <div class="g b"></div>
+    <div class="nums">
+      <span>1</span><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span><span>7</span><span>8</span><span>9</span><span>10</span><span>11</span><span>12</span>
+    </div>
+  </div>
+  <p class="note">Bloques de anchos distintos que arrancan en lugares distintos y a distinta altura: la grilla existe, pero no se ve.</p>
+</section>
+
+<!-- ============ 04 MOVIMIENTO ============ -->
+<section class="page">
+  <div class="phead"><span>A · 05 Movimiento</span><span>Berthet + Taranto</span></div>
+  <div class="pfoot"><span>Decisiones de diseño · bt-arq-prev.vercel.app</span><span>6</span></div>
+
+  <p class="eyebrow">Sistema</p>
+  <h1 class="title">El movimiento explica el recorrido; no es un adorno</h1>
+  <p class="lead">Todas las animaciones están centralizadas en un solo archivo y se activan desde un único componente. No hay animaciones sueltas repartidas por las páginas: eso mantiene el vocabulario corto y hace que agregar una página nueva no implique volver a decidir cómo se mueve todo.</p>
+
+  <div class="defs">
+    <div class="d"><div class="k"><strong>Revelado de imagen</strong></div><div class="v">Cada foto se descubre de abajo hacia arriba mientras su contenido interno vuelve de una escala mayor a su tamaño natural. Empieza apenas el marco asoma por el borde inferior, para que no se pierda si se scrollea rápido.</div></div>
+    <div class="d"><div class="k"><strong>Texto que sube</strong></div><div class="v">Los títulos de página se parten en líneas y suben una por una detrás de una máscara. Los pies de foto hacen lo mismo, un instante después de que la imagen se abrió.</div></div>
+    <div class="d"><div class="k"><strong>Frases que se encienden</strong></div><div class="v">Las frases grandes aparecen atenuadas y se «prenden» palabra por palabra al ritmo del scroll. Es la única animación atada directamente a la rueda: obliga a leerla despacio.</div></div>
+    <div class="d"><div class="k"><strong>Parallax</strong></div><div class="v">Las imágenes marcadas como tales se desplazan a distinta velocidad que la página. Da profundidad sin mover el texto, que siempre viaja a velocidad normal.</div></div>
+    <div class="d"><div class="k"><strong>Trazado de líneas</strong></div><div class="v">Las líneas de la cruz del pie y los «+» grandes se dibujan: primero el trazo horizontal, después el vertical, como quien traza a mano.</div></div>
+    <div class="d"><div class="k"><strong>Reordenado con Flip</strong></div><div class="v">Al filtrar proyectos, las tarjetas viajan de su posición vieja a la nueva en vez de saltar.</div></div>
+  </div>
+
+  <div class="cols mt">
+    <div>
+      <h2 class="sub">Scroll suave, con freno</h2>
+      <p class="body" style="font-size:7.6pt">El sitio usa ScrollSmoother. Además hay un limitador propio: por más fuerte que se tire de la rueda, la página no avanza a destiempo ni se adelanta más de lo debido. Sin eso, un golpe de trackpad saltea secciones y sus animaciones nunca se ven. Si se cambia de dirección, el freno se descarta y el giro es inmediato. Teclado, barra de scroll y gestos táctiles quedan nativos, sin interferencia.</p>
+    </div>
+    <div>
+      <h2 class="sub">La intro se ve una vez</h2>
+      <p class="body" style="font-size:7.6pt">La animación de apertura de la home corre una sola vez por visita. Si se vuelve a Inicio desde otra página, el hero ya aparece armado: la segunda vez la animación sería una demora, no un gesto.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 05 EL "+" ============ -->
+<section class="page">
+  <div class="phead"><span>A · 06 La marca</span><span>El «+» como sistema</span></div>
+  <div class="pfoot"><span>Decisiones de diseño · bt-arq-prev.vercel.app</span><span>7</span></div>
+
+  <p class="eyebrow accent">Capítulo destacado</p>
+  <h1 class="title">El «+» del logo no es un adorno: es la pieza que cose el sitio</h1>
+  <p class="lead">La marca es Berthet + Taranto. Ese signo —dos trazos que se cruzan— es lo único gráfico del estudio además de su nombre. En vez de dejarlo quieto en el header, se lo repartió por todo el sitio. Le da protagonismo sin agrandarlo y sin inventar un color corporativo.</p>
+
+  <div class="usegrid">
+    <div class="u"><p class="num">01</p><h4>Une los dos apellidos</h4><p>En el logo del header y en el hero, separa y a la vez suma a las dos socias. Es el uso literal y el origen de todos los demás.</p></div>
+    <div class="u"><p class="num">02</p><h4>Abre el sitio</h4><p>La animación de entrada arranca con una cruz que ocupa toda la pantalla y se repliega hasta ser el «+» del logo.</p></div>
+    <div class="u"><p class="num">03</p><h4>Es el botón de menú</h4><p>En celular, el «+» del header gira hasta convertirse en una «×» para cerrar. Un solo signo abre y cierra.</p></div>
+    <div class="u"><p class="num">04</p><h4>Marca las esquinas de las fotos</h4><p>Cuatro «+» finos en las esquinas de algunas imágenes, como las marcas de corte de una impresión o los ejes de un plano.</p></div>
+    <div class="u"><p class="num">05</p><h4>Encabeza cada acción</h4><p>«+ Ver más», «+ Ir a contacto». Reemplaza a la flecha típica: en vez de «ir hacia», propone «sumar». Al pasar el cursor gira un cuarto de vuelta.</p></div>
+    <div class="u"><p class="num">06</p><h4>Separa a las socias</h4><p>En Estudio, un «+» grande y de trazo fino se ubica entre los dos retratos. Es el logo convertido en composición de página.</p></div>
+    <div class="u"><p class="num">07</p><h4>Estructura el cierre</h4><p>El pie negro y la página de contacto están divididos por una cruz del tamaño de la pantalla. El mail, la dirección y los datos se acomodan en los cuadrantes que arma esa cruz.</p></div>
+  </div>
+
+  <p class="label mt-lg">Reglas de uso del signo</p>
+  <div class="cols tight">
+    <ul class="dash">
+      <li><strong>Siempre del color del texto.</strong> Hereda el color de su contexto: negro sobre blanco, blanco sobre negro. Nunca lleva color propio.</li>
+      <li><strong>Nunca dos juntos compitiendo.</strong> En una misma pantalla hay como mucho un «+» protagonista; los demás son de esquina o de enlace, a escala chica.</li>
+      <li><strong>Trazo fino a escala grande.</strong> El «+» grande usa un trazo proporcionalmente más delgado que el del logo para mantener su elegancia.</li>
+    </ul>
+    <ul class="dash">
+      <li><strong>No se inclina ni se deforma.</strong> La única rotación permitida es la del menú y el cuarto de vuelta de los enlaces al pasar el cursor.</li>
+      <li><strong>No es un ícono de «agregar».</strong> Nunca aparece en un control que sume o expanda algo, para que no se confunda con un botón de sistema.</li>
+      <li><strong>No va dentro de la foto.</strong> Siempre está en el papel: en el margen, en la esquina, en el texto. La imagen queda limpia.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ============ 06 HOME ESTRUCTURA ============ -->
+<section class="page">
+  <div class="phead"><span>B · 07 Home</span><span>Estructura</span></div>
+  <div class="pfoot"><span>Decisiones de diseño · bt-arq-prev.vercel.app</span><span>8</span></div>
+
+  <p class="eyebrow">Página por página</p>
+  <h1 class="title">Home: los bloques, en este orden y no en otro</h1>
+  <p class="lead">El orden va de lo emocional a lo operativo. Quien entra por primera vez mira; quien vuelve buscando un proyecto concreto baja hasta la lista, que es más rápida de escanear que una grilla de fotos.</p>
+
+  <div class="rows">
+    <div class="r"><div class="k"><strong>1 · Hero</strong></div><div class="v">Pantalla completa. Marca + una obra. Responde «quiénes son» en dos segundos.</div></div>
+    <div class="r"><div class="k"><strong>2 · Proyectos seleccionados</strong></div><div class="v">Obras en composición asimétrica. Responde «qué hacen» con evidencia, no con adjetivos.</div></div>
+    <div class="r"><div class="k"><strong>3 · Todos los proyectos (índice)</strong></div><div class="v">Una lista de texto. Responde «cuánto hay» y da acceso rápido a quien busca algo puntual.</div></div>
+    <div class="r"><div class="k"><strong>4 · Contacto</strong></div><div class="v">Pantalla negra con el mail gigante. Responde «cómo sigo».</div></div>
+  </div>
+
+  <div class="cols mt-lg">
+    <div>
+      <h2 class="sub">Por qué imágenes antes que lista</h2>
+      <p class="body">Son las dos formas de mirar el mismo material, una después de la otra.</p>
+
+      <h2 class="sub mt">Por qué no hay un «sobre nosotras» en la home</h2>
+      <p class="body">El texto institucional vive en Estudio. En la home ocuparía la posición más valiosa de la página para decir algo que nadie lee al llegar. La obra presenta mejor al estudio que un párrafo.</p>
+    </div>
+    <div>
+      <h2 class="sub">Por qué el enlace «Ver todos» está arriba y abajo</h2>
+      <p class="body">Arriba, junto al título de la sección, es un ancla interna que lleva al índice de la misma página. Abajo, después del índice, el «+ Ver más» sale a la página completa. Son dos intenciones distintas: «mostrame la lista» y «quiero verlos todos».</p>
+
+      <div class="box mt">
+        <p class="label">Lo que la home no tiene</p>
+        <ul class="dash" style="margin-top:4pt">
+          <li>Slider o carrusel de portada</li>
+          <li>Barra de novedades o banner</li>
+          <li>Sección de servicios con iconos</li>
+          <li>Logos de clientes o premios</li>
+          <li>Formulario de suscripción</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <figure class="mt-lg fig-hero">
+    <img src="assets/hero.jpg" alt="Hero de la home">
+    <figcaption>Hero terminado. El logo se dibuja dos veces: en negro sobre el fondo blanco y en blanco dentro de la foto, recortado junto con ella. Mientras la imagen se abre, las letras cambian de color exactamente en el borde de la foto.</figcaption>
+  </figure>
+</section>
+
+<!-- ============ 07 HOME APERTURA ============ -->
+<section class="page">
+  <div class="phead"><span>B · 08 Home</span><span>La apertura</span></div>
+  <div class="pfoot"><span>Decisiones de diseño · bt-arq-prev.vercel.app</span><span>9</span></div>
+
+  <p class="eyebrow">Secuencia de apertura</p>
+  <h1 class="title">La web se presenta dibujando su propio logo</h1>
+  <p class="lead">La intro no es una pantalla de carga con un logo quieto: es la construcción del logo, y termina convirtiéndose en la primera obra. Mientras corre, el scroll está bloqueado; se libera cuando la foto ya casi terminó de abrirse, para que nadie se pierda el final ni quede atrapado esperando.</p>
+
+  <div class="introsteps">
+    <div class="s"><div class="mini"><span class="cross"></span></div><p class="n">01</p><p>Una cruz cruza toda la pantalla. Primero el trazo horizontal, después el vertical.</p></div>
+    <div class="s"><div class="mini"><span class="plus">+</span></div><p class="n">02</p><p>Los trazos se repliegan hasta quedar del tamaño del «+» del logo, en el centro exacto.</p></div>
+    <div class="s"><div class="mini"><span class="wm">BERTHET + TARANTO</span></div><p class="n">03</p><p>Los dos apellidos entran desde afuera hacia el «+», uno desde cada lado.</p></div>
+    <div class="s"><div class="mini"><span class="arq">ARQUITECTAS</span></div><p class="n">04</p><p>«ARQUITECTAS» sube letra por letra desde abajo; en paralelo aparece el menú.</p></div>
+    <div class="s"><div class="mini" style="overflow:hidden;padding:0"><img src="assets/intro-foto.jpg" style="width:100%;height:100%;object-fit:cover"></div><p class="n">05</p><p>La foto se abre desde el centro del «+» hasta llenar la pantalla, con un leve zoom out.</p></div>
+  </div>
+
+  <div class="cols mt-lg">
+    <div>
+      <h2 class="sub">Decisiones dentro de la secuencia</h2>
+      <ul class="dash">
+        <li>La foto crece desde el centro, no desde el borde ni con un fundido. La obra sale de la marca: esa es la idea de la escena.</li>
+        <li>Las letras entran, no aparecen. Se deslizan detrás de una máscara, como si la palabra ya existiera fuera de cuadro.</li>
+        <li>El menú llega un instante después de los nombres. Primero la marca, después la navegación.</li>
+        <li>El logo del header espera a que el hero salga casi por completo: mientras el logo grande se ve, uno chico arriba sobra.</li>
+      </ul>
+    </div>
+    <div>
+      <h2 class="sub">Y al hacer scroll</h2>
+      <p class="body">El hero no queda fijo. Se va con la página mientras el logo sube y se desvanece. Es la decisión opuesta a la típica sección fija con la foto detrás: acá, salir de la portada tiene que sentirse como pasar de página, no como levantar una cortina.</p>
+      <p class="note">La leyenda «Deslizá para entrar» se va apenas empieza el scroll y vuelve si se sube de nuevo.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 08 HOME PROYECTOS E ÍNDICE ============ -->
+<section class="page">
+  <div class="phead"><span>B · 09–10 Home</span><span>Proyectos e índice</span></div>
+  <div class="pfoot"><span>Decisiones de diseño · bt-arq-prev.vercel.app</span><span>10</span></div>
+
+  <h1 class="title">Proyectos seleccionados y el índice</h1>
+  <p class="lead">Dos maneras de mostrar obra: la composición asimétrica que se mira, y la lista de texto que se escanea.</p>
+
+  <div class="cols">
+    <div>
+      <h2 class="sub">Proyectos seleccionados</h2>
+      <p class="body">La sección abre con una línea negra al ancho completo y el título contra ella. Es la convención de una hoja de proyecto: primero la regla, después el contenido.</p>
+      <p class="label mt-sm">Por qué proporciones distintas</p>
+      <p class="body">Si todas las fotos tuvieran el mismo formato, la página sería una grilla y la lectura se volvería mecánica. Al alternar vertical y apaisada, cada obra reclama su propio encuadre y el scroll cambia de velocidad percibida.</p>
+      <p class="label mt-sm">El dato, siempre igual</p>
+      <p class="body">Debajo de cada foto: nombre a la izquierda (negro), lugar y año a la derecha (gris). Sin descripción, sin botón «ver proyecto». La foto entera es el enlace y el nombre se subraya solo al pasar el cursor.</p>
+      <figure class="mt fig-tall-300"><img src="assets/seleccionados.jpg" alt="Proyectos seleccionados"><figcaption>Las primeras piezas, desfasadas a distinta altura. Se ven las marcas «+» en las esquinas, que aparecen girando después de que la imagen se revela.</figcaption></figure>
+    </div>
+    <div>
+      <h2 class="sub">El índice: una lista que se mira, no solo se lee</h2>
+      <p class="body">Con el cursor sobre una fila, las demás bajan de opacidad, el nombre activo se corre y una ventana con la foto del proyecto sigue al cursor, inclinándose levemente según la velocidad del movimiento.</p>
+      <p class="label mt-sm">Por qué una muestra y no el catálogo</p>
+      <p class="body">El índice de la home es una muestra, no el catálogo: deja la sensación de que hay más y es la razón para hacer clic en «+ Ver más».</p>
+      <p class="label mt-sm">Por qué una tabla y no tarjetas</p>
+      <p class="body">Cuatro columnas —proyecto, programa, lugar, año— con encabezado chico en gris. Para quien busca «la obra de Rocha» o «algo de 2023», una tabla es más rápida que las imágenes. Y visualmente descansa: después de las fotos grandes, texto.</p>
+      <p class="label mt-sm">La vista previa que sigue al cursor</p>
+      <p class="body">Es el reemplazo de la miniatura: en vez de meter una foto chica en cada fila —que ensuciaría la tabla—, la imagen aparece solo cuando el cursor está en el índice. Se activa únicamente en dispositivos con cursor real; en celular y tablet no existe, porque no hay hover.</p>
+      <figure class="mt"><img src="assets/indice.jpg" alt="Índice"><figcaption>Índice con el cursor sobre una fila: las demás bajan de opacidad y una ventana con la foto del proyecto sigue al cursor.</figcaption></figure>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 09 HOME CIERRE ============ -->
+<section class="page">
+  <div class="phead"><span>B · 11 Home</span><span>Cierre</span></div>
+  <div class="pfoot"><span>Decisiones de diseño · bt-arq-prev.vercel.app</span><span>11</span></div>
+
+  <h1 class="title">El pie es una pantalla entera, negra, con el mail como protagonista</h1>
+  <p class="lead">Ocupa el alto completo de la pantalla. Las dos líneas —una horizontal y una vertical— se trazan a medida que la sección entra, y forman el «+» de la marca a escala de página.</p>
+
+  <div class="cols">
+    <div>
+      <h2 class="sub">Por qué no es un pie clásico</h2>
+      <p class="body">Un pie convencional —columnas de enlaces, redes, aviso legal— sería el único lugar del sitio con densidad de información chica y apretada. Acá el cierre repite la lógica del resto: una idea grande por pantalla. La idea es el mail.</p>
+
+      <h2 class="sub mt">El mail es el botón</h2>
+      <p class="body">No hay un botón «Escribinos»: el propio mail, escrito enorme, es el enlace <span class="mono">mailto:</span>. Al pasar el cursor, las letras giran hacia arriba y son reemplazadas por una copia idéntica: un gesto mínimo que confirma que eso se puede tocar sin agregar ningún elemento nuevo.</p>
+
+      <h2 class="sub mt">Qué contiene, en orden</h2>
+      <p class="body">1. «Contacto» (etiqueta chica) y la frase <em>Contanos qué querés construir</em>. 2. Enlace «+ Ir a contacto», arriba a la derecha. 3. El mail, en el tamaño máximo que permite la línea vertical. 4. Ciudad, Instagram y copyright, en una línea fina abajo.</p>
+    </div>
+    <div>
+      <figure><img src="assets/cierre.jpg" alt="Cierre de contacto"><figcaption>Cierre de contacto: las dos líneas se trazan a medida que la sección entra y forman el «+» de la marca a escala de página.</figcaption></figure>
+      <h2 class="sub mt">Se repite en todas las páginas</h2>
+      <p class="body">El mismo bloque cierra la home, Estudio, Proyectos y cada detalle. Es el único componente que se repite entero: da la sensación de que todas las páginas terminan en el mismo lugar. La página de Contacto es la excepción: no lleva el pie porque ella misma es ese cierre.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 10 ESTUDIO Y SOCIAS ============ -->
+<section class="page">
+  <div class="phead"><span>B · 12 Estudio</span><span>Estructura</span></div>
+  <div class="pfoot"><span>Decisiones de diseño · bt-arq-prev.vercel.app</span><span>12</span></div>
+
+  <h1 class="title">Estudio: el texto institucional, dosificado</h1>
+  <p class="lead">El título ocupa casi todo el ancho y el párrafo de presentación va abajo a la derecha. Esa asimetría evita el bloque «título centrado + bajada centrada» de las páginas institucionales.</p>
+
+  <div class="rows">
+    <div class="r"><div class="k"><strong>1 · Título y una frase</strong></div><div class="v">Qué es el estudio y dónde trabaja. Dos líneas, no un párrafo.</div></div>
+    <div class="r"><div class="k"><strong>2 · Imagen apaisada</strong></div><div class="v">Corta el texto enseguida: antes de explicarse, muestra obra.</div></div>
+    <div class="r"><div class="k"><strong>3 · Enfoque</strong></div><div class="v">Etiqueta a la izquierda y una frase grande a la derecha, que se enciende palabra por palabra. Debajo, dos columnas de texto corrido.</div></div>
+    <div class="r"><div class="k"><strong>4 · Socias</strong></div><div class="v">Dos retratos desfasados con el «+» en el medio.</div></div>
+    <div class="r"><div class="k"><strong>5 · «+ Ver proyectos»</strong></div><div class="v">Salida hacia la obra. La página institucional termina devolviendo a lo importante.</div></div>
+    <div class="r"><div class="k"><strong>6 · Cierre de contacto</strong></div><div class="v">El mismo bloque negro de siempre.</div></div>
+  </div>
+
+  <div class="cols mt">
+    <div>
+      <p class="label">La frase grande hace el trabajo del texto largo</p>
+      <p class="body">La frase de enfoque, a tamaño de título y encendiéndose con el scroll, transmite la idea; el texto largo queda abajo, en gris y en dos columnas, para quien efectivamente quiere leer.</p>
+    </div>
+    <div>
+      <p class="label">Por qué la etiqueta «Enfoque» a la izquierda</p>
+      <p class="body">Es el recurso de índice de catálogo: una columna angosta con el rótulo y una ancha con el contenido. Permite saber de qué habla la sección sin usar un título grande, que competiría con la frase.</p>
+    </div>
+  </div>
+
+  <div class="rule"></div>
+
+  <h2 class="sub">Las socias: dos retratos que no están a la misma altura</h2>
+  <div class="cols">
+    <div>
+      <p class="label">Por qué desfasados</p>
+      <p class="body">Dos retratos idénticos y alineados dan una foto de directorio. Al bajar el segundo, la composición se vuelve dinámica y el «+» del medio queda descentrado respecto de las fotos, lo que obliga a leerlo como parte de la página y no como un separador decorativo.</p>
+      <p class="label mt-sm">La posición del «+» está calculada, no estimada</p>
+      <p class="body">El margen superior del signo se calcula en CSS a partir del ancho real de la columna, de modo que queda a la altura media entre ambos retratos en cualquier ancho de pantalla, sin valores fijos que se rompan al cambiar de monitor.</p>
+      <p class="label mt-sm">En celular</p>
+      <p class="body">Las dos fichas se apilan y el «+» del medio desaparece: entre dos retratos apilados no separa nada, y el signo ya está presente en el logo del header.</p>
+    </div>
+    <div>
+      <figure class="fig-tall-290"><img src="assets/socias.jpg" alt="Socias"><figcaption>Retratos en composición desfasada, con el «+» exactamente a la mitad de la diferencia de altura. Se ven también las marcas de esquina de cada retrato.</figcaption></figure>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 11 PROYECTOS Y FILTROS ============ -->
+<section class="page">
+  <div class="phead"><span>B · 13 Proyectos</span><span>Grilla y filtros</span></div>
+  <div class="pfoot"><span>Decisiones de diseño · bt-arq-prev.vercel.app</span><span>13</span></div>
+
+  <h1 class="title">Todos los proyectos: acá sí, grilla pareja</h1>
+  <p class="lead">Título grande, contador a la derecha, barra de filtros con la cantidad de obras de cada programa en superíndice y una grilla con todas las fichas en el mismo formato.</p>
+
+  <div class="cols">
+    <div>
+      <h2 class="sub">Por qué el formato uniforme</h2>
+      <p class="body">Es la decisión opuesta a la de la home, y a propósito. Acá el visitante viene a comparar y explorar: si cada ficha tuviera una proporción distinta, el ojo compararía encuadres en vez de obras. Todas con el mismo formato y el mismo pie de datos.</p>
+
+      <h2 class="sub mt">El contador en superíndice</h2>
+      <p class="body">Cada filtro muestra cuántas obras tiene antes de tocarlo. Evita el clic vacío y, de paso, comunica el perfil del estudio: se ve de un vistazo en qué programas está el fuerte.</p>
+
+      <h2 class="sub mt">Por qué no más columnas</h2>
+      <p class="body">Cada columna de más achica la ficha hasta que la foto deja de leerse en un notebook. La grilla de proyectos mantiene el ancho que conserva presencia.</p>
+
+      <figure class="mt"><img src="assets/proyectos.jpg" alt="Grilla de proyectos"><figcaption>Grilla pareja, con todas las fichas en el mismo formato.</figcaption></figure>
+    </div>
+    <div>
+      <h2 class="sub">Filtrar sin recargar y sin que la página salte</h2>
+      <p class="body">El filtro seleccionado queda en negro y subrayado; los demás, en gris. La grilla se reordena con una animación en la que cada tarjeta viaja de su posición anterior a la nueva.</p>
+
+      <p class="label mt-sm">Por qué animar el reordenamiento</p>
+      <p class="body">Cuando una grilla filtra de golpe, se pierde la referencia: no se sabe si las tarjetas que quedaron son las mismas. Al hacerlas viajar a su nueva posición, el cambio se entiende como un reacomodo, no como una página nueva.</p>
+
+      <p class="label mt-sm">Dos detalles que evitan saltos</p>
+      <ul class="dash">
+        <li>La grilla congela su altura mientras las tarjetas se mueven, así el cierre de contacto no salta hacia arriba a mitad de la animación.</li>
+        <li>Al terminar, se recalculan las posiciones de scroll, para que las animaciones de las tarjetas que ahora están más arriba sigan funcionando.</li>
+      </ul>
+
+      <figure class="mt"><img src="assets/filtros.jpg" alt="Filtro activo"><figcaption>Filtro activo: el seleccionado queda en negro y subrayado, y la grilla se reordena con las tarjetas viajando a su nueva posición.</figcaption></figure>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 12 DETALLE ANATOMÍA ============ -->
+<section class="page">
+  <div class="phead"><span>B · 14 Detalle</span><span>Anatomía</span></div>
+  <div class="pfoot"><span>Decisiones de diseño · bt-arq-prev.vercel.app</span><span>14</span></div>
+
+  <h1 class="title">La página de un proyecto, bloque por bloque</h1>
+
+  <div class="cols">
+    <div class="rows">
+      <div class="r" style="grid-template-columns:1fr"><div class="v"><strong>1 · Volver</strong> — Enlace chico «Todos los proyectos», arriba de todo.</div></div>
+      <div class="r" style="grid-template-columns:1fr"><div class="v"><strong>2 · Nombre</strong> — Título gigante, que sube línea por línea.</div></div>
+      <div class="r" style="grid-template-columns:1fr"><div class="v"><strong>3 · Ficha</strong> — Los datos del proyecto en una línea: programa, lugar, año, superficie, estado.</div></div>
+      <div class="r" style="grid-template-columns:1fr"><div class="v"><strong>4 · Portada</strong> — Imagen apaisada al ancho completo.</div></div>
+      <div class="r" style="grid-template-columns:1fr"><div class="v"><strong>5 · Idea</strong> — Una frase grande que se enciende + dos párrafos en gris.</div></div>
+      <div class="r" style="grid-template-columns:1fr"><div class="v"><strong>6 · Antes</strong> <span class="muted">(solo reformas)</span> — Tira horizontal de ambientes.</div></div>
+      <div class="r" style="grid-template-columns:1fr"><div class="v"><strong>7 · Galería</strong> — Fotos en composición asimétrica, con el video intercalado si el proyecto lo tiene.</div></div>
+      <div class="r" style="grid-template-columns:1fr"><div class="v"><strong>8 · Siguiente</strong> — «+ Nombre del próximo proyecto» con su miniatura.</div></div>
+      <div class="r" style="grid-template-columns:1fr"><div class="v"><strong>9 · Contacto</strong> — El cierre negro de siempre.</div></div>
+    </div>
+    <div>
+      <figure><img src="assets/detalle.jpg" alt="Detalle de proyecto"><figcaption>Bloques 1 a 4. El título respira solo, la ficha va debajo de una línea fina y recién después llega la portada.</figcaption></figure>
+    </div>
+  </div>
+
+  <div class="cols mt">
+    <div>
+      <h2 class="sub">Por qué la ficha va arriba y no al costado</h2>
+      <p class="body">Programa, lugar, año, superficie y estado son datos que se consultan una vez y no se vuelven a mirar. Puestos como barra horizontal debajo del título se leen de un golpe y liberan todo el ancho para las imágenes. Una columna lateral con datos habría reducido las fotos durante toda la página.</p>
+    </div>
+    <div>
+      <h2 class="sub">Por qué la portada no tiene pie de foto</h2>
+      <p class="body">Es la imagen que representa al proyecto entero; rotularla sería repetir el título que está justo arriba. Las de la galería sí llevan pie («Vista exterior», «Interior», «Detalle constructivo») porque ahí el rótulo agrega información.</p>
+    </div>
+  </div>
+
+  <p class="label mt-lg">El recorrido</p>
+  <div class="bar">
+    <div style="flex:1.2">Título + ficha</div>
+    <div style="flex:1">Portada</div>
+    <div style="flex:1.1">Idea + texto</div>
+    <div style="flex:1.6">Galería</div>
+    <div style="flex:1">Siguiente</div>
+    <div class="dark" style="flex:1">Contacto</div>
+  </div>
+  <p class="note">La mitad del recorrido es obra; el texto ocupa una parte menor.</p>
+</section>
+
+<!-- ============ 13 DETALLE IMÁGENES Y CASOS ============ -->
+<section class="page">
+  <div class="phead"><span>B · 15 Detalle</span><span>Imágenes y casos especiales</span></div>
+  <div class="pfoot"><span>Decisiones de diseño · bt-arq-prev.vercel.app</span><span>15</span></div>
+
+  <h1 class="title">Las imágenes de la galería y los casos especiales</h1>
+
+  <div class="cols">
+    <div>
+      <h2 class="sub">Una portada y una serie corta de fotos</h2>
+      <p class="body">El detalle tiene una portada y una serie corta de fotos de galería. No es un límite técnico: es el guion mínimo con el que se entiende una obra.</p>
+      <div class="defs">
+        <div class="d"><div class="k"><strong>Portada</strong></div><div class="v">La obra en su contexto. Es la que se recuerda.</div></div>
+        <div class="d"><div class="k">Vista exterior</div><div class="v">El volumen completo.</div></div>
+        <div class="d"><div class="k">Interior</div><div class="v">Cómo se vive adentro.</div></div>
+        <div class="d"><div class="k">Detalle constructivo</div><div class="v">El oficio.</div></div>
+        <div class="d"><div class="k">Vista general</div><div class="v">El cierre, al ancho completo.</div></div>
+      </div>
+      <p class="note">En las reformas los rótulos cambian a «Después, living / cocina / fachada», y se suman imágenes del «antes».</p>
+
+      <p class="label mt">Las razones</p>
+      <ul class="dash">
+        <li>Es la secuencia clásica de una publicación de arquitectura: contexto, volumen, interior, detalle, síntesis. Unas pocas piezas cuentan una obra; demasiadas la repiten.</li>
+        <li>Las proporciones no se repiten. Formatos distintos permiten posiciones distintas en la grilla; con más fotos habría que repetir encuadre y la página se volvería una lista.</li>
+        <li>Dura lo que dura la atención. La galería es la mayor parte del recorrido del detalle.</li>
+        <li>Es un pedido realista de material: una serie corta de fotos buenas por obra es algo que un estudio puede sostener en todo su portfolio.</li>
+      </ul>
+
+      <p class="label mt-sm">Siguiente proyecto: el final es un principio</p>
+      <p class="body" style="font-size:7.6pt">La página no termina en el contacto: antes ofrece la obra siguiente, con su nombre gigante precedido del «+» y una miniatura. El recorrido puede seguir sin volver al índice.</p>
+      <div class="box mt-sm cream-box">
+        <p class="label">Por qué no «anterior y siguiente»</p>
+        <p>Dos flechas obligan a elegir dirección y parten la atención. Una sola propuesta, grande y con nombre, es una invitación; dos son un panel de control.</p>
+      </div>
+    </div>
+    <div>
+      <figure class="fig-tall-330"><img src="assets/galeria.jpg" alt="Galería"><figcaption>Galería, primer tramo: las primeras fotos en columnas distintas y el video, cuando existe, al ancho completo.</figcaption></figure>
+
+      <p class="label mt">Cómo pasar a más fotos</p>
+      <div class="box">
+        <p>Una serie corta por obra. Si un proyecto merece más material, conviene una segunda sección con criterio propio («Proceso de obra», «Planos») antes que estirar la galería.</p>
+      </div>
+      <p class="label mt-sm">Dos reglas al agregar posiciones</p>
+      <ul class="dash">
+        <li>Alternar vertical y apaisada, y no repetir dos veces seguidas la misma columna de arranque.</li>
+        <li>Dejar una sola imagen al ancho completo cada tanto: es el descanso de la secuencia.</li>
+      </ul>
+
+      <div class="cols tight mt">
+        <div>
+          <p class="label">Reformas: el «antes» en horizontal</p>
+          <p class="body" style="font-size:7.6pt">«Antes de la reforma» es una sección fijada. En escritorio se clava en pantalla y los ambientes pasan de derecha a izquierda mientras se scrollea; la línea superior marca el avance. En celular se apila en vertical. Aplica solo a los proyectos de programa Reforma.</p>
+        </div>
+        <div>
+          <p class="label">Video: solo donde suma</p>
+          <p class="body" style="font-size:7.6pt">Los proyectos que tienen video lo muestran al ancho completo, entre la segunda y la tercera foto. Está en el medio a propósito: como recompensa a mitad de recorrido, no como portada —un video arriba compite con la foto principal—.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 14 CONTACTO ============ -->
+<section class="page">
+  <div class="phead"><span>B · 16 Contacto</span><span>Una sola pantalla</span></div>
+  <div class="pfoot"><span>Decisiones de diseño · bt-arq-prev.vercel.app</span><span>16</span></div>
+
+  <h1 class="title">Contacto: todo entra en una pantalla, sin scroll</h1>
+  <p class="lead">Foto de fondo atenuada y algo desaturada, la cruz de la marca dividiendo la pantalla, el mail contra la línea vertical y la card de ubicación en el cuadrante derecho.</p>
+
+  <div class="cols">
+    <div>
+      <h2 class="sub">Por qué sin scroll</h2>
+      <p class="body">Es la única página del sitio donde el visitante ya decidió: viene a buscar un dato. Hacer scroll para encontrar un mail es fricción pura. Toda la información —mail, ciudad, dirección, Instagram— entra en una pantalla, y el scroll suave se desactiva acá porque no hay nada que recorrer.</p>
+
+      <h2 class="sub mt">Los cuadrantes</h2>
+      <ul class="dash">
+        <li>Arriba izquierda: el pedido («Contanos qué querés construir») y una línea de instrucción.</li>
+        <li>Abajo izquierda: el mail, en el tamaño más grande que permite la línea.</li>
+        <li>Abajo derecha: la card de ubicación.</li>
+        <li>Al pie: ciudad, Instagram y copyright.</li>
+      </ul>
+
+      <h2 class="sub mt">La foto de fondo, tratada</h2>
+      <p class="body">Una foto de obra atenuada, algo más oscura y desaturada, más un degradado que se cierra abajo. No se busca una foto bonita: se busca que el texto blanco tenga contraste suficiente y que la obra siga presente, en segundo plano.</p>
+
+      <h2 class="sub mt">La cruz, otra vez</h2>
+      <p class="body">La vertical se traza al cargar, igual que en el pie. Es lo que hace que la página de contacto se lea como la versión a pantalla completa del cierre que ya se vio en todas las demás páginas.</p>
+    </div>
+    <div>
+      <figure><img src="assets/contacto.jpg" alt="Contacto"><figcaption>Foto de fondo atenuada, la cruz dividiendo la pantalla, el mail contra la línea vertical y la card de ubicación en el cuadrante derecho.</figcaption></figure>
+    </div>
+  </div>
+
+  <div class="rule"></div>
+
+  <h2 class="sub">Dos ausencias deliberadas: el formulario y el mapa</h2>
+  <div class="cols">
+    <div>
+      <p class="label">Por qué no hay formulario</p>
+      <p class="body">Un formulario parece más profesional y en la práctica rinde menos: esconde el mail, se llena de spam y pierde el hilo —un mail queda en la casilla, con historial; un envío de formulario llega como notificación suelta—.</p>
+      <p class="note">Si más adelante se quiere un formulario, se puede sumar con un servicio externo sin tocar el resto del sitio. La decisión es empezar por lo simple, no cerrar la puerta.</p>
+    </div>
+    <div>
+      <p class="label">Por qué no hay mapa embebido</p>
+      <p class="body">Un iframe de Google Maps trae scripts de terceros, cookies y un bloque visual que no se parece a nada del sitio. La card lo reemplaza con una foto del lugar, la dirección en texto y un enlace «+ Ver en el mapa» que abre la app de mapas en otra pestaña.</p>
+      <p class="label mt-sm">Detalle de la card</p>
+      <p class="body" style="font-size:7.6pt">Es un vidrio oscuro sobre la foto, con un borde fino y una sombra larga. Es el único elemento del sitio con efecto de material: se justifica porque tiene que flotar sobre una foto sin taparla del todo.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 15 CELULAR ============ -->
+<section class="page">
+  <div class="phead"><span>B · 17 Celular</span><span>Qué cambia</span></div>
+  <div class="pfoot"><span>Decisiones de diseño · bt-arq-prev.vercel.app</span><span>17</span></div>
+
+  <h1 class="title">En celular no es «la misma web más angosta»</h1>
+
+  <div class="cols3 mt">
+    <div>
+      <figure><img src="assets/cel-home.jpg" alt="Home en celular"></figure>
+      <p class="label mt-sm">Home</p>
+      <p class="body" style="font-size:7.6pt">El logo se achica con el ancho pero mantiene la proporción; la foto sigue ocupando la pantalla completa.</p>
+    </div>
+    <div>
+      <figure><img src="assets/cel-menu.jpg" alt="Menú en celular"></figure>
+      <p class="label mt-sm">Menú</p>
+      <p class="body" style="font-size:7.6pt">Panel negro que baja con una máscara; los enlaces suben escalonados. Los enlaces de escritorio se reemplazan por «Menú +». El panel agrega «Inicio» y repite mail y ciudad al pie.</p>
+    </div>
+    <div>
+      <figure><img src="assets/cel-proyectos.jpg" alt="Proyectos en celular"></figure>
+      <p class="label mt-sm">Proyectos</p>
+      <p class="body" style="font-size:7.6pt">Una columna, mismo formato de ficha, mismos filtros arriba.</p>
+    </div>
+  </div>
+
+  <div class="cols mt-lg">
+    <div>
+      <div class="defs">
+        <div class="d"><div class="k"><strong>Composiciones asimétricas</strong></div><div class="v">Se apilan en una columna. Los desfasajes verticales se desactivan: en una columna angosta no aportan y solo agregarían huecos.</div></div>
+        <div class="d"><div class="k"><strong>Secciones horizontales</strong></div><div class="v">«Cómo trabajamos» y «Antes de la reforma» dejan de fijarse y pasan a leerse en vertical. El desplazamiento horizontal atado al scroll no funciona bien con gestos táctiles.</div></div>
+        <div class="d"><div class="k"><strong>Vista previa del índice</strong></div><div class="v">No existe: depende de un cursor.</div></div>
+      </div>
+    </div>
+    <div>
+      <div class="defs">
+        <div class="d"><div class="k"><strong>Áreas seguras</strong></div><div class="v">Todos los bordes contemplan las zonas de la barra del sistema y del notch.</div></div>
+        <div class="d"><div class="k"><strong>Alturas</strong></div><div class="v">Se usa svh en vez de vh, para que las barras del navegador que aparecen y desaparecen no corten el contenido.</div></div>
+      </div>
+      <h2 class="sub mt">Un solo quiebre importante</h2>
+      <p class="body" style="font-size:7.6pt">El sitio tiene un único punto de cambio entre celular y escritorio: debajo, una columna; encima, la grilla de 12. Todo lo demás —tamaños de letra, márgenes, imágenes— es continuo gracias a <span class="mono">clamp()</span>. Menos quiebres significa menos combinaciones que probar y menos formas de romperse.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 16 CRITERIO ============ -->
+<section class="page">
+  <div class="phead"><span>C · 16 Criterio</span><span>Lo que se dejó afuera</span></div>
+  <div class="pfoot"><span>Decisiones de diseño · bt-arq-prev.vercel.app</span><span>18</span></div>
+
+  <h1 class="title">Lo que se dejó afuera, y por qué</h1>
+  <p class="lead">Ninguna de estas ausencias es un olvido. Cada una se evaluó y se descartó por una razón concreta; varias se pueden sumar más adelante sin rehacer nada.</p>
+
+  <div class="cols tight dense" style="font-size:7pt">
+    <div class="defs">
+      <div class="d"><div class="k"><strong>Formulario de contacto</strong></div><div class="v">Esconde el mail, atrae spam y suma un servicio que mantener. El mailto: gigante cumple la misma función con cero infraestructura.</div></div>
+      <div class="d"><div class="k"><strong>Mapa embebido</strong></div><div class="v">Scripts de terceros, cookies y un bloque visual ajeno. Se reemplaza por foto + enlace al mapa.</div></div>
+      <div class="d"><div class="k"><strong>Buscador</strong></div><div class="v">La grilla completa y el filtro por programa resuelven la búsqueda sin agregar un campo de texto.</div></div>
+      <div class="d"><div class="k"><strong>Paginación</strong></div><div class="v">Todos los proyectos se muestran en una sola grilla; paginar agregaría clics para llegar al final.</div></div>
+      <div class="d"><div class="k"><strong>Blog o novedades</strong></div><div class="v">Una sección que no se actualiza envejece el sitio entero. Instagram ya cumple ese rol y está enlazado.</div></div>
+      <div class="d"><div class="k"><strong>Versión en inglés</strong></div><div class="v">Duplicaría todo el contenido y obligaría a mantener dos versiones de cada texto. Se puede agregar cuando exista público que lo justifique.</div></div>
+      <div class="d"><div class="k"><strong>Modo oscuro conmutable</strong></div><div class="v">La web ya alterna blanco y negro por diseño; un segundo esquema competiría con esa intención.</div></div>
+      <div class="d"><div class="k"><strong>Galería en ventana modal</strong></div><div class="v">Las fotos ya se ven grandes al hacer scroll. Un visor superpuesto agregaría un estado más, pelearía con el scroll suave y obligaría a un botón de cerrar.</div></div>
+      <div class="d"><div class="k"><strong>Carrusel o slider</strong></div><div class="v">Esconde contenido detrás de flechas y obliga a decidir el orden por el visitante. Acá el orden lo da el scroll.</div></div>
+      <div class="d"><div class="k"><strong>Pantalla de carga</strong></div><div class="v">La intro del hero cumple esa función y, además, cuenta algo.</div></div>
+    </div>
+    <div class="defs">
+      <div class="d"><div class="k"><strong>Banner de cookies</strong></div><div class="v">El sitio no usa cookies ni analítica. Si se suma medición, conviene una herramienta sin cookies para no tener que pedir consentimiento.</div></div>
+      <div class="d"><div class="k"><strong>Sección de servicios con iconos</strong></div><div class="v">«Anteproyecto, dirección de obra, permisos» ya se cuenta en «Cómo trabajamos», con nombre, explicación e imagen. Una grilla de iconos genéricos diría lo mismo con menos credibilidad.</div></div>
+      <div class="d"><div class="k"><strong>Testimonios de clientes</strong></div><div class="v">En arquitectura la prueba es la obra construida. Un testimonio no verificable resta seriedad.</div></div>
+      <div class="d"><div class="k"><strong>Equipo ampliado</strong></div><div class="v">Por ahora aparecen las dos socias. Sumar colaboradores es agregar entradas a la misma grilla cuando haga falta.</div></div>
+      <div class="d"><div class="k"><strong>Planos o PDF descargables</strong></div><div class="v">Decisión a tomar con el estudio: implica publicar documentación técnica. El lugar natural sería una fila más en la ficha del proyecto.</div></div>
+      <div class="d"><div class="k"><strong>Precios o presupuestos</strong></div><div class="v">No corresponde al medio: cada obra se cotiza después de la primera charla, que es a lo que invita el sitio.</div></div>
+      <div class="d"><div class="k"><strong>Redes además de Instagram</strong></div><div class="v">Es la única que el estudio sostiene. Enlazar perfiles vacíos es peor que no enlazar.</div></div>
+      <div class="d"><div class="k"><strong>Newsletter</strong></div><div class="v">Necesita alguien que escriba con frecuencia y una herramienta de envío. No hay ni una cosa ni la otra.</div></div>
+      <div class="d"><div class="k"><strong>Chat o WhatsApp flotante</strong></div><div class="v">Una burbuja fija tapa las fotos en celular. Si se quiere WhatsApp, el lugar es la página de contacto, al lado del mail.</div></div>
+      <div class="d"><div class="k"><strong>Hover sobre las fotos</strong></div><div class="v">El revelado y el parallax ya dan movimiento. Un zoom adicional al pasar el cursor volvería la página inquieta.</div></div>
+    </div>
+  </div>
+
+  <div class="cols mt">
+    <div class="box">
+      <p class="label">Lo que sí conviene agregar</p>
+      <p>Una analítica sin cookies para saber qué proyectos se miran y hasta dónde llega la gente. Recién con datos conviene discutir el orden de los destacados o el tamaño de la galería.</p>
+    </div>
+    <div>
+      <p class="note">Nada de lo que está afuera quedó bloqueado. El sitio está armado en piezas independientes: sumar una sección nueva, un idioma o un formulario es agregar, no rehacer. La lista existe para que la decisión se tome a conciencia y no por costumbre: «toda web tiene esto» no es una razón.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 17 ACCESIBILIDAD, SEO Y PRÓXIMOS PASOS ============ -->
+<section class="page">
+  <div class="phead"><span>C · 17 Cierre</span><span>Accesibilidad y SEO</span></div>
+  <div class="pfoot"><span>Decisiones de diseño · bt-arq-prev.vercel.app</span><span>19</span></div>
+
+  <h1 class="title">Decisiones que no se ven, pero sostienen todo</h1>
+
+  <div class="cols">
+    <div>
+      <p class="label">Accesibilidad</p>
+      <div class="defs">
+        <div class="d"><div class="k"><strong>Menú accesible</strong></div><div class="v">Botón con estado abierto/cerrado anunciado, cierre con Escape y enlaces fuera del foco mientras el panel está cerrado.</div></div>
+        <div class="d"><div class="k"><strong>Foco visible</strong></div><div class="v">Contorno visible en todo el sitio. Se puede recorrer la web entera con el teclado.</div></div>
+        <div class="d"><div class="k"><strong>Enlaces externos</strong></div><div class="v">Instagram y el mapa avisan «(se abre en otra pestaña)» para lectores de pantalla.</div></div>
+        <div class="d"><div class="k"><strong>Movimiento reducido</strong></div><div class="v">Con la preferencia del sistema activada no corre ninguna animación y todo el contenido queda visible.</div></div>
+        <div class="d"><div class="k"><strong>Sin JavaScript</strong></div><div class="v">Una regla en el layout garantiza que el contenido se vea igual: la web sigue siendo legible.</div></div>
+      </div>
+    </div>
+    <div>
+      <p class="label">SEO</p>
+      <p class="body">Cada página declara su propio título y descripción, con el patrón «Nombre de la página | BT Arquitectas». Las páginas de proyecto se generan en el build con título y descripción propios (programa, lugar y año), y solo existen las de la lista: cualquier otra dirección devuelve «no encontrada» en vez de una página vacía.</p>
+    </div>
+  </div>
+
+  <div class="rule"></div>
+
+  <h2 class="sub" style="font-size:13pt;font-weight:400;max-width:70%">El sitio está listo para recibir el material real; hasta entonces, cada decisión se puede discutir sin costo</h2>
+
+  <p class="note mt-lg" style="max-width:70%">Documento generado sobre la versión de preview publicada en bt-arq-prev.vercel.app. Las capturas corresponden a esa versión; los textos e imágenes que se ven en ellas son provisorios.</p>
+</section>
+
+</body>
+</html>

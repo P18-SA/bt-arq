@@ -18,7 +18,7 @@ type Props = {
   /** Foto chica, arriba a la izquierda, a la altura del cuerpo */
   aside: Shot;
   /** Foto de cierre, a todo el ancho y casi la altura de la pantalla */
-  wide: Shot;
+  wide?: Shot;
 };
 
 /**
@@ -29,7 +29,8 @@ type Props = {
  */
 export function EditorialNote({ eyebrow, lead, paragraphs, fallback, leadFallback, aside, wide }: Props) {
   return (
-    <section className="bg-fog pt-[clamp(3rem,9vh,6rem)]">
+    // Sin foto de cierre el gris es solo la banda de texto: mismo aire arriba que abajo
+    <section className={`bg-fog ${wide ? "pt-[clamp(3rem,9vh,6rem)]" : "pt-[clamp(5rem,14vh,10rem)]"}`}>
       <div className="grid grid-cols-12 gap-x-(--gutter) gap-y-8 px-(--gutter) pb-[clamp(5rem,14vh,10rem)]">
         <p className="col-span-12 text-label text-graphite uppercase md:col-span-3">{eyebrow}</p>
 
@@ -63,17 +64,19 @@ export function EditorialNote({ eyebrow, lead, paragraphs, fallback, leadFallbac
       </div>
 
       {/* Cierre a sangre, casi una pantalla de alto */}
-      <div data-reveal className="h-[68svh] md:h-[76svh]">
-        <Media
-          src={wide.src}
-          label={wide.label}
-          tone={wide.tone}
-          bleed="y"
-          speed="auto"
-          sizes="100vw"
-          className="h-full w-full"
-        />
-      </div>
+      {wide && (
+        <div data-reveal className="h-[68svh] md:h-[76svh]">
+          <Media
+            src={wide.src}
+            label={wide.label}
+            tone={wide.tone}
+            bleed="y"
+            speed="auto"
+            sizes="100vw"
+            className="h-full w-full"
+          />
+        </div>
+      )}
     </section>
   );
 }

@@ -48,6 +48,7 @@ export default function SiteMotion({ fixed, children, smooth = true }: Props) {
 
           if (has("[data-page-title]") || has("[data-page-in]")) motion.pageIntro(el);
           if (has("[data-contact-page]")) motion.contactPage(el);
+          if (has("[data-notfound-page]")) motion.notFoundPage(el);
           motion.statements(el);
           motion.reveals(el);
           motion.plusDraws(el);

@@ -55,11 +55,6 @@ function HeroBand() {
           <br />
           <span className="text-paper">Berthet + Taranto</span>
         </p>
-        <p className="hidden text-paper/70 sm:block">
-          Montevideo
-          <br />
-          <span className="text-paper">Uruguay</span>
-        </p>
         <p className="text-right text-paper/70">
           Cargando
           <br />

@@ -34,6 +34,57 @@ type Props = {
  * Los rótulos van en mayúscula y chicos; los textos grandes quedan en caja baja.
  */
 export function Spread({ eyebrow, indexLabel, indexMeta, rows, cover, inset, children, full = false }: Props) {
+  const label = (
+    <div
+      className={
+        full
+          ? // Mismo tamaño, peso e interlínea que los ítems de la nav del header
+            "flex shrink-0 items-baseline gap-0 font-medium normal-case text-[clamp(1rem,1.15vw,1.25rem)] text-ink"
+          : "flex w-full max-w-md items-baseline justify-between gap-6 text-label text-graphite uppercase md:ml-auto"
+      }
+    >
+      <span>{indexLabel}</span>
+      {indexMeta &&
+        (full ? (
+          <span className="ml-[0.12em] inline-block translate-y-[-0.42em] text-[0.62em] font-medium tabular-nums text-graphite">
+            {indexMeta}
+          </span>
+        ) : (
+          <span className="tabular-nums">{indexMeta}</span>
+        ))}
+    </div>
+  );
+
+  const list = (
+    <ol className={`w-full max-w-md md:ml-auto ${full ? "" : "mt-[6vh] md:mt-[8vh]"}`}>
+      {rows.map((row, i) => {
+        const body = (
+          <>
+            <span className="flex items-baseline gap-3">
+              <span className="link-draw text-lead">{row.title}</span>
+              {/* Guía punteada: ocupa el sobrante entre el título y el numeral */}
+              <span aria-hidden="true" className="min-w-6 flex-1 translate-y-[-0.25em] border-b border-dotted border-ink/30" />
+              <span className="shrink-0 text-meta text-graphite tabular-nums">{String(i + 1).padStart(2, "0")}</span>
+            </span>
+            {row.note && <span className="mt-0.5 block max-w-[34ch] text-meta text-graphite">{row.note}</span>}
+          </>
+        );
+        return (
+          // Interlínea ajustada a mano: filas apretadas, sin perder el área de click
+          <li key={row.title} className="py-[clamp(0.25rem,0.7vh,0.5rem)]">
+            {row.href ? (
+              <Link href={row.href} className="group block">
+                {body}
+              </Link>
+            ) : (
+              body
+            )}
+          </li>
+        );
+      })}
+    </ol>
+  );
+
   return (
     <section className={`grid grid-cols-1 items-stretch md:grid-cols-2 ${full ? "md:min-h-[124svh]" : ""}`}>
       {/* Izquierda: la obra, a sangre contra el borde de la sección */}
@@ -66,53 +117,18 @@ export function Spread({ eyebrow, indexLabel, indexMeta, rows, cover, inset, chi
             : "pt-6 md:pt-8"
         }`}
       >
-        <div
-          className={
-            full
-              ? // Mismo tamaño, peso e interlínea que los ítems de la nav del header, con su mismo
-                // desplazamiento: así cae sobre la misma línea. AJUSTE A MANO: mover translate-y.
-                "flex w-full translate-y-[0.12em] items-baseline gap-0 font-medium normal-case text-[clamp(1rem,1.15vw,1.25rem)] text-ink"
-              : "flex w-full max-w-md items-baseline justify-between gap-6 text-label text-graphite uppercase md:ml-auto"
-          }
-        >
-          <span>{indexLabel}</span>
-          {indexMeta &&
-            (full ? (
-              <span className="ml-[0.12em] inline-block translate-y-[-0.42em] text-[0.62em] font-medium tabular-nums text-graphite">
-                {indexMeta}
-              </span>
-            ) : (
-              <span className="tabular-nums">{indexMeta}</span>
-            ))}
-        </div>
-
-        <ol className="mt-[6vh] w-full max-w-md md:mt-[8vh] md:ml-auto">
-          {rows.map((row, i) => {
-            const body = (
-              <>
-                <span className="flex items-baseline gap-3">
-                  <span className="link-draw text-lead">{row.title}</span>
-                  {/* Guía punteada: ocupa el sobrante entre el título y el numeral */}
-                  <span aria-hidden="true" className="min-w-6 flex-1 translate-y-[-0.25em] border-b border-dotted border-ink/30" />
-                  <span className="shrink-0 text-meta text-graphite tabular-nums">{String(i + 1).padStart(2, "0")}</span>
-                </span>
-                {row.note && <span className="mt-0.5 block max-w-[34ch] text-meta text-graphite">{row.note}</span>}
-              </>
-            );
-            return (
-              // Interlínea ajustada a mano: filas apretadas, sin perder el área de click
-              <li key={row.title} className="py-[clamp(0.25rem,0.7vh,0.5rem)]">
-                {row.href ? (
-                  <Link href={row.href} className="group block">
-                    {body}
-                  </Link>
-                ) : (
-                  body
-                )}
-              </li>
-            );
-          })}
-        </ol>
+        {full ? (
+          // El rótulo cae en la misma línea que el título de la fila 01 (en mobile va arriba)
+          <div className="mt-[6vh] flex flex-col gap-6 md:mt-[8vh] md:flex-row md:items-baseline md:gap-(--gutter)">
+            {label}
+            {list}
+          </div>
+        ) : (
+          <>
+            {label}
+            {list}
+          </>
+        )}
 
         {children}
 

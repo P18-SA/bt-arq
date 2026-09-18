@@ -92,7 +92,7 @@ body::-webkit-scrollbar {
 @media (prefers-reduced-motion: no-preference) {
   /* La banda del hero arranca como pantalla de carga: a pantalla completa desde el primer pintado */
   [data-hero-band] {
-    height: 100svh;
+    height: calc(100svh + 2px);
   }
 
   [data-hero-meta],
@@ -101,6 +101,7 @@ body::-webkit-scrollbar {
   [data-page-title],
   [data-page-in],
   [data-contact-bg],
+  [data-notfound-bg],
   [data-location-card] {
     visibility: hidden;
   }
