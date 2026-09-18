@@ -2,11 +2,12 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, type ReactNode } from "react";
 import { gsap, ScrollSmoother, useGSAP } from "@/lib/gsap";
 import { contact, nav } from "./content";
 import { Clock } from "./Clock";
 import { ContactModal } from "./ContactModal";
+import { CircleButton } from "./CircleButton";
 import { Plus } from "./Plus";
 import { Word, type WordSvg } from "./Word";
 
@@ -15,6 +16,17 @@ type Props = {
   /** En la home, el logo y los enlaces esperan a la intro del hero */
   intro?: boolean;
 };
+
+// Cada dato del header entra desde su propia línea: el wrapper recorta, el interior sube.
+function Rise({ children }: { children: ReactNode }) {
+  return (
+    <span className="block overflow-hidden pb-[0.2em]">
+      <span data-header-rise className="block">
+        {children}
+      </span>
+    </span>
+  );
+}
 
 export function Header({ words, intro = false }: Props) {
   const [open, setOpen] = useState(false);
@@ -43,7 +55,7 @@ export function Header({ words, intro = false }: Props) {
     { scope },
   );
 
-  // Abrir/cerrar: el "+" gira 45° y se vuelve una "×"
+  // Abrir/cerrar el panel del menú móvil
   useGSAP(
     () => {
       const tl = menu.current;
@@ -52,7 +64,6 @@ export function Header({ words, intro = false }: Props) {
       if (reduce) tl.progress(open ? 1 : 0);
       else if (open) tl.timeScale(1).play();
       else tl.timeScale(1.7).reverse();
-      gsap.to("[data-menu-icon]", { rotation: open ? 45 : 0, duration: reduce ? 0 : 0.8, ease: "expo.inOut" });
       ScrollSmoother.get()?.paused(open);
     },
     { dependencies: [open], scope },
@@ -74,59 +85,68 @@ export function Header({ words, intro = false }: Props) {
             {...introAttr("data-header-logo")}
             onClick={() => setOpen(false)}
             aria-label="Berthet + Taranto, inicio"
-            className="pointer-events-auto flex items-center gap-[0.15em] text-[1.05rem]"
+            className="pointer-events-auto flex items-center gap-[0.15em] text-[clamp(1.1rem,1.3vw,1.4rem)]"
           >
             <Word svg={words.berthet} height="0.66em" />
             <Plus />
             <Word svg={words.taranto} height={`${(0.66 * words.taranto.h) / 154}em`} />
           </Link>
 
-          <span data-header-clock {...introAttr("data-header-item")} className="pointer-events-none hidden lg:block">
-            <Clock className="text-[0.9rem]" />
+          <span
+            data-header-clock
+            {...introAttr("data-header-item")}
+            // AJUSTE A MANO — aire entre el logo y la hora cuando el hero ya está abierto
+            className="pointer-events-none hidden translate-y-[0.12em] lg:block lg:ml-[clamp(1.5rem,4vw,5.5rem)]"
+          >
+            <Rise>
+              <Clock className="text-[clamp(1rem,1.15vw,1.25rem)]" />
+            </Rise>
           </span>
 
-          <nav aria-label="Principal" className="pointer-events-auto ml-auto hidden md:block">
-            <ul className="flex gap-[clamp(0.9rem,2.4vw,2.25rem)] text-[0.9rem]">
+          <nav aria-label="Principal" className="pointer-events-auto ml-auto hidden translate-y-[0.12em] md:block">
+            <ul className="flex gap-[clamp(1rem,2.6vw,2.5rem)] text-[clamp(1rem,1.15vw,1.25rem)]">
               {nav.map((item) =>
                 item.href === "/contacto" ? (
                   <li key={item.href} {...introAttr("data-header-item")}>
-                    <button
-                      type="button"
-                      aria-expanded={contactOpen}
-                      onClick={() => setContactOpen(true)}
-                      className="link-draw pb-0.5"
-                    >
-                      {item.label}
-                    </button>
+                    <Rise>
+                      <button
+                        type="button"
+                        aria-expanded={contactOpen}
+                        onClick={() => setContactOpen(true)}
+                        className="link-draw pb-0.5"
+                      >
+                        {item.label}
+                      </button>
+                    </Rise>
                   </li>
                 ) : (
                   <li key={item.href} {...introAttr("data-header-item")}>
-                    <Link
-                      href={item.href}
-                      aria-current={isCurrent(item.href) ? "page" : undefined}
-                      className="link-draw pb-0.5"
-                    >
-                      {item.label}
-                    </Link>
+                    <Rise>
+                      <Link
+                        href={item.href}
+                        aria-current={isCurrent(item.href) ? "page" : undefined}
+                        className="link-draw pb-0.5"
+                      >
+                        {item.label}
+                      </Link>
+                    </Rise>
                   </li>
                 ),
               )}
             </ul>
           </nav>
 
-          <button
-            type="button"
-            {...introAttr("data-header-item")}
-            aria-expanded={open}
-            aria-controls="menu-movil"
-            onClick={() => setOpen((v) => !v)}
-            className="pointer-events-auto -mr-2 flex items-center gap-2 p-2 text-[0.9rem] md:hidden"
-          >
-            {open ? "Cerrar" : "Menú"}
-            <span data-menu-icon className="inline-flex text-[1.35rem]">
-              <Plus />
-            </span>
-          </button>
+          <div {...introAttr("data-header-item")} className="md:hidden">
+            <CircleButton
+              aria-expanded={open}
+              aria-controls="menu-movil"
+              onClick={() => setOpen((v) => !v)}
+              filled={open}
+              className="-mr-2 p-2 text-[0.9rem]"
+            >
+              {open ? "Cerrar" : "Menú"}
+            </CircleButton>
+          </div>
         </div>
       </header>
 

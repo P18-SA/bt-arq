@@ -20,28 +20,17 @@ export default function TodosLosProyectos() {
     <Shell>
       {/* Fondo explícito: la barra de filtros se invierte contra lo que tiene detrás y, dentro del
           contenedor de scroll suave, sin este fondo no tendría contra qué mezclarse. */}
-      <main className="bg-paper px-(--gutter) pt-[20vh] pb-[18vh]">
-        <div className="mb-[6vh] flex flex-wrap items-end justify-between gap-x-10 gap-y-4">
-          <h1
-            data-page-title
-            className="max-w-[12ch] text-title"
-          >
-            Todos los proyectos
-          </h1>
-          <p data-page-in className="pb-[1.2vw] text-meta text-graphite tabular-nums">
-            ({projects.length}) proyectos
-          </p>
-        </div>
-
+      <main className="bg-paper px-(--gutter) pb-[18vh]">
         {/* El spread se sale del margen de la página: la foto llega al borde */}
-        <div className="mx-[calc(-1_*_var(--gutter))] mb-[14vh]">
+        {/* Ajuste manual: separación entre la apertura y la grilla (la barra de filtros se fija arriba) */}
+        <div className="mx-[calc(-1_*_var(--gutter))] mb-[26vh]">
           <Spread
-            eyebrow={`${cover.name}, ${cover.place}`}
             indexLabel="Selección"
             indexMeta={`(${String(selection.length).padStart(2, "0")})`}
             rows={selection.map((p) => ({ title: p.name, note: p.place }))}
             cover={{ src: photo(cover), label: `${cover.name}, portada`, tone: cover.tone }}
             inset={{ src: photo(aside), label: `${aside.name}, ${aside.place}`, tone: aside.tone }}
+            full
           />
         </div>
 

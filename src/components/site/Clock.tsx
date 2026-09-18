@@ -19,10 +19,19 @@ export function Clock({ className = "" }: { className?: string }) {
     return () => clearInterval(id);
   }, []);
 
+  const [h, m] = (time ?? "--:--").split(":");
+
+  // Hora, dos puntos y minutos por separado: los dos puntos laten solos, los números no se mueven
   return (
-    <p className={`flex items-baseline gap-2 tabular-nums ${className}`}>
-      <span className="opacity-60">{time ?? "--:--"}</span>
-      <span>Montevideo, UY</span>
+    <p className={`flex items-baseline gap-x-[0.85em] ${className}`}>
+      <span className="flex font-medium tabular-nums text-graphite">
+        <span>{h}</span>
+        <span data-clock-blink className="px-[0.06em]">
+          :
+        </span>
+        <span>{m}</span>
+      </span>
+      <span className="whitespace-nowrap">Montevideo, UY</span>
     </p>
   );
 }

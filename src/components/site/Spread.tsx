@@ -9,8 +9,8 @@ export type SpreadRow = {
 };
 
 type Props = {
-  /** Rótulo en mayúscula sobre la foto grande (columna izquierda) */
-  eyebrow: string;
+  /** Rótulo en mayúscula sobre la foto grande (columna izquierda); se omite si no se pasa */
+  eyebrow?: string;
   /** Rótulo en mayúscula del índice (columna derecha) */
   indexLabel: string;
   /** Dato corto al final de la fila del rótulo: año, cantidad, etc. */
@@ -23,6 +23,8 @@ type Props = {
   inset?: { src?: string; label: string; tone: Tone };
   /** Texto opcional debajo del índice, antes de la foto chica */
   children?: ReactNode;
+  /** Apertura a pantalla completa: la foto de la izquierda ocupa el viewport entero */
+  full?: boolean;
 };
 
 /**
@@ -30,26 +32,44 @@ type Props = {
  * chica que cierra abajo, alineada al borde derecho (ver referencia en DESIGN.md §5).
  * Los rótulos van en mayúscula y chicos; los textos grandes quedan en caja baja.
  */
-export function Spread({ eyebrow, indexLabel, indexMeta, rows, cover, inset, children }: Props) {
+export function Spread({ eyebrow, indexLabel, indexMeta, rows, cover, inset, children, full = false }: Props) {
   return (
-    <section className="grid grid-cols-1 items-stretch md:grid-cols-2">
+    <section className={`grid grid-cols-1 items-stretch md:grid-cols-2 ${full ? "md:h-svh" : ""}`}>
       {/* Izquierda: la obra, a sangre contra el borde de la sección */}
-      <div data-reveal className="relative">
+      <div data-reveal className={`relative ${full ? "h-svh md:h-full" : ""}`}>
         <Media
           src={cover.src}
           label={cover.label}
           tone={cover.tone}
           placeholder="blank"
-          ratio="3 / 4"
+          ratio={full ? undefined : "3 / 4"}
           sizes="(min-width: 768px) 50vw, 100vw"
           className="h-full w-full"
         />
-        <p className={`absolute top-4 left-4 text-label uppercase ${tones[cover.tone].ink}`}>{eyebrow}</p>
+        {eyebrow && (
+          <p
+            className={`absolute left-[calc(var(--gutter)+var(--edge))] text-label uppercase ${
+              full ? "top-[calc(env(safe-area-inset-top,0px)+1.1rem)]" : "top-4"
+            } ${tones[cover.tone].ink}`}
+          >
+            {eyebrow}
+          </p>
+        )}
       </div>
 
       {/* Derecha: el índice */}
-      <div className="flex flex-col px-(--gutter) pt-6 pb-8 md:pt-8">
-        <div className="flex w-full max-w-md items-baseline md:ml-auto justify-between gap-6 text-label text-graphite uppercase">
+      <div
+        className={`flex flex-col px-(--gutter) pb-8 ${
+          full
+            ? "pt-[calc(env(safe-area-inset-top,0px)+1.1rem)] md:pt-[calc(env(safe-area-inset-top,0px)+1.1rem)]"
+            : "pt-6 md:pt-8"
+        }`}
+      >
+        <div
+          className={`flex items-baseline gap-3 text-label text-graphite uppercase ${
+            full ? "w-full" : "w-full max-w-md justify-between gap-6 md:ml-auto"
+          }`}
+        >
           <span>{indexLabel}</span>
           {indexMeta && <span className="tabular-nums">{indexMeta}</span>}
         </div>
@@ -71,13 +91,21 @@ export function Spread({ eyebrow, indexLabel, indexMeta, rows, cover, inset, chi
         {children}
 
         {inset && (
-          <div data-reveal className="mt-(--gutter) w-[min(50%,16rem)] self-end md:mt-auto md:mb-[10vh]">
+          <div
+            data-reveal
+            // Ajuste manual: bajar/subir la foto chica cambiando el margen inferior (md:mb)
+            className={`mt-[12vh] self-end ${
+              full
+                ? "w-[min(58%,19rem)] md:mt-auto md:mb-[1vh]"
+                : "w-[min(50%,16rem)] md:mt-auto md:mb-[10vh]"
+            }`}
+          >
             <Media
               src={inset.src}
               label={inset.label}
               tone={inset.tone}
-              ratio="3 / 4"
-              sizes="(min-width: 768px) 20vw, 50vw"
+              ratio={full ? "3 / 4.4" : "3 / 4"}
+              sizes="(min-width: 768px) 22vw, 50vw"
               marks
             />
           </div>

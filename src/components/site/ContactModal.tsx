@@ -2,6 +2,7 @@
 
 import { useEffect, useId, useRef, useState } from "react";
 import { gsap, ScrollSmoother, useGSAP } from "@/lib/gsap";
+import { CircleButton } from "./CircleButton";
 import { contact } from "./content";
 
 const { address } = contact;
@@ -37,30 +38,6 @@ function Field({
         <input id={id} name={name} type={type} required={required} className={shared} />
       )}
     </p>
-  );
-}
-
-/** Botón circular: el círculo vacío se rellena de negro al pasar el cursor. */
-function CircleButton({
-  children,
-  onClick,
-  type = "button",
-  className = "",
-}: {
-  children: React.ReactNode;
-  onClick?: () => void;
-  type?: "button" | "submit";
-  className?: string;
-}) {
-  return (
-    <button
-      type={type}
-      onClick={onClick}
-      className={`group pointer-events-auto flex items-center gap-2 text-meta text-ink ${className}`}
-    >
-      <span className="size-[0.9em] shrink-0 rounded-full border border-ink transition-colors duration-300 ease-[cubic-bezier(0.65,0,0.35,1)] group-hover:bg-ink group-focus-visible:bg-ink" />
-      <span className="link-draw pb-0.5">{children}</span>
-    </button>
   );
 }
 
@@ -155,10 +132,12 @@ export function ContactModal({ open, onClose }: Props) {
           className="absolute inset-y-0 right-0 flex w-full flex-col overflow-y-auto bg-paper text-ink shadow-[0_0_6rem_rgb(0_0_0/0.35)] md:w-[72vw] lg:w-[66vw]"
         >
           <div className="flex items-start justify-end px-(--gutter) pt-[calc(env(safe-area-inset-top,0px)+1.1rem)]">
-            <CircleButton onClick={onClose}>Cerrar</CircleButton>
+            <CircleButton onClick={onClose} className="text-ink">
+              Cerrar
+            </CircleButton>
           </div>
 
-          <div className="grid flex-1 content-start gap-[clamp(2.5rem,6vw,4.5rem)] px-(--gutter) pt-[clamp(4rem,14vh,9rem)] pb-[calc(env(safe-area-inset-bottom,0px)+3rem)] lg:grid-cols-[minmax(0,1fr)_clamp(13rem,24%,18rem)] lg:gap-x-[clamp(3rem,8vw,7rem)]">
+          <div className="grid flex-1 content-start gap-[clamp(2.5rem,6vw,4.5rem)] px-(--gutter) pt-[clamp(4rem,14vh,9rem)] pb-[calc(env(safe-area-inset-bottom,0px)+3rem)] lg:grid-cols-[minmax(0,1fr)_max-content] lg:gap-x-[clamp(2.5rem,6vw,5rem)]">
             <div>
               <h2 data-contact-in className="text-subheading">
                 Consultas generales
@@ -175,7 +154,9 @@ export function ContactModal({ open, onClose }: Props) {
                   <Field name="mensaje" label="Contanos sobre tu proyecto o qué estás buscando" required area />
                 </div>
                 <div data-contact-in className="pt-[clamp(0.75rem,2vh,1.5rem)]">
-                  <CircleButton type="submit">Enviar</CircleButton>
+                  <CircleButton type="submit" className="text-ink">
+                    Enviar
+                  </CircleButton>
                   <p aria-live="polite" className="mt-4 text-meta text-ink/55">
                     {sent
                       ? "Se abre tu cliente de mail con la consulta cargada."
@@ -185,10 +166,10 @@ export function ContactModal({ open, onClose }: Props) {
               </form>
             </div>
 
-            <div data-contact-in className="grid grid-cols-2 content-start gap-x-(--gutter) gap-y-8 text-lead lg:grid-cols-1 lg:gap-y-[clamp(1.75rem,4vh,2.75rem)] lg:justify-self-end lg:mr-[clamp(1.5rem,5vw,5rem)] lg:pt-[clamp(6rem,16vh,11rem)]">
+            <div data-contact-in className="grid grid-cols-2 content-start gap-x-(--gutter) gap-y-8 text-lead lg:grid-cols-1 lg:gap-y-[clamp(1.75rem,4vh,2.75rem)] lg:justify-self-end lg:mr-[clamp(2.5rem,7vw,7rem)] lg:pt-[clamp(6rem,16vh,11rem)]">
               <div>
                 <p className="text-meta text-ink/55">Email</p>
-                <a href={`mailto:${contact.email}`} className="link-draw pb-0.5">
+                <a href={`mailto:${contact.email}`} className="link-draw pb-0.5 lg:whitespace-nowrap">
                   {contact.email}
                 </a>
               </div>
@@ -202,7 +183,7 @@ export function ContactModal({ open, onClose }: Props) {
 
               <div>
                 <p className="text-meta text-ink/55">Estudio</p>
-                <address className="not-italic">
+                <address className="not-italic lg:whitespace-nowrap">
                   {address.street}
                   <br />
                   {address.detail}

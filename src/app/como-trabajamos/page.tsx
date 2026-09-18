@@ -16,8 +16,8 @@ export default function ComoTrabajamos() {
     <Shell>
       <main>
         {/* La página no abre con un título: abre con la frase, que es lo que dice cómo trabajamos */}
-        <section className="grid grid-cols-12 gap-x-(--gutter) px-(--gutter) pt-[24vh] pb-[16vh]">
-          <h1 data-page-title className="col-span-12 text-heading text-nowrap md:col-span-9">
+        <section className="grid grid-cols-12 gap-x-(--gutter) px-(--gutter) pt-[18vh] pb-[12vh] md:pt-[24vh] md:pb-[16vh]">
+          <h1 data-page-title className="col-span-12 max-w-[24ch] text-heading md:col-span-9 md:max-w-none md:text-nowrap">
             {work.intro}
           </h1>
         </section>

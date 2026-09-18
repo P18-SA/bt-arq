@@ -61,7 +61,9 @@ texto en las 4–6 y la obra en las 8–12, a `100svh` y pegada a la de arriba y
 - **El texto es lo que se fija:** el rótulo de cada etapa se clava arriba y se queda, de manera que
   los cuatro se van apilando (cada uno un escalón más abajo); el párrafo acompaña a su obra y se
   suelta cuando entra la siguiente.
-- Rótulo en `label` (`Etapa 01`), título de etapa en `lead`: la columna es un índice, no un titular.
+- Rótulo en `meta` y `graphite` (`Etapa 01`), título de etapa en `lead` a **500** y en `ink`: la
+  columna es un índice, no un titular, y en ese cuerpo el regular se deshilacha (misma razón que
+  `body` 450 y `meta` 500 en §2).
 - Se hace con pines de ScrollTrigger (`motion.work`), **no** con `position: sticky`: con
   ScrollSmoother la página no scrollea de verdad y el sticky nunca se dispara.
 - Solo en escritorio. En mobile no se fija nada: rótulo, texto y obra, uno debajo del otro.

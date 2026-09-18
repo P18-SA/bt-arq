@@ -37,6 +37,7 @@ export function hero(root: HTMLElement, smoother: ScrollSmoother, playIntro: boo
   const hint = one(root, "[data-hero-hint]");
   const header = one(root, "[data-header]");
   const headerItems = all(root, "[data-header-item]");
+  const headerRise = all(root, "[data-header-rise]");
   const logo = one(root, "[data-header-logo]");
   const clock = root.querySelector<HTMLElement>("[data-header-clock]");
 
@@ -46,9 +47,12 @@ export function hero(root: HTMLElement, smoother: ScrollSmoother, playIntro: boo
   gsap.set(band, { height: innerHeight });
   gsap.set(header, { y: bandHeight });
   gsap.set([caption, logo], { autoAlpha: 0 });
-  // El reloj arranca pegado a la izquierda y se corre cuando aparece el logo chico del header
-  // 24px es el gap del header: el reloj ocupa el lugar del logo hasta que este aparece
-  if (clock) gsap.set(clock, { x: -(logo.getBoundingClientRect().width + 24) });
+  // Cada dato del header espera bajo su línea hasta que sube el lettering
+  gsap.set(headerRise, { yPercent: 115 });
+  // El reloj arranca en el lugar del logo (pegado a la izquierda) y se corre a su sitio
+  // cuando aparece el logo chico del header. Se mide contra el logo, así el aire entre ambos
+  // se puede cambiar solo con las clases del header.
+  if (clock) gsap.set(clock, { x: logo.getBoundingClientRect().left - clock.getBoundingClientRect().left });
 
   // Con la banda a pantalla completa, el logo baja al centro: ahí se arma la cruz
   const wordBox = word.getBoundingClientRect();
@@ -105,12 +109,9 @@ export function hero(root: HTMLElement, smoother: ScrollSmoother, playIntro: boo
     .to(meta, { autoAlpha: 0, y: -8, duration: 0.4, ease: "power2.in" }, "lift-=0.2")
     .to(word, { y: 0, duration: 1.05 }, "lift")
     .to(band, { height: bandHeight, duration: 1.05 }, "lift")
-    .fromTo(
-      headerItems,
-      { autoAlpha: 0, y: -10 },
-      { autoAlpha: 1, y: 0, duration: 0.7, ease: "power2.out", stagger: 0.05 },
-      "lift+=0.5",
-    )
+    .fromTo(headerItems, { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.5, ease: "power1.out" }, "lift+=0.45")
+    // Suben desde su propia línea, uno detrás de otro
+    .to(headerRise, { yPercent: 0, duration: 1.15, ease: "expo.out", stagger: 0.07 }, "lift+=0.45")
     .fromTo(hint, { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.6, ease: "power1.out" }, "lift+=0.65");
 
   const events = ["wheel", "touchmove", "keydown"] as const;
@@ -233,36 +234,36 @@ export function work(root: HTMLElement) {
   // El primer renglón arranca debajo del header
   const top = () => innerHeight * 0.14;
 
-  // Al empezar, en la pila solo está la primera etapa
-  gsap.set(rows.slice(1), { height: 0, autoAlpha: 0 });
+  // Los altos se miden una sola vez, con todo abierto: animar contra `height: "auto"` obliga al
+  // navegador a medir en cada cuadro y es lo que hace que el cierre del título se trabe.
+  const rowH = rows.map((row) => row.offsetHeight);
+  const titleH = titles.map((title) => title.offsetHeight);
 
   let active = -1;
-  const setActive = (i: number) => {
+  const setActive = (i: number, instant = false) => {
     if (i === active) return;
     active = i;
-    const open = (el: HTMLElement, show: boolean) =>
-      gsap.to(el, {
-        height: show ? "auto" : 0,
-        autoAlpha: show ? 1 : 0,
-        duration: 0.5,
-        ease: "power2.inOut",
-        overwrite: "auto",
-      });
-    // Las etapas pasadas quedan en la pila; las que faltan, todavía no
-    rows.forEach((row, j) => open(row, j <= i));
-    // El nombre lo lleva solo la etapa en curso
-    titles.forEach((title, j) => open(title, j === i));
+    const vars = instant
+      ? { duration: 0 }
+      : { duration: 0.55, ease: "power3.inOut" as const, overwrite: true as const };
+    // La etapa en curso va entera; las pasadas quedan reducidas a su numeral; las que faltan, fuera
+    rows.forEach((row, j) =>
+      gsap.to(row, { height: j > i ? 0 : rowH[j] - (j === i ? 0 : titleH[j]), autoAlpha: j > i ? 0 : 1, ...vars }),
+    );
+    titles.forEach((title, j) => gsap.to(title, { height: j === i ? titleH[j] : 0, autoAlpha: j === i ? 1 : 0, ...vars }));
   };
-  setActive(0);
+  setActive(0, true);
 
-  // La pila se clava arriba y acompaña hasta el final de la sección
+  // La pila se clava arriba y no se suelta hasta que la última obra terminó de pasar: con
+  // `bottom bottom` se soltaba una pantalla antes, justo cuando la última foto recién llegaba.
   ScrollTrigger.create({
     trigger: stack,
     start: () => `top top+=${top()}`,
     endTrigger: block,
-    end: "bottom bottom",
+    end: () => `bottom top+=${top() + stack.offsetHeight}`,
     pin: true,
     pinSpacing: false,
+    anticipatePin: 1,
     invalidateOnRefresh: true,
   });
 
@@ -285,6 +286,7 @@ export function work(root: HTMLElement) {
       end: () => `bottom top+=${top() + copy.offsetHeight}`,
       pin: true,
       pinSpacing: false,
+      anticipatePin: 1,
       invalidateOnRefresh: true,
     });
   });

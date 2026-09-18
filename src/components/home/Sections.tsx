@@ -1,4 +1,5 @@
 import Link from "next/link";
+import type { CSSProperties } from "react";
 import { featured, hero, heroPhoto, photo, projectHref, projects, studio } from "@/components/site/content";
 import { Media } from "@/components/site/Media";
 import { PlusLabel } from "@/components/site/Plus";
@@ -43,11 +44,11 @@ function HeroBand() {
         </div>
       </div>
 
-      {/* Datos de carga: al pie de la pantalla negra, se van cuando la banda se cierra */}
+      {/* Datos de carga: arriba de la pantalla negra, en la línea del nav; se van cuando la banda se cierra */}
       <div
         data-hero-meta
         aria-hidden="true"
-        className="absolute inset-x-0 bottom-0 flex items-end justify-between gap-6 px-[calc(var(--gutter)+var(--edge))] pb-[calc(env(safe-area-inset-bottom,0px)+1.4rem)] text-label"
+        className="absolute inset-x-0 top-0 flex items-start justify-between gap-6 px-[calc(var(--gutter)+var(--edge))] pt-[calc(env(safe-area-inset-top,0px)+1.1rem)] text-[clamp(1rem,1.15vw,1.25rem)] leading-[1.15]"
       >
         <p className="text-paper/70">
           Estudio de arquitectura
@@ -62,7 +63,7 @@ function HeroBand() {
         <p className="text-right text-paper/70">
           Cargando
           <br />
-          <span className="font-mono tabular-nums text-paper">
+          <span className="tabular-nums text-paper">
             <span data-hero-count>0</span>%
           </span>
         </p>
@@ -74,21 +75,36 @@ function HeroBand() {
 export function Hero() {
   return (
     // El card solo existe acá y en el cierre: el negro asoma a los costados mientras dura la apertura
-    <section id="inicio" data-hero className="relative mx-(--edge) flex h-svh flex-col bg-paper">
+    <section
+      id="inicio"
+      data-hero
+      // AJUSTE A MANO — ancho del negro a cada costado del card (marco del hero).
+      // Pisa el --edge global solo dentro del hero: lo usan el card, la banda y las tiras negras.
+      //   clamp(<mínimo en pantalla chica>, <proporcional al ancho>, <máximo en pantalla grande>)
+      //   más grande = más negro al costado · más chico = el blanco llega más al borde
+      style={{ "--edge": "clamp(16px, 1.8vw, 34px)" } as CSSProperties}
+      className="relative mx-(--edge) flex h-svh flex-col bg-paper"
+    >
+      {/* El negro de la banda baja por los costados del card: es un solo fondo con el lettering.
+          Al abrirse, los márgenes del card van a 0 y las tiras quedan fuera de pantalla. */}
+      <span aria-hidden="true" className="pointer-events-none absolute inset-y-0 -left-(--edge) w-(--edge) bg-ink" />
+      <span aria-hidden="true" className="pointer-events-none absolute inset-y-0 -right-(--edge) w-(--edge) bg-ink" />
+
       <HeroBand />
 
       <div data-hero-stage className="relative min-h-0 flex-1 overflow-hidden">
         {/*
-          Apoyada en el borde inferior del hero: al scrollear crece hacia arriba y a los lados.
-          Medida de la tira ANTES de expandirse, para ajustar a mano:
-            ancho = min(<alto de pantalla>svh, <ancho de pantalla>vw) — más chico = más fina
-            alto  = min(<alto de pantalla>svh, <ancho de pantalla>vw) — más grande = más alta
-          Manda el valor más chico de los dos, así no se desborda ni en pantallas anchas ni bajas.
+          AJUSTE A MANO — medida de la tira ANTES de abrirse con el scroll.
+          Apoyada en el borde inferior del hero: al scrollear crece hasta ocupar toda la ventana.
+          De cada par manda el valor más chico, así no se desborda ni en pantallas anchas ni bajas:
+            width  = min(<A>svh, <B>vw) → A/B más grandes = tira MÁS ANCHA
+            height = min(<C>svh, <D>vw) → C/D más grandes = tira MÁS ALTA
+          Para que quede más apaisada, subí solo los del width.
         */}
         <div
           data-hero-frame
           className="absolute bottom-0 left-1/2 -translate-x-1/2 overflow-hidden"
-          style={{ width: "min(26svh, 19vw)", height: "min(58svh, 44vw)" }}
+          style={{ width: "min(80svh, 49vw)", height: "min(58svh, 44vw)" }}
         >
           <Media
             src={heroPhoto}
@@ -99,10 +115,9 @@ export function Hero() {
           />
           <div
             data-hero-caption
-            className="absolute inset-x-0 bottom-0 flex items-end justify-between gap-4 px-[clamp(0.9rem,2vw,2.5rem)] pb-[clamp(0.9rem,2vw,2.5rem)] text-white"
+            className="absolute inset-x-0 bottom-0 flex items-end gap-4 px-[clamp(0.9rem,2vw,2.5rem)] pb-[clamp(0.9rem,2vw,2.5rem)] text-white"
           >
             <p className="text-lead">{hero.name}</p>
-            <p className="text-meta text-white/80">{hero.place}</p>
           </div>
         </div>
 

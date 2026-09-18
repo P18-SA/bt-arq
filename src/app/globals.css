@@ -65,6 +65,19 @@ body {
   color: var(--foreground);
 }
 
+/* Scroll sin barra visible (se mantiene el scroll con rueda/teclado/trackpad) */
+html {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+html::-webkit-scrollbar,
+body::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+  display: none;
+}
+
 ::selection {
   background: var(--foreground);
   color: var(--background);
@@ -195,3 +208,24 @@ body {
   white-space: nowrap;
 }
 
+
+/* Los dos puntos de la hora laten suave; los números quedan quietos */
+@keyframes clock-blink {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.25;
+  }
+}
+
+[data-clock-blink] {
+  animation: clock-blink 2.4s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-clock-blink] {
+    animation: none;
+  }
+}

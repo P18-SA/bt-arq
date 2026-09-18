@@ -299,7 +299,7 @@ export const work = {
     {
       title: "Dirección de obra",
       text: "Seguimos la construcción de cerca y con exigencia, hasta la entrega. La dirección no es un trámite final: es donde el proyecto se defiende de las concesiones.",
-      shot: () => photo(bySlug("apartamento-en-punta-carretas"), 8),
+      shot: () => photo(bySlug("apartamento-en-punta-carretas"), 4),
       tone: "graphite",
     },
   ] satisfies { title: string; text: string; tone: Tone; shot: () => string | undefined }[],

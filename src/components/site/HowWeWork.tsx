@@ -24,10 +24,10 @@ export function HowWeWork() {
         <ol data-work-stack className="bg-paper">
           {steps.map((step, i) => (
             <li key={step.title} data-work-row className="overflow-hidden">
-              <div className="pb-3">
-                <p className="text-label text-graphite tabular-nums">Etapa {numeral(i)}</p>
+              <div className="pb-4">
+                <p className="text-meta text-graphite tabular-nums">Etapa {numeral(i)}</p>
                 <div data-work-title className="overflow-hidden">
-                  <h2 className="text-lead">{step.title}</h2>
+                  <h2 className="mt-1 text-lead font-medium">{step.title}</h2>
                 </div>
               </div>
             </li>
@@ -39,15 +39,15 @@ export function HowWeWork() {
         <Fragment key={step.title}>
           {/* En mobile no hay pila: cada etapa lleva su rótulo arriba */}
           <div className="col-span-4 md:hidden">
-            <p className="text-label text-graphite tabular-nums">Etapa {numeral(i)}</p>
-            <h2 className="text-lead">{step.title}</h2>
+            <p className="text-meta text-graphite tabular-nums">Etapa {numeral(i)}</p>
+            <h2 className="mt-1 text-lead font-medium">{step.title}</h2>
           </div>
 
           {/* Texto: acompaña a su obra y se suelta cuando entra la siguiente */}
           <div
             data-work-cell
             style={{ "--row": i + 1 } as CSSProperties}
-            className="col-span-4 mt-4 mb-8 md:col-span-3 md:col-start-4 md:mt-0 md:mb-0"
+            className="col-span-4 mt-5 mb-6 md:col-span-3 md:col-start-4 md:mt-0 md:mb-0"
           >
             <p data-work-copy className="max-w-[42ch] bg-paper text-body text-graphite">
               {step.text}
@@ -58,7 +58,7 @@ export function HowWeWork() {
           <div
             data-work-cell
             style={{ "--row": i + 1 } as CSSProperties}
-            className="col-span-4 mb-[12vh] aspect-[3/4] md:col-span-5 md:col-start-8 md:mb-0 md:aspect-auto md:h-svh"
+            className="col-span-4 mb-16 aspect-[3/4] md:col-span-5 md:col-start-8 md:mb-0 md:aspect-auto md:h-svh"
           >
             <Media
               src={step.shot()}

@@ -69,7 +69,7 @@ export function ProjectDetail({ project }: { project: Project }) {
               {String(index + 1).padStart(2, "0")} / {projects.length}
             </span>
           </div>
-          <h1 data-page-title className="mt-[5vh] max-w-[14ch] text-title">
+          <h1 data-page-title className="mt-[5vh] text-heading text-nowrap">
             {project.name}
           </h1>
           <dl
