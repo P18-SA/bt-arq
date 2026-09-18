@@ -9,11 +9,12 @@ export const tones: Record<Tone, { bg: string; ink: string }> = {
   shadow: { bg: "bg-shadow", ink: "text-white/40" },
 };
 
-// Cuánto sobresale la capa interior, para poder moverla (parallax) sin mostrar bordes
+// Cuánto sobresale la capa interior, para poder moverla (parallax) sin mostrar bordes.
+// Con data-speed="auto" el recorrido es exactamente este sobrante: poco margen = parallax sutil.
 const bleeds = {
   none: "inset-0",
-  y: "inset-x-0 -inset-y-[22%]",
-  x: "inset-y-0 -inset-x-[18%]",
+  y: "inset-x-0 -inset-y-[7%]",
+  x: "inset-y-0 -inset-x-[6%]",
 };
 
 type Props = {

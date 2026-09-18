@@ -98,12 +98,18 @@ body::-webkit-scrollbar {
   [data-hero-meta],
   [data-hero-word],
   [data-hero-hint],
-  [data-header-item],
-  [data-header-logo],
   [data-page-title],
   [data-page-in],
   [data-contact-bg],
   [data-location-card] {
+    visibility: hidden;
+  }
+
+  /* El header solo se esconde mientras la intro del hero no se jugo todavia.
+     Al volver a la home por navegacion del cliente la intro ya no corre, asi que
+     el CSS no puede dejar la navbar escondida esperando un tween que no llega. */
+  html:not(.intro-done) [data-header-item],
+  html:not(.intro-done) [data-header-logo] {
     visibility: hidden;
   }
 }

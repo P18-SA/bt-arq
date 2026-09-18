@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import { Flip, gsap, ScrollTrigger, useGSAP } from "@/lib/gsap";
 import { photo, projectHref, programs, type Program, type Project } from "@/components/site/content";
 import { Media } from "@/components/site/Media";
@@ -15,7 +16,8 @@ export function ProjectGrid({ projects }: { projects: Project[] }) {
   const list = useRef<HTMLUListElement>(null);
   const flipState = useRef<Flip.FlipState | null>(null);
   const barSlot = useRef<HTMLDivElement>(null);
-  const bar = useRef<HTMLDivElement>(null);
+  const [stuck, setStuck] = useState(false);
+  const [stuckTop, setStuckTop] = useState(0);
 
   const options: { label: Filter; count: number }[] = [
     { label: "Todos", count: projects.length },
@@ -55,72 +57,76 @@ export function ProjectGrid({ projects }: { projects: Project[] }) {
   );
 
   /**
-   * La barra de filtros queda fija debajo del header mientras se recorre la grilla y el pie la empuja
-   * hacia arriba al entrar, para no quedar encima del cierre de contacto.
-   * Se mueve con transform y no con position:fixed: dentro del contenedor de scroll suave (que usa
-   * transform) un elemento fijo se posiciona contra ese contenedor, no contra la ventana.
+   * La barra de filtros acompaña la grilla pegada debajo del header y se retira al llegar el pie.
+   * Mientras está pegada se dibuja en un portal a <body>: dentro del contenedor de scroll suave
+   * (que usa transform) un position:fixed se posicionaría contra ese contenedor y, si en cambio se
+   * moviera con transform cuadro a cuadro, quedaría un cuadro atrasada respecto del scroll suave y
+   * temblaría. Fuera del contenedor no hay nada que seguir: el navegador la deja quieta.
    */
   useGSAP(
     () => {
       const slot = barSlot.current;
-      const el = bar.current;
-      if (!slot || !el) return;
+      if (!slot) return;
 
       const header = document.querySelector("header");
       const footer = document.querySelector("footer");
-      const setY = gsap.quickSetter(el, "y", "px");
       const gap = 10;
-      let last = 0;
+      const under = () => (header?.getBoundingClientRect().height ?? 0) + gap;
 
-      const update = () => {
-        const slotBox = slot.getBoundingClientRect();
-        const under = (header?.getBoundingClientRect().height ?? 0) + gap;
-        // Con el pie a la vista, el tope baja hasta sacar la barra de pantalla
-        const ceiling = footer ? footer.getBoundingClientRect().top - slotBox.height - gap : Infinity;
-        const y = Math.max(0, Math.min(under, ceiling) - slotBox.top);
-        if (Math.abs(y - last) < 0.5) return;
-        last = y;
-        setY(y);
-        if (y > 0.5) el.setAttribute("data-stuck", "");
-        else el.removeAttribute("data-stuck");
-      };
+      const trigger = ScrollTrigger.create({
+        trigger: slot,
+        start: () => `top ${under()}px`,
+        endTrigger: footer ?? undefined,
+        end: () => `top ${under() + slot.offsetHeight}px`,
+        onToggle: (self) => {
+          setStuckTop(under());
+          setStuck(self.isActive);
+        },
+      });
 
-      gsap.ticker.add(update);
-      return () => gsap.ticker.remove(update);
+      return () => trigger.kill();
     },
     { scope },
   );
 
+  /*
+    La barra va sin fondo y se invierte contra lo que tenga detrás, igual que el header: entre ella
+    y la página no puede haber ningún elemento que aísle la mezcla (transform, opacidad o filtro).
+  */
+  const filterBar = (intro: boolean) => (
+    <div className="relative border-b border-paper/25 pt-3 pb-4 text-white mix-blend-difference">
+      {/* La animación de entrada solo la lleva la copia en el flujo: la del portal nace ya visible */}
+      <div {...(intro ? { "data-page-in": "" } : {})} className="flex flex-wrap gap-x-6 gap-y-2">
+        {options.map((o) => (
+          <button
+            key={o.label}
+            type="button"
+            aria-pressed={filter === o.label}
+            onClick={() => choose(o.label)}
+            className="group flex items-start gap-1 text-lead text-white/55 transition-colors duration-300 hover:text-white aria-pressed:text-white"
+          >
+            <span className="link-draw pb-0.5">{o.label}</span>
+            <sup className="text-[0.6em] tabular-nums">{o.count}</sup>
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+
   return (
     <div ref={scope}>
-      {/*
-        El hueco conserva el lugar de la barra en el flujo mientras ella se mueve.
-        La barra va sin fondo y se invierte contra lo que tenga detrás, igual que el header. Para que
-        eso funcione, entre ella y el contenedor del scroll suave no puede haber ningún elemento que
-        aísle la mezcla (transform, opacidad o filtro): por eso el hueco queda limpio y la animación
-        de entrada la lleva la fila de botones, adentro.
-      */}
-      <div ref={barSlot} className="mb-[8vh]">
-        <div
-          ref={bar}
-          className="relative z-30 border-b border-paper/25 pt-3 pb-4 text-white mix-blend-difference"
-        >
-          <div data-page-in className="flex flex-wrap gap-x-6 gap-y-2">
-            {options.map((o) => (
-              <button
-                key={o.label}
-                type="button"
-                aria-pressed={filter === o.label}
-                onClick={() => choose(o.label)}
-                className="group flex items-start gap-1 text-lead text-white/55 transition-colors duration-300 hover:text-white aria-pressed:text-white"
-              >
-                <span className="link-draw pb-0.5">{o.label}</span>
-                <sup className="text-[0.6em] tabular-nums">{o.count}</sup>
-              </button>
-            ))}
-          </div>
-        </div>
+      {/* El hueco conserva el lugar de la barra en el flujo mientras la copia fija está en pantalla */}
+      <div ref={barSlot} className="mb-[8vh]" style={{ visibility: stuck ? "hidden" : undefined }}>
+        {filterBar(true)}
       </div>
+
+      {stuck &&
+        createPortal(
+          <div className="pointer-events-none fixed inset-x-0 z-30 px-(--gutter)" style={{ top: stuckTop }}>
+            <div className="pointer-events-auto">{filterBar(false)}</div>
+          </div>,
+          document.body,
+        )}
 
       <ul ref={list} className="grid gap-x-(--gutter) gap-y-[8vh] sm:grid-cols-2 lg:grid-cols-3">
         {projects.map((p) => {

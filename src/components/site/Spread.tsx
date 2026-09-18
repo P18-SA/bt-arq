@@ -1,3 +1,4 @@
+import Link from "next/link";
 import type { ReactNode } from "react";
 import { Media, tones } from "@/components/site/Media";
 import type { Tone } from "@/components/site/content";
@@ -34,9 +35,9 @@ type Props = {
  */
 export function Spread({ eyebrow, indexLabel, indexMeta, rows, cover, inset, children, full = false }: Props) {
   return (
-    <section className={`grid grid-cols-1 items-stretch md:grid-cols-2 ${full ? "md:h-svh" : ""}`}>
+    <section className={`grid grid-cols-1 items-stretch md:grid-cols-2 ${full ? "md:min-h-[124svh]" : ""}`}>
       {/* Izquierda: la obra, a sangre contra el borde de la sección */}
-      <div data-reveal className={`relative ${full ? "h-svh md:h-full" : ""}`}>
+      <div data-reveal className={`relative ${full ? "h-[124svh] md:h-full" : ""}`}>
         <Media
           src={cover.src}
           label={cover.label}
@@ -66,26 +67,51 @@ export function Spread({ eyebrow, indexLabel, indexMeta, rows, cover, inset, chi
         }`}
       >
         <div
-          className={`flex items-baseline gap-3 text-label text-graphite uppercase ${
-            full ? "w-full" : "w-full max-w-md justify-between gap-6 md:ml-auto"
-          }`}
+          className={
+            full
+              ? // Mismo tamaño, peso e interlínea que los ítems de la nav del header, con su mismo
+                // desplazamiento: así cae sobre la misma línea. AJUSTE A MANO: mover translate-y.
+                "flex w-full translate-y-[0.12em] items-baseline gap-0 font-medium normal-case text-[clamp(1rem,1.15vw,1.25rem)] text-ink"
+              : "flex w-full max-w-md items-baseline justify-between gap-6 text-label text-graphite uppercase md:ml-auto"
+          }
         >
           <span>{indexLabel}</span>
-          {indexMeta && <span className="tabular-nums">{indexMeta}</span>}
+          {indexMeta &&
+            (full ? (
+              <span className="ml-[0.12em] inline-block translate-y-[-0.42em] text-[0.62em] font-medium tabular-nums text-graphite">
+                {indexMeta}
+              </span>
+            ) : (
+              <span className="tabular-nums">{indexMeta}</span>
+            ))}
         </div>
 
         <ol className="mt-[6vh] w-full max-w-md md:mt-[8vh] md:ml-auto">
-          {rows.map((row, i) => (
-            <li key={row.title} className="py-[clamp(0.5rem,1.4vh,0.9rem)]">
-              <span className="flex items-baseline gap-3">
-                <span className="text-lead">{row.title}</span>
-                {/* Guía punteada: ocupa el sobrante entre el título y el numeral */}
-                <span aria-hidden="true" className="min-w-6 flex-1 translate-y-[-0.25em] border-b border-dotted border-ink/30" />
-                <span className="shrink-0 text-meta text-graphite tabular-nums">{String(i + 1).padStart(2, "0")}</span>
-              </span>
-              {row.note && <span className="mt-1 block max-w-[34ch] text-meta text-graphite">{row.note}</span>}
-            </li>
-          ))}
+          {rows.map((row, i) => {
+            const body = (
+              <>
+                <span className="flex items-baseline gap-3">
+                  <span className="link-draw text-lead">{row.title}</span>
+                  {/* Guía punteada: ocupa el sobrante entre el título y el numeral */}
+                  <span aria-hidden="true" className="min-w-6 flex-1 translate-y-[-0.25em] border-b border-dotted border-ink/30" />
+                  <span className="shrink-0 text-meta text-graphite tabular-nums">{String(i + 1).padStart(2, "0")}</span>
+                </span>
+                {row.note && <span className="mt-0.5 block max-w-[34ch] text-meta text-graphite">{row.note}</span>}
+              </>
+            );
+            return (
+              // Interlínea ajustada a mano: filas apretadas, sin perder el área de click
+              <li key={row.title} className="py-[clamp(0.25rem,0.7vh,0.5rem)]">
+                {row.href ? (
+                  <Link href={row.href} className="group block">
+                    {body}
+                  </Link>
+                ) : (
+                  body
+                )}
+              </li>
+            );
+          })}
         </ol>
 
         {children}
@@ -96,15 +122,15 @@ export function Spread({ eyebrow, indexLabel, indexMeta, rows, cover, inset, chi
             // Ajuste manual: bajar/subir la foto chica cambiando el margen inferior (md:mb)
             className={`mt-[12vh] self-end ${
               full
-                ? "w-[min(58%,19rem)] md:mt-auto md:mb-[1vh]"
-                : "w-[min(50%,16rem)] md:mt-auto md:mb-[10vh]"
+                ? "w-[min(58%,19rem)] md:mt-auto md:mb-[2vh]"
+                : "w-[min(54%,17.5rem)] md:mt-auto md:mb-[3vh]"
             }`}
           >
             <Media
               src={inset.src}
               label={inset.label}
               tone={inset.tone}
-              ratio={full ? "3 / 4.4" : "3 / 4"}
+              ratio={full ? "3 / 4.4" : "3 / 4.3"}
               sizes="(min-width: 768px) 22vw, 50vw"
               marks
             />

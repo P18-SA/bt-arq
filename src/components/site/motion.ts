@@ -40,6 +40,9 @@ export function hero(root: HTMLElement, smoother: ScrollSmoother, playIntro: boo
   const headerRise = all(root, "[data-header-rise]");
   const logo = one(root, "[data-header-logo]");
   const clock = root.querySelector<HTMLElement>("[data-header-clock]");
+  // El CSS esconde el header hasta que la intro lo levanta. Una vez jugada (o salteada),
+  // se marca el documento para que al volver a la home el header ya nazca visible.
+  const introDone = () => document.documentElement.classList.add("intro-done");
 
   // La banda se anima en altura. Su medida final es la del logo con sus márgenes mínimos:
   // no sirve medir la banda, que arranca a pantalla completa (los datos de carga van absolutos).
@@ -112,7 +115,8 @@ export function hero(root: HTMLElement, smoother: ScrollSmoother, playIntro: boo
     .fromTo(headerItems, { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.5, ease: "power1.out" }, "lift+=0.45")
     // Suben desde su propia línea, uno detrás de otro
     .to(headerRise, { yPercent: 0, duration: 1.15, ease: "expo.out", stagger: 0.07 }, "lift+=0.45")
-    .fromTo(hint, { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.6, ease: "power1.out" }, "lift+=0.65");
+    .fromTo(hint, { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.6, ease: "power1.out" }, "lift+=0.65")
+    .call(introDone, [], "lift+=0.45");
 
   const events = ["wheel", "touchmove", "keydown"] as const;
   const trigger = (e: Event) => {
@@ -129,10 +133,17 @@ export function hero(root: HTMLElement, smoother: ScrollSmoother, playIntro: boo
     smoother.paused(true);
     intro.call(arm, [], "lift+=0.7");
   } else {
+    introDone();
     intro.progress(1);
     onIntroDone();
     open.progress(1);
     smoother.paused(false);
+    // Sin intro que los levante, el header queda en su posicion de descanso sin residuos
+    // de la pagina anterior (React reusa estos nodos al navegar).
+    gsap.set(headerItems, { autoAlpha: 1 });
+    gsap.set(headerRise, { yPercent: 0 });
+    gsap.set(logo, { autoAlpha: 1 });
+    if (clock) gsap.set(clock, { x: 0 });
   }
 
   return disarm;

@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { ProjectGrid } from "@/components/projects/ProjectGrid";
 import { Contact } from "@/components/site/Contact";
-import { bySlug, photo, projects } from "@/components/site/content";
+import { bySlug, photo, projectHref, projects } from "@/components/site/content";
 import { Shell } from "@/components/site/Shell";
 import { Spread } from "@/components/site/Spread";
 
@@ -27,7 +27,7 @@ export default function TodosLosProyectos() {
           <Spread
             indexLabel="Selección"
             indexMeta={`(${String(selection.length).padStart(2, "0")})`}
-            rows={selection.map((p) => ({ title: p.name, note: p.place }))}
+            rows={selection.map((p) => ({ title: p.name, note: p.place, href: projectHref(p) }))}
             cover={{ src: photo(cover), label: `${cover.name}, portada`, tone: cover.tone }}
             inset={{ src: photo(aside), label: `${aside.name}, ${aside.place}`, tone: aside.tone }}
             full

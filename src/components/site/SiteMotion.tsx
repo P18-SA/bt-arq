@@ -46,7 +46,7 @@ export default function SiteMotion({ fixed, children, smooth = true }: Props) {
           }
           if (desktop && has("[data-work]")) motion.work(el);
 
-          if (has("[data-page-title]")) motion.pageIntro(el);
+          if (has("[data-page-title]") || has("[data-page-in]")) motion.pageIntro(el);
           if (has("[data-contact-page]")) motion.contactPage(el);
           motion.statements(el);
           motion.reveals(el);
