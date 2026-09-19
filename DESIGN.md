@@ -39,8 +39,9 @@ Una sola familia, **ABC Areal** (variable 400–700). Rol único para cada estil
 Dos tonos más neutros cálidos, **sin acento**: la jerarquía se consigue con escala, espacio y posición [L04, L05]. No hay más grises que estos; un gris nuevo es un error.
 
 ## 5. Jerarquía, ritmo y cortes [L01, L05]
-Secuencia de la home: **Hero** (obra + marca) → **Proyectos seleccionados (4)** → **corte de banda `fog` a ancho completo** (estudio en una frase + datos) → **Índice numerado (8 + ver todos)** → **Nota editorial** (`EditorialNote`) → **Contacto negro** (corte final).
+Secuencia de la home: **Hero** (obra + marca) → **Proyectos seleccionados (4)** → **corte de banda `fog` a ancho completo** (estudio en una frase + datos) → **Índice numerado (8 + ver todos)** → **Contacto negro** (corte final).
 - Cada cambio de sección tiene un borde: línea `border-ink`, banda de color o bloque negro.
+- **Ningún texto pasa por encima de una línea.** En mobile la cruz de Contacto, del pie y del 404 pierde la vertical (los textos ocupan todo el ancho) y el correo va de margen a margen; en el pie la horizontal entra en el flujo, entre la frase y el correo.
 - Regla de 4 [L08]: 4 destacados, 4 ítems de nav, 3 filtros + Todos, 4 etapas, 4 datos por proyecto.
 - Palancas coherentes: lo más grande es siempre lo más oscuro; los datos secundarios bajan a `graphite`.
 
@@ -48,7 +49,7 @@ Secuencia de la home: **Hero** (obra + marca) → **Proyectos seleccionados (4)*
 Banda `fog` **compacta**: rótulo en mayúscula en las columnas 1–3, foto chica debajo en esas mismas columnas y texto en las 5–9, hombro con hombro y los dos arrancando arriba. Cierra una foto a sangre de `62svh`, pegada a la banda. El bloque entra casi entero en una pantalla.
 - Los separadores van en **rem o clamp con tope en rem**, nunca en `vh` suelto: con `vh` la banda se estira en monitores altos y el bloque pierde la compacidad, que es lo que le da el aire de página impresa.
 - El carácter lo da el **contraste de cuerpos**: una línea en `heading` y el resto en `body`, sin tamaños intermedios.
-- Se usa en la home (debajo del índice) y en el detalle de proyecto.
+- Se usa en el detalle de proyecto. En la home ya no va: se sacó la sección "El oficio".
 
 ### Cómo trabajamos (`HowWeWork`, página propia)
 Vista entera en `/como-trabajamos`, cuarto ítem de la nav. **No abre con título:** abre con una frase
@@ -83,7 +84,7 @@ Patrón editorial de catálogo, usado en Estudio y en Proyectos: obra a sangre e
 - **Nitidez:** portada y hero ≥ 2400 px de ancho; galería ≥ 1600 px. Si la web anterior solo tiene versiones chicas, pedir originales al estudio antes de publicar.
 
 ## 7. Responsive [L10]
-Desktop desde 1500 px, escalado fijo hasta el breakpoint `md` (768 px), donde la nav colapsa a "Menú". Mobile a 4 columnas, todo en una columna. Textos chicos y nav no crecen sin límite en pantallas grandes (tokens con `clamp`).
+Desktop desde 1500 px, escalado fijo hasta el breakpoint `md` (768 px), donde la nav colapsa a "Menú". En mobile, la foto del hero espera a la mitad del alto de pantalla (ancho del card menos márgenes) y el botón "Menú" entra recién con el logo chico, al abrirse la foto. Mobile a 4 columnas, todo en una columna. Textos chicos y nav no crecen sin límite en pantallas grandes (tokens con `clamp`).
 
 ## 8. Movimiento
 Lo gestiona `SiteMotion` (GSAP + ScrollSmoother). Respeta `prefers-reduced-motion`. No agregar animaciones fuera de `motion.ts`.

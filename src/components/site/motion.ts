@@ -36,13 +36,21 @@ export function hero(root: HTMLElement, smoother: ScrollSmoother, playIntro: boo
   const caption = one(root, "[data-hero-caption]");
   const hint = one(root, "[data-hero-hint]");
   const header = one(root, "[data-header]");
-  const headerItems = all(root, "[data-header-item]");
+  // El botón de menú (mobile) no entra con los enlaces: aparece con el logo chico, al abrirse la foto.
+  // Sin logo al lado, quedaba solo arriba antes de tiempo.
+  const menuButton = root.querySelector<HTMLElement>("[data-header-menu]");
+  const headerItems = all(root, "[data-header-item]").filter((el) => el !== menuButton);
   const headerRise = all(root, "[data-header-rise]");
   const logo = one(root, "[data-header-logo]");
   const clock = root.querySelector<HTMLElement>("[data-header-clock]");
   // El CSS esconde el header hasta que la intro lo levanta. Una vez jugada (o salteada),
   // se marca el documento para que al volver a la home el header ya nazca visible.
   const introDone = () => document.documentElement.classList.add("intro-done");
+  // Mientras dura la intro el documento no scrollea. ScrollSmoother en pausa rechaza el scroll
+  // devolviendo la página a su lugar, pero en touch el scroll nativo llega a moverla antes: la foto
+  // daba un salto al abrirse. Con la traba (ver globals.css) el dedo no mueve nada.
+  const lock = () => document.documentElement.classList.add("hero-lock");
+  const unlock = () => document.documentElement.classList.remove("hero-lock");
 
   // La banda se anima en altura. Su medida final es la del logo con sus márgenes mínimos:
   // no sirve medir la banda, que arranca a pantalla completa (los datos de carga van absolutos).
@@ -52,6 +60,7 @@ export function hero(root: HTMLElement, smoother: ScrollSmoother, playIntro: boo
   gsap.set(band, { height: innerHeight + 2 });
   gsap.set(header, { y: bandHeight });
   gsap.set([caption, logo], { autoAlpha: 0 });
+  if (menuButton) gsap.set(menuButton, { autoAlpha: 0 });
   // Cada dato del header espera bajo su línea hasta que sube el lettering
   gsap.set(headerRise, { yPercent: 115 });
   // El reloj arranca en el lugar del logo (pegado a la izquierda) y se corre a su sitio
@@ -70,6 +79,7 @@ export function hero(root: HTMLElement, smoother: ScrollSmoother, playIntro: boo
       paused: true,
       defaults: { ease: "expo.inOut", duration: 1.3 },
       onComplete: () => {
+        unlock();
         smoother.paused(false);
         ScrollTrigger.refresh();
       },
@@ -81,11 +91,19 @@ export function hero(root: HTMLElement, smoother: ScrollSmoother, playIntro: boo
     // mientras corre el tween): así nunca asoma blanco al costado. Lo que sobra lo recorta el stage.
     // Un par de píxeles de más: innerWidth y clientHeight son enteros redondeados y, con zoom o escala
     // de pantalla, pueden quedar por debajo del ancho real y dejar asomar un hilo blanco al costado.
-    .to(frame, { width: () => innerWidth + 4, height: () => section.clientHeight + 2 }, 0)
+    // El tamaño de partida se mide al arrancar: el marco lo define con min(), que GSAP no sabe
+    // interpolar (toma el primer valor). En mobile eso hacía saltar la foto en el primer cuadro.
+    .fromTo(
+      frame,
+      { width: () => frame.offsetWidth, height: () => frame.offsetHeight },
+      { width: () => innerWidth + 4, height: () => section.clientHeight + 2, immediateRender: false },
+      0,
+    )
     // El card se abre a sangre junto con la foto: el negro lateral existe solo durante la apertura
     .to(section, { marginLeft: 0, marginRight: 0 }, 0)
     .fromTo(frameInner, { scale: 1.18 }, { scale: 1, duration: 1.5, ease: "expo.out" }, 0)
     .to(logo, { autoAlpha: 1, duration: 0.5, ease: "power2.out" }, 0.8)
+    .to(menuButton, { autoAlpha: 1, duration: 0.5, ease: "power2.out" }, 0.8)
     .to(caption, { autoAlpha: 1, duration: 0.5, ease: "power2.out" }, 0.65);
   if (clock) open.to(clock, { x: 0, duration: 0.8 }, 0.15);
 
@@ -143,6 +161,7 @@ export function hero(root: HTMLElement, smoother: ScrollSmoother, playIntro: boo
   if (playIntro && smoother.scrollTop() < 10) {
     // El scroll queda tomado hasta que termina la apertura: es un solo movimiento, sin vuelta atrás
     smoother.paused(true);
+    lock();
     intro.call(arm, [], "lift+=0.6");
   } else {
     introDone();
@@ -153,12 +172,16 @@ export function hero(root: HTMLElement, smoother: ScrollSmoother, playIntro: boo
     // Sin intro que los levante, el header queda en su posicion de descanso sin residuos
     // de la pagina anterior (React reusa estos nodos al navegar).
     gsap.set(headerItems, { autoAlpha: 1 });
+    if (menuButton) gsap.set(menuButton, { autoAlpha: 1 });
     gsap.set(headerRise, { yPercent: 0 });
     gsap.set(logo, { autoAlpha: 1 });
     if (clock) gsap.set(clock, { x: 0 });
   }
 
-  return disarm;
+  return () => {
+    disarm();
+    unlock();
+  };
 }
 
 /** Páginas interiores: el título sube línea por línea y lo acompañan sus datos. */

@@ -48,12 +48,13 @@ function HeroBand() {
       <div
         data-hero-meta
         aria-hidden="true"
-        className="absolute inset-x-0 top-0 flex items-start justify-between gap-6 px-[calc(var(--gutter)+var(--edge))] pt-[calc(env(safe-area-inset-top,0px)+1.1rem)] text-[clamp(1rem,1.15vw,1.25rem)] leading-[1.15]"
+        className="absolute inset-x-0 top-0 flex items-start justify-between gap-6 px-[calc(var(--gutter)+var(--edge))] pt-[calc(env(safe-area-inset-top,0px)+1.1rem)] text-[0.875rem] leading-[1.15] sm:text-[clamp(1rem,1.15vw,1.25rem)]"
       >
-        <p className="text-paper/70">
+        {/* No llega a la mitad: la vertical de la cruz baja por el centro y el texto no la puede tocar */}
+        <p className="max-w-[calc(50vw-var(--gutter)-2*var(--edge))] text-paper/70">
           Estudio de arquitectura
           <br />
-          <span className="text-paper">Berthet + Taranto</span>
+          <span className="whitespace-nowrap text-paper">Berthet + Taranto</span>
         </p>
         <p className="text-right text-paper/70">
           Cargando
@@ -91,15 +92,15 @@ export function Hero() {
         {/*
           AJUSTE A MANO — medida de la tira ANTES de abrirse con el scroll.
           Apoyada en el borde inferior del hero: al scrollear crece hasta ocupar toda la ventana.
-          De cada par manda el valor más chico, así no se desborda ni en pantallas anchas ni bajas:
+          Mobile: el ancho del card menos los márgenes y la mitad del alto de pantalla.
+          Escritorio: de cada par manda el valor más chico, así no se desborda ni en pantallas anchas ni bajas:
             width  = min(<A>svh, <B>vw) → A/B más grandes = tira MÁS ANCHA
             height = min(<C>svh, <D>vw) → C/D más grandes = tira MÁS ALTA
           Para que quede más apaisada, subí solo los del width.
         */}
         <div
           data-hero-frame
-          className="absolute bottom-0 left-1/2 -translate-x-1/2 overflow-hidden"
-          style={{ width: "min(80svh, 49vw)", height: "min(58svh, 44vw)" }}
+          className="absolute bottom-0 left-1/2 h-[50svh] w-[calc(100%-2*var(--gutter))] -translate-x-1/2 overflow-hidden md:h-[min(58svh,44vw)] md:w-[min(80svh,49vw)]"
         >
           <Media
             src={heroPhoto}
@@ -116,9 +117,10 @@ export function Hero() {
           </div>
         </div>
 
+        {/* En mobile la foto ocupa casi todo el ancho: la leyenda va apoyada arriba de ella, no encima */}
         <p
           data-hero-hint
-          className="absolute bottom-[calc(env(safe-area-inset-bottom,0px)+1.25rem)] left-(--gutter) text-label text-graphite"
+          className="absolute bottom-[calc(50svh+1rem)] left-(--gutter) text-label text-graphite md:bottom-[calc(env(safe-area-inset-bottom,0px)+1.25rem)]"
         >
           [Deslizá para entrar]
         </p>

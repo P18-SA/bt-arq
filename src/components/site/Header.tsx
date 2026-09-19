@@ -136,7 +136,7 @@ export function Header({ words, intro = false }: Props) {
             </ul>
           </nav>
 
-          <div {...introAttr("data-header-item")} className="md:hidden">
+          <div {...introAttr("data-header-item")} {...(intro ? { "data-header-menu": "" } : {})} className="md:hidden">
             <CircleButton
               aria-expanded={open}
               aria-controls="menu-movil"

@@ -258,17 +258,6 @@ export const studio = {
   languages: ["Español", "English", "Français", "Português", "Italiano"],
 };
 
-/** Nota editorial de la home: de qué se trata el trabajo del estudio, en tono de marca. */
-export const note = {
-  eyebrow: "El oficio",
-  lead: "Cada encargo empieza por entender cómo quiere vivir quien va a habitar la obra.",
-  paragraphs: [
-    "No partimos de un estilo. Partimos del terreno, de la orientación, del presupuesto y de una conversación larga con el cliente. De ahí sale la volumetría, y no al revés.",
-    "Proyectamos de a dos y revisamos todo en conjunto: cada decisión pasa dos veces por el tablero antes de llegar a la obra. Es más lento y es el motivo por el que las casas se sostienen treinta años después.",
-    "Acompañamos la construcción hasta la entrega. La dirección de obra no es un trámite final: es donde el proyecto se defiende de las concesiones.",
-  ],
-};
-
 // Cómo trabajamos: cuatro etapas, cada una ilustrada con una obra distinta de las carpetas en alta.
 export const work = {
   eyebrow: "Cómo trabajamos",

@@ -27,7 +27,7 @@ export default function Contacto() {
         </div>
 
         <div aria-hidden="true" className="pointer-events-none absolute inset-0">
-          <span data-contact-v className="absolute inset-y-0 left-[62%] w-px origin-top bg-paper/25" />
+          <span data-contact-v className="absolute inset-y-0 left-[62%] hidden w-px origin-top bg-paper/25 md:block" />
         </div>
 
         <div className="relative flex min-h-svh flex-col px-(--gutter) pt-[calc(env(safe-area-inset-top,0px)+15vh)] pb-[calc(env(safe-area-inset-bottom,0px)+1.5rem)] md:h-full md:min-h-0">
@@ -50,12 +50,13 @@ export default function Contacto() {
             className="mx-[calc(-1_*_var(--gutter))] mt-[clamp(2rem,6svh,4.5rem)] block h-px origin-left bg-paper/25"
           />
 
-          {/* Mail a la izquierda de la línea vertical; card contra el borde derecho, a la altura del mail */}
+          {/* Mail a la izquierda de la línea vertical; card contra el borde derecho, a la altura del mail.
+              En mobile no hay vertical: la card va debajo del mail, alineada a la izquierda */}
           <div className="grid flex-1 content-center gap-10 py-10 md:grid-cols-[calc(62cqw_-_var(--gutter))_1fr] md:items-center md:gap-0 md:py-6">
             <div>
               <EmailLink />
             </div>
-            <LocationCard className="w-[calc(62cqw_-_2_*_var(--gutter))] justify-self-end md:w-[min(calc(38cqw_-_2_*_var(--gutter)),22rem,34svh)]" />
+            <LocationCard className="w-[calc(62cqw_-_2_*_var(--gutter))] justify-self-start md:justify-self-end md:w-[min(calc(38cqw_-_2_*_var(--gutter)),22rem,34svh)]" />
           </div>
 
           <div data-page-in className="grid gap-4 border-t border-paper/25 pt-5 text-meta sm:grid-cols-3">

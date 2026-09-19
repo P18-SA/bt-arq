@@ -37,7 +37,7 @@ export default function NotFound() {
         </div>
 
         <div aria-hidden="true" className="pointer-events-none absolute inset-0">
-          <span data-notfound-v className="absolute inset-y-0 left-[62%] w-px origin-top bg-paper/25" />
+          <span data-notfound-v className="absolute inset-y-0 left-[62%] hidden w-px origin-top bg-paper/25 md:block" />
         </div>
 
         <div className="relative flex min-h-svh flex-col px-(--gutter) pt-[calc(env(safe-area-inset-top,0px)+15vh)] pb-[calc(env(safe-area-inset-bottom,0px)+1.5rem)] md:h-full md:min-h-0">

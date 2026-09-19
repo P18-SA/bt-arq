@@ -33,7 +33,8 @@ export function EmailLink({ className = "" }: { className?: string }) {
 export function Contact() {
   return (
     <section id="contacto" data-contact className="@container relative overflow-hidden bg-ink text-paper">
-      <div aria-hidden="true" className="pointer-events-none absolute inset-0">
+      {/* La cruz solo en escritorio: en mobile la vertical cruzaría los textos, que ocupan todo el ancho */}
+      <div aria-hidden="true" className="pointer-events-none absolute inset-0 hidden md:block">
         <span data-contact-h className="absolute inset-x-0 top-[38%] h-px origin-left bg-paper/20" />
         <span data-contact-v className="absolute inset-y-0 left-[62%] w-px origin-top bg-paper/20" />
       </div>
@@ -50,6 +51,9 @@ export function Contact() {
             <PlusLabel>Ir a contacto</PlusLabel>
           </Link>
         </div>
+
+        {/* En mobile la horizontal va en el flujo, entre la frase y el mail: nunca queda sobre un texto */}
+        <span aria-hidden="true" className="-mx-(--gutter) mt-10 block h-px bg-paper/20 md:hidden" />
 
         <div className="py-[10vh]">
           <EmailLink />

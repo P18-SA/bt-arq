@@ -115,6 +115,14 @@ body::-webkit-scrollbar {
   }
 }
 
+/* Intro de la home: el documento no scrollea hasta que la foto termina de abrirse (motion.hero).
+   Sin esto, en touch el scroll nativo mueve la página y ScrollSmoother la devuelve: un salto. */
+html.hero-lock {
+  overflow: hidden;
+  overscroll-behavior: none;
+  touch-action: none;
+}
+
 /* Con movimiento reducido no hay apertura: la foto del hero ya ocupa toda la sección */
 @media (prefers-reduced-motion: reduce) {
   [data-hero-frame] {
@@ -213,6 +221,13 @@ body::-webkit-scrollbar {
   font-size: calc((var(--email-line) - 2 * var(--gutter)) / var(--email-em));
   letter-spacing: -0.04em;
   white-space: nowrap;
+}
+
+/* En mobile no hay línea vertical: el correo ocupa todo el ancho, de margen a margen */
+@media (max-width: 767px) {
+  .email-fit {
+    --email-line: 100cqw;
+  }
 }
 
 
