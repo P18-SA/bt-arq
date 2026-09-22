@@ -7,7 +7,7 @@
   --fog: #ebeae6;
   --graphite: #5e5d59;
   --shadow: #3b3a37;
-  --gutter: clamp(1rem, 3vw, 2.75rem);
+  --gutter: clamp(1rem, 1.5vw, 1.9rem);
   /* Borde negro que queda descubierto alrededor del card blanco de la web */
   --edge: clamp(10px, 0.8vw, 18px);
 }
@@ -235,3 +235,8 @@ body::-webkit-scrollbar {
     animation: none;
   }
 }
+
+/*
+ * El hover pixelado de la galería vive en src/components/projects/PixelCover.tsx: es un canvas que
+ * redibuja la foto a menos columnas, no un filtro de CSS (no existe uno que pixele).
+ */

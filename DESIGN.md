@@ -30,7 +30,7 @@ Una sola familia, **ABC Areal** (variable 400–700). Rol único para cada estil
 - **Recursos editoriales:** paréntesis para información secundaria sin cambiar color: `(Estudio)`, `(04)`, `(11 fotos)`. Numerales tabulares `01 … 23` como sistema de índice.
 
 ## 3. Grilla [L03]
-- 12 columnas en desktop, 4 en mobile; margen y gutter = `--gutter` (clamp(1rem, 3vw, 2.75rem)).
+- 12 columnas en desktop, 4 en mobile; margen y gutter = `--gutter` (clamp(1rem, 1.5vw, 1.9rem)).
 - Rótulo de sección en columnas 1–3 y contenido en columnas 4–12 (patrón *label + cuerpo*).
 - Composiciones asimétricas deliberadas (Featured, galería): se permiten desfasajes verticales y salidas del grid en imágenes full-bleed.
 
@@ -70,7 +70,7 @@ texto en las 4–6 y la obra en las 8–12, a `100svh` y pegada a la de arriba y
 - Cada etapa se ilustra con una obra distinta, siempre de las carpetas en alta (≥ 2400 px).
 
 ### Doble página (`Spread`)
-Patrón editorial de catálogo, usado en Estudio y en Proyectos: obra a sangre en la mitad izquierda, índice numerado a la derecha con guía punteada y numeral tabular, y una foto chica que cierra abajo alineada al borde derecho. Los dos rótulos (sobre la foto y sobre el índice) van en `label` y en mayúscula; todo lo demás, en caja baja.
+Patrón editorial de catálogo, usado en Estudio y en Proyectos: obra a sangre en la mitad izquierda, índice numerado a la derecha con guía punteada y numeral tabular, y una foto chica que cierra abajo alineada al borde derecho. Los dos rótulos (sobre la foto y sobre el índice) van en `label` y en mayúscula; todo lo demás, en caja baja. Cuando la obra no va a sangre (`full`), el dato de la foto baja al pie como ficha mínima —`label`, filete y datos en `meta`—, el mismo patrón que abre la página de Estudio.
 
 ## 6. Imágenes
 - Toda foto es **obra real del estudio**. Nada de renders genéricos ni IA (se eliminó `villa.png`).

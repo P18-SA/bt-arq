@@ -35,8 +35,11 @@ export function hero(root: HTMLElement, smoother: ScrollSmoother, playIntro: boo
   const frameInner = one(frame, "[data-ph-inner]");
   const caption = one(root, "[data-hero-caption]");
   const hint = one(root, "[data-hero-hint]");
+  const seam = root.querySelector<HTMLElement>("[data-hero-seam]");
   const header = one(root, "[data-header]");
   const headerItems = all(root, "[data-header-item]");
+  // El botón "Menú" de mano: no acompaña al lettering, espera a que el hero se abra
+  const menuButton = root.querySelector<HTMLElement>("[data-header-menu]");
   const headerRise = all(root, "[data-header-rise]");
   const logo = one(root, "[data-header-logo]");
   const clock = root.querySelector<HTMLElement>("[data-header-clock]");
@@ -50,6 +53,9 @@ export function hero(root: HTMLElement, smoother: ScrollSmoother, playIntro: boo
   gsap.set(band, { height: innerHeight });
   gsap.set(header, { y: bandHeight });
   gsap.set([caption, logo], { autoAlpha: 0 });
+  // Los datos del header (hora, nav, botón Menú) nacen apagados: entran recién con el lettering
+  gsap.set(headerItems, { autoAlpha: 0 });
+  if (menuButton) gsap.set(menuButton, { autoAlpha: 0 });
   // Cada dato del header espera bajo su línea hasta que sube el lettering
   gsap.set(headerRise, { yPercent: 115 });
   // El reloj arranca en el lugar del logo (pegado a la izquierda) y se corre a su sitio
@@ -72,17 +78,19 @@ export function hero(root: HTMLElement, smoother: ScrollSmoother, playIntro: boo
         ScrollTrigger.refresh();
       },
     })
-    .to(hint, { autoAlpha: 0, duration: 0.3, ease: "power2.in" }, 0)
+    .to(seam ? [hint, seam] : hint, { autoAlpha: 0, duration: 0.3, ease: "power2.in" }, 0)
     .to(band, { height: 0 }, 0)
     .to(header, { y: 0 }, 0)
     // La foto termina midiendo la ventana entera, no el 100% del card (que todavía es más angosto
     // mientras corre el tween): así nunca asoma blanco al costado. Lo que sobra lo recorta el stage.
-    .to(frame, { width: () => innerWidth, height: () => section.clientHeight }, 0)
+    // bottom: en mano la foto arranca levantada (deja blanco abajo) y baja a ras al abrirse
+    .to(frame, { width: () => innerWidth, height: () => section.clientHeight, bottom: 0 }, 0)
     // El card se abre a sangre junto con la foto: el negro lateral existe solo durante la apertura
     .to(section, { marginLeft: 0, marginRight: 0 }, 0)
     .fromTo(frameInner, { scale: 1.18 }, { scale: 1, duration: 1.5, ease: "expo.out" }, 0)
     .to(logo, { autoAlpha: 1, duration: 0.5, ease: "power2.out" }, 0.8)
     .to(caption, { autoAlpha: 1, duration: 0.5, ease: "power2.out" }, 0.65);
+  if (menuButton) open.to(menuButton, { autoAlpha: 1, duration: 0.5, ease: "power2.out" }, 0.8);
   if (clock) open.to(clock, { x: 0, duration: 0.8 }, 0.15);
 
   // El primer gesto de scroll la dispara; después el scroll vuelve a ser normal
@@ -115,7 +123,7 @@ export function hero(root: HTMLElement, smoother: ScrollSmoother, playIntro: boo
     .fromTo(headerItems, { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.5, ease: "power1.out" }, "lift+=0.45")
     // Suben desde su propia línea, uno detrás de otro
     .to(headerRise, { yPercent: 0, duration: 1.15, ease: "expo.out", stagger: 0.07 }, "lift+=0.45")
-    .fromTo(hint, { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.6, ease: "power1.out" }, "lift+=0.65")
+    .fromTo(seam ? [hint, seam] : hint, { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.6, ease: "power1.out" }, "lift+=0.65")
     .call(introDone, [], "lift+=0.45");
 
   const events = ["wheel", "touchmove", "keydown"] as const;
@@ -141,6 +149,7 @@ export function hero(root: HTMLElement, smoother: ScrollSmoother, playIntro: boo
     // Sin intro que los levante, el header queda en su posicion de descanso sin residuos
     // de la pagina anterior (React reusa estos nodos al navegar).
     gsap.set(headerItems, { autoAlpha: 1 });
+    if (menuButton) gsap.set(menuButton, { autoAlpha: 1 });
     gsap.set(headerRise, { yPercent: 0 });
     gsap.set(logo, { autoAlpha: 1 });
     if (clock) gsap.set(clock, { x: 0 });

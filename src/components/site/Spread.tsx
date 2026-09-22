@@ -1,5 +1,5 @@
 import Link from "next/link";
-import type { ReactNode } from "react";
+import { Fragment, type ReactNode } from "react";
 import { Media, tones } from "@/components/site/Media";
 import type { Tone } from "@/components/site/content";
 
@@ -12,6 +12,8 @@ export type SpreadRow = {
 type Props = {
   /** Rótulo en mayúscula sobre la foto grande (columna izquierda); se omite si no se pasa */
   eyebrow?: string;
+  /** Ficha mínima debajo de la foto grande: rótulo, filete y datos en letra chica (reemplaza al eyebrow) */
+  coverMeta?: { label: string; lines: string[] };
   /** Rótulo en mayúscula del índice (columna derecha) */
   indexLabel: string;
   /** Dato corto al final de la fila del rótulo: año, cantidad, etc. */
@@ -33,7 +35,7 @@ type Props = {
  * chica que cierra abajo, alineada al borde derecho (ver referencia en DESIGN.md §5).
  * Los rótulos van en mayúscula y chicos; los textos grandes quedan en caja baja.
  */
-export function Spread({ eyebrow, indexLabel, indexMeta, rows, cover, inset, children, full = false }: Props) {
+export function Spread({ eyebrow, coverMeta, indexLabel, indexMeta, rows, cover, inset, children, full = false }: Props) {
   return (
     <section className={`grid grid-cols-1 items-stretch md:grid-cols-2 ${full ? "md:min-h-[124svh]" : ""}`}>
       {/* Izquierda: la obra, a sangre contra el borde de la sección */}
@@ -43,11 +45,12 @@ export function Spread({ eyebrow, indexLabel, indexMeta, rows, cover, inset, chi
           label={cover.label}
           tone={cover.tone}
           placeholder="blank"
-          ratio={full ? undefined : "3 / 4"}
+          // Sin `full` la obra va casi cuadrada: el spread entra en una pantalla y no empuja al índice.
+          ratio={full ? undefined : "1 / 1"}
           sizes="(min-width: 768px) 50vw, 100vw"
           className="h-full w-full"
         />
-        {eyebrow && (
+        {eyebrow && !coverMeta && (
           <p
             className={`absolute left-[calc(var(--gutter)+var(--edge))] text-label uppercase ${
               full ? "top-[calc(env(safe-area-inset-top,0px)+1.1rem)]" : "top-4"
@@ -55,6 +58,21 @@ export function Spread({ eyebrow, indexLabel, indexMeta, rows, cover, inset, chi
           >
             {eyebrow}
           </p>
+        )}
+        {/* Ficha mínima al pie de la obra, en vez del rótulo encima de la foto */}
+        {coverMeta && (
+          <div className="px-(--gutter) pt-4 text-graphite">
+            <p className="text-label">{coverMeta.label}</p>
+            <hr className="mt-2 mb-3 border-0 border-t border-ink/20" />
+            <p className="max-w-[24ch] text-meta">
+              {coverMeta.lines.map((line) => (
+                <Fragment key={line}>
+                  {line}
+                  <br />
+                </Fragment>
+              ))}
+            </p>
+          </div>
         )}
       </div>
 
@@ -71,7 +89,8 @@ export function Spread({ eyebrow, indexLabel, indexMeta, rows, cover, inset, chi
             full
               ? // Mismo tamaño, peso e interlínea que los ítems de la nav del header, con su mismo
                 // desplazamiento: así cae sobre la misma línea. AJUSTE A MANO: mover translate-y.
-                "flex w-full translate-y-[0.12em] items-baseline gap-0 font-medium normal-case text-[clamp(1rem,1.15vw,1.25rem)] text-ink"
+                // Mismo ancho y empuje a la derecha que la <ol>: el rótulo cae justo sobre la lista.
+                "flex w-full max-w-md translate-y-[0.12em] items-baseline gap-0 font-medium normal-case text-[clamp(1rem,1.15vw,1.25rem)] text-ink md:ml-auto"
               : "flex w-full max-w-md items-baseline justify-between gap-6 text-label text-graphite uppercase md:ml-auto"
           }
         >

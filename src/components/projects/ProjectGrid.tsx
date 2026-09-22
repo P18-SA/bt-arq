@@ -6,6 +6,7 @@ import { createPortal } from "react-dom";
 import { Flip, gsap, ScrollTrigger, useGSAP } from "@/lib/gsap";
 import { photo, projectHref, programs, type Program, type Project } from "@/components/site/content";
 import { Media } from "@/components/site/Media";
+import { PixelCover } from "@/components/projects/PixelCover";
 
 type Filter = Program | "Todos";
 
@@ -128,13 +129,24 @@ export function ProjectGrid({ projects }: { projects: Project[] }) {
           document.body,
         )}
 
-      <ul ref={list} className="grid gap-x-(--gutter) gap-y-[8vh] sm:grid-cols-2 lg:grid-cols-3">
+      <ul ref={list} className="grid gap-x-(--gutter) gap-y-[clamp(2rem,5vh,3.5rem)] sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
         {projects.map((p) => {
           const visible = filter === "Todos" || p.program === filter;
           return (
             <li key={p.name} data-card data-reveal className={visible ? "" : "hidden"}>
               <Link href={projectHref(p)} className="group block">
-                <Media src={photo(p)} label={`${p.name}, portada`} tone={p.tone} ratio="4 / 5" bleed="y" sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw" />
+                {/* Hover: la foto se pixela sobre un canvas (ver PixelCover) */}
+                <div data-pixel-card className="relative">
+                  <Media
+                    src={photo(p)}
+                    label={`${p.name}, portada`}
+                    tone={p.tone}
+                    ratio="4 / 3"
+                    bleed="y"
+                    sizes="(min-width: 1280px) 25vw, (min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
+                  />
+                  {photo(p) && <PixelCover src={photo(p)!} />}
+                </div>
                 <div className="mt-4 flex items-baseline justify-between gap-4">
                   <h2 className="overflow-hidden text-lead">
                     <span data-reveal-line className="link-draw block w-fit pb-0.5">

@@ -2,7 +2,7 @@ import Link from "next/link";
 import type { CSSProperties } from "react";
 import { featured, hero, heroPhoto, photo, projectHref, projects, studio } from "@/components/site/content";
 import { Media } from "@/components/site/Media";
-import { PlusLabel } from "@/components/site/Plus";
+import { Plus, PlusLabel } from "@/components/site/Plus";
 import { Word } from "@/components/site/Word";
 import { wordmark } from "@/components/site/wordmark";
 
@@ -22,13 +22,19 @@ function HeroBand() {
       <div
         data-hero-word
         aria-hidden="true"
-        className="px-[calc(var(--gutter)+var(--edge))] pt-[clamp(0.2rem,0.5vw,0.6rem)] pb-[clamp(0.2rem,0.5vw,0.6rem)]"
+        // En mano el aire lateral se achica: el lettering se apoya casi contra el marco negro
+        className="px-(--edge) pt-[clamp(1.35rem,5vw,2rem)] pb-[clamp(0.6rem,2.4vw,1rem)] md:px-[calc(var(--gutter)+var(--edge))] md:pt-[clamp(0.2rem,0.5vw,0.6rem)] md:pb-[clamp(0.2rem,0.5vw,0.6rem)]"
       >
-        <div className="flex items-center justify-between text-[8.6vw] leading-[0.8]">
+        {/*
+          AJUSTE A MANO — el lettering en mano: --cond condensa las palabras (0.94 = 6% más
+          angostas) y eso deja subir la medida a 9.8vw sin pasar de una línea. Si subís una,
+          bajá la otra: el ancho total es (4.372 + 4.457) × --cond + 0.68 em.
+        */}
+        <div className="flex items-center justify-between text-[9.8vw] leading-[0.8] [--cond:0.94] md:text-[8.6vw] md:[--cond:1]">
           {/* Palabras en SVG; alto = altura de mayúscula de la tipografía (0.66em) */}
           <span className="flex justify-end overflow-hidden py-[0.06em]">
             <span data-name-left className="block">
-              <Word svg={wordmark.berthet} height="0.66em" />
+              <Word svg={wordmark.berthet} height="0.66em" condense="var(--cond)" />
             </span>
           </span>
           <span data-plus className="relative mx-[0.06em] block size-[0.56em] shrink-0">
@@ -38,7 +44,7 @@ function HeroBand() {
           <span className="flex overflow-hidden py-[0.06em]">
             <span data-name-right className="block">
               {/* El viewBox de TARANTO incluye el sobrepaso de la O: 159 unidades contra 154 de mayúscula */}
-              <Word svg={wordmark.taranto} height={`${(0.66 * wordmark.taranto.h) / 154}em`} />
+              <Word svg={wordmark.taranto} height={`${(0.66 * wordmark.taranto.h) / 154}em`} condense="var(--cond)" />
             </span>
           </span>
         </div>
@@ -82,7 +88,7 @@ export function Hero() {
       // Pisa el --edge global solo dentro del hero: lo usan el card, la banda y las tiras negras.
       //   clamp(<mínimo en pantalla chica>, <proporcional al ancho>, <máximo en pantalla grande>)
       //   más grande = más negro al costado · más chico = el blanco llega más al borde
-      style={{ "--edge": "clamp(16px, 1.8vw, 34px)" } as CSSProperties}
+      style={{ "--edge": "clamp(18px, 5vw, 22px)" } as CSSProperties}
       className="relative mx-(--edge) flex h-svh flex-col bg-paper"
     >
       {/* El negro de la banda baja por los costados del card: es un solo fondo con el lettering.
@@ -101,10 +107,16 @@ export function Hero() {
             height = min(<C>svh, <D>vw) → C/D más grandes = tira MÁS ALTA
           Para que quede más apaisada, subí solo los del width.
         */}
+        {/*
+          En mano la foto ya nace casi desplegada: ocupa todo el ancho del card y deja una
+          franja blanca abajo (donde vive el "deslizá para entrar"); al abrirse baja a ras
+          y crece hasta la ventana entera.
+          AJUSTE A MANO (mano): bottom-[...] = franja blanca que queda abajo; el alto se calcula
+          contra ese mismo valor, así la foto llega hasta el borde de arriba del stage.
+        */}
         <div
           data-hero-frame
-          className="absolute bottom-0 left-1/2 -translate-x-1/2 overflow-hidden"
-          style={{ width: "min(80svh, 49vw)", height: "min(58svh, 44vw)" }}
+          className="absolute left-1/2 bottom-[2.4rem] h-[calc(100%-2.4rem)] w-full -translate-x-1/2 overflow-hidden md:bottom-0 md:h-[min(58svh,44vw)] md:w-[min(80svh,49vw)]"
         >
           <Media
             src={heroPhoto}
@@ -120,6 +132,16 @@ export function Hero() {
             <p className="text-lead">{hero.name}</p>
           </div>
         </div>
+
+        {/* Un "+" en la costura entre la foto y el blanco de abajo (solo en mano).
+            Va a la misma altura que el borde de la foto: si movés bottom-[2.4rem], movelo acá. */}
+        <span
+          data-hero-seam
+          aria-hidden="true"
+          className="absolute bottom-[2.4rem] left-1/2 -translate-x-1/2 translate-y-1/2 text-[1.5rem] text-white mix-blend-difference md:hidden"
+        >
+          <Plus thin />
+        </span>
 
         <p
           data-hero-hint

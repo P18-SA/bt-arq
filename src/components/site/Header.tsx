@@ -34,7 +34,8 @@ export function Header({ words, intro = false }: Props) {
   const pathname = usePathname();
   const scope = useRef<HTMLDivElement>(null);
   const menu = useRef<gsap.core.Timeline | null>(null);
-  const introAttr = (name: "data-header-item" | "data-header-logo") => (intro ? { [name]: "" } : {});
+  const introAttr = (name: "data-header-item" | "data-header-logo" | "data-header-menu") =>
+    intro ? { [name]: "" } : {};
   // "Proyectos" también queda marcado dentro de la página de un proyecto
   const isCurrent = (href: string) =>
     pathname === href || (href === "/todos-los-proyectos" && pathname.startsWith("/proyectos/"));
@@ -136,7 +137,8 @@ export function Header({ words, intro = false }: Props) {
             </ul>
           </nav>
 
-          <div {...introAttr("data-header-item")} className="md:hidden">
+          {/* En mano el botón no entra con el resto de los datos: aparece recién cuando el hero se abre. */}
+          <div {...introAttr("data-header-menu")} className="md:hidden">
             <CircleButton
               aria-expanded={open}
               aria-controls="menu-movil"

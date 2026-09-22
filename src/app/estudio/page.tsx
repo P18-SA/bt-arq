@@ -23,28 +23,48 @@ export default function Estudio() {
   return (
     <Shell>
       <main>
-        <section className="grid grid-cols-12 gap-x-(--gutter) px-(--gutter) pt-[20vh] pb-[10vh]">
-          <h1 data-page-title className="col-span-12 text-display">
-            Estudio
-          </h1>
-          <p data-page-in className="col-span-12 mt-8 max-w-[34ch] text-lead md:col-span-5 md:col-start-8 md:mt-[4vh]">
+        <section className="grid grid-cols-12 gap-x-(--gutter) px-(--gutter) pt-[20vh] pb-[6vh]">
+          {/*
+            Sin título en `display`: la intro entra en `heading` y arranca en la misma columna que la
+            foto y el resto ocupa todo el ancho. La sangría se hace con un espaciador en línea y
+            no con `text-indent`, porque SplitText parte el párrafo en líneas y la indentación se
+            repetiría en cada una. El nombre de la página vive en los metadatos y en la nav.
+          */}
+          <h1 className="sr-only">Estudio</h1>
+          <p data-page-title className="col-span-12 text-heading">
+            <span aria-hidden="true" className="hidden md:inline-block md:w-[25%]" />
             {studio.intro}
           </p>
+
+          {/* Ficha mínima en el aire que deja la foto a la izquierda: rótulo, filete y datos de la obra. */}
+          <aside data-page-in className="col-span-12 mt-[6vh] text-graphite md:col-span-3 md:mt-[18vh]">
+            <p className="text-label">(01)</p>
+            <hr className="mt-2 mb-3 border-0 border-t border-ink/20" />
+            <p className="max-w-[24ch] text-meta">
+              {hero.name}
+              <br />
+              {hero.place}
+              <br />
+              {hero.program}
+              {hero.area ? `, ${hero.area}` : ""}
+            </p>
+          </aside>
+
+          <div data-reveal className="col-span-12 mt-[4vh] md:col-span-9 md:mt-[12vh]">
+            <Media
+              src={photo(hero)}
+              tone="graphite"
+              label={`${hero.name}, ${hero.place}`}
+              preload
+              ratio="16 / 9"
+              bleed="y"
+              speed="auto"
+              sizes="(min-width: 768px) 75vw, 100vw"
+            />
+          </div>
         </section>
 
-        <div data-reveal className="px-(--gutter)">
-          <Media
-            src={photo(hero)}
-            tone="graphite"
-            label={`${hero.name}, ${hero.place}`}
-            preload
-            ratio="16 / 8"
-            bleed="y"
-            speed="auto"
-          />
-        </div>
-
-        <section className="grid grid-cols-12 gap-x-(--gutter) px-(--gutter) pt-[20vh] pb-[14vh]">
+        <section className="grid grid-cols-12 gap-x-(--gutter) px-(--gutter) pt-[12vh] pb-[14vh]">
           <h2 className="col-span-12 mb-8 text-label text-graphite md:col-span-3 md:mb-0 md:pt-[0.7em]">(Enfoque)</h2>
           <div className="col-span-12 md:col-span-9">
             <p data-statement className="max-w-[22ch] text-heading text-balance">
@@ -61,7 +81,10 @@ export default function Estudio() {
         </section>
 
         <Spread
-          eyebrow={`${cover.name}, ${cover.place}`}
+          coverMeta={{
+            label: "(02)",
+            lines: [cover.name, cover.place, cover.area ? `${cover.program}, ${cover.area}` : cover.program],
+          }}
           indexLabel="Qué hacemos"
           indexMeta={`(${String(studio.services.length).padStart(2, "0")})`}
           rows={studio.services.map((s) => ({ title: s.title, note: s.note }))}
