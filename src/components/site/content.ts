@@ -190,6 +190,9 @@ const toneCycle: Tone[] = ["graphite", "concrete", "shadow", "fog"];
 
 export const projects: Project[] = list.map((p, i) => ({ ...p, slug: slugify(p.name), tone: toneCycle[i % 4] }));
 
+/** Frase de apertura del índice de proyectos, en la misma clave que la de "Cómo trabajamos". */
+export const projectsIntro = "Treinta años de obra construida: casas, reformas y oficinas.";
+
 export const projectHref = (p: Project) => `/proyectos/${p.slug}`;
 
 /** Foto n (0 = portada) del proyecto si ya fue importada; si no, undefined y se dibuja el placeholder. */
@@ -236,7 +239,7 @@ export const studio = {
   /** Frase de la home. La página de estudio usa `approach`, para no repetir el mismo texto en las dos vistas. */
   statement: "Nos apasiona la arquitectura y cómo interactúa con quienes la usan. Volúmenes, espacios, funciones.",
   /** Frase de la página de estudio */
-  approach: "Treinta años proyectando de a dos, con la obra construida como única carta de presentación.",
+  approach: "Treinta años de oficio, con la obra construida como única carta de presentación.",
   paragraphs: [
     "Abrimos el estudio después de recorrer juntas la carrera universitaria, y siempre concebimos los diseños en conjunto, seguras de lo que aporta esa forma de trabajo.",
     "Hacemos anteproyectos, proyectos y direcciones de obra de construcciones nuevas y de edificios a reformar, además de diseño de interiores. También desarrollamos proyectos ejecutivos para colegas.",
