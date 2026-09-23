@@ -16,7 +16,7 @@ const one = <T extends Element = HTMLElement>(root: ParentNode, sel: string) =>
 /**
  * Hero de la home. Carga: la banda negra ocupa toda la pantalla, la cruz se abre de lado a lado
  * y se repliega hasta ser el "+" del logo (en el centro de la pantalla), los nombres salen desde ahí
- * y el logo sube rápido con el negro hasta su posición de titular.
+ * con ARQUITECTAS debajo por un momento, y el logo sube rápido con el negro hasta su posición de titular.
  * Apertura: al primer scroll se dispara sola, de una y sin vuelta atrás: la banda se cierra,
  * la foto crece hasta ocupar la sección y el header baja a su lugar con el logo chico.
  */
@@ -31,6 +31,9 @@ export function hero(root: HTMLElement, smoother: ScrollSmoother, playIntro: boo
   const lineV = one(root, "[data-plus-v]");
   const left = one(root, "[data-name-left]");
   const right = one(root, "[data-name-right]");
+  // Letras de ARQUITECTAS. Se mueven en unidades del viewBox: el alto del SVG entero es 124.
+  const sub = all<SVGGElement>(root, "[data-hero-sub] [data-glyph]");
+  const subDrop = 130;
   const frame = one(root, "[data-hero-frame]");
   const frameInner = one(frame, "[data-ph-inner]");
   const caption = one(root, "[data-hero-caption]");
@@ -137,8 +140,12 @@ export function hero(root: HTMLElement, smoother: ScrollSmoother, playIntro: boo
     .addLabel("names", "-=0.45")
     .fromTo(left, { xPercent: 102 }, { xPercent: 0, duration: 1.45, ease: "expo.out" }, "names")
     .fromTo(right, { xPercent: -102 }, { xPercent: 0, duration: 1.45, ease: "expo.out" }, "names")
+    // ARQUITECTAS sube letra por letra desde su línea, apenas detrás de los nombres
+    .fromTo(sub, { y: subDrop }, { y: 0, duration: 1.1, ease: "expo.out", stagger: 0.035 }, "names+=0.3")
     // Ya armado, el logo sube rápido con el negro hasta su posición final
-    .addLabel("lift", "names+=1.3")
+    .addLabel("lift", "names+=1.6")
+    // ARQUITECTAS se va hacia arriba al arrancar la subida: el titular queda solo con los nombres
+    .to(sub, { y: -subDrop, duration: 0.5, ease: "power3.in", stagger: 0.015 }, "lift-=0.1")
     .to(meta, { autoAlpha: 0, y: -8, duration: 0.35, ease: "power2.in" }, "lift-=0.2")
     .to(word, { y: 0, duration: 0.95 }, "lift")
     .to(band, { height: bandHeight, duration: 0.95 }, "lift")

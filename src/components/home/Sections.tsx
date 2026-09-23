@@ -34,6 +34,15 @@ function HeroBand() {
           <span data-plus className="relative mx-[0.06em] block size-[0.56em] shrink-0">
             <span data-plus-h className="absolute inset-x-0 top-[calc(50%-0.02em)] h-[0.04em] bg-current" />
             <span data-plus-v className="absolute inset-y-0 left-[calc(50%-0.02em)] w-[0.04em] bg-current" />
+            {/* ARQUITECTAS: solo durante la carga, bajo el "+" como en el logo. Proporciones medidas del logo:
+                ancho = 7.4 alturas de mayúscula de los nombres; su tope, 0.65 de esa altura debajo de la línea.
+                Va absoluto para no sumar alto a la banda: al cerrarse queda afuera. */}
+            <span
+              data-hero-sub
+              className="absolute top-[calc(50%+0.33em+0.43em)] left-1/2 block -translate-x-1/2 overflow-hidden"
+            >
+              <Word svg={wordmark.arquitectas} height={`${(0.66 * 7.4 * wordmark.arquitectas.h) / wordmark.arquitectas.w}em`} />
+            </span>
           </span>
           <span className="flex overflow-hidden py-[0.06em]">
             <span data-name-right className="block">
