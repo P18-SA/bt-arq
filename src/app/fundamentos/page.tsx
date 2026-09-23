@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import type { ReactNode } from "react";
-import { hero, projects, studio } from "@/components/site/content";
+import Image from "next/image";
+import { hero, photo, projects, studio } from "@/components/site/content";
 import { Plus, PlusLabel } from "@/components/site/Plus";
 import {
   breakpoints,
@@ -11,7 +11,6 @@ import {
   grid,
   motionVocab,
   palette,
-  pending,
   respectsReducedMotion,
   roles,
   ruleOfFour,
@@ -57,13 +56,13 @@ function Sheet({
     <section
       id={cont ? undefined : s.id}
       aria-labelledby={cont ? undefined : `${s.id}-title`}
-      className="f-page scroll-mt-8 pb-20"
+      className="f-page scroll-mt-8 pb-[clamp(6rem,16vh,11rem)]"
     >
       {/*
         En pantalla el encabezado va arriba de la sección y una sola vez. En papel es la celda
         izquierda de la hoja: título, numeral y bajada, con el filete de la grilla a su derecha.
       */}
-      <header className={`f-head f-hair border-t pt-5 ${cont ? "hidden print:block" : "block"}`}>
+      <header className={`f-head f-hair f-rv border-t pt-5 ${cont ? "hidden print:block" : "block"}`}>
         <div className="flex items-baseline justify-between gap-6">
           <h2 id={cont ? undefined : `${s.id}-title`} className="d-h2">
             {title}
@@ -75,7 +74,7 @@ function Sheet({
         {intro ? <p className="mt-5 hidden max-w-[40ch] d-lead print:block">{intro}</p> : null}
       </header>
 
-      <div className="f-body">
+      <div className="f-body f-rv">
         {intro ? <p className="mt-5 mb-10 max-w-[46ch] d-lead print:hidden">{intro}</p> : <div className={cont ? "mt-10 print:mt-0" : "mt-8 print:mt-0"} />}
         {children}
       </div>
@@ -208,7 +207,7 @@ function Mock({
 }) {
   return (
     <figure className={`m-0 ${wide ? "sm:col-span-2" : ""}`}>
-      <div className="f-rule border" style={{ aspectRatio: ratio }}>
+      <div className="f-mock f-rule overflow-hidden border" style={{ aspectRatio: ratio }}>
         {children}
       </div>
       <figcaption className="mt-3">
@@ -220,6 +219,13 @@ function Mock({
     </figure>
   );
 }
+
+/** Tres fotos de la casa de Punta del Este (Tío Tom) para la fila de obra del principio. */
+const showcase = [
+  { n: 2, alt: "piscina y fachada al atardecer", head: "La foto manda.", tail: "Ocupa el ancho y el texto se corre.", label: "Exterior · piscina" },
+  { n: 4, alt: "galería y terraza", head: "Luz real,", tail: "sin retoque de catálogo ni filtros.", label: "Galería · terraza" },
+  { n: 8, alt: "estar con estructura de madera", head: "Materia y oficio.", tail: "Hormigón, madera y piedra a la vista.", label: "Interior · estar" },
+];
 
 const pendingPhone = `${site.contact.phone} (a confirmar)`;
 
@@ -233,19 +239,26 @@ export default function Fundamentos() {
           Las decisiones de diseño del sitio y por qué se tomaron. No describe páginas: describe el sistema del que
           salen todas.
         </p>
-        <div
-          className="f-rule mt-12 flex items-center justify-center border py-[clamp(3rem,9vh,6rem)]"
-          style={{ background: "var(--foreground)", color: "var(--background)" }}
-        >
-          <Lockup size="clamp(1.6rem, 3.2vw, 2.6rem)" stacked />
-        </div>
+        <figure className="f-cover-photo f-rv relative mt-12 aspect-[21/9] overflow-hidden bg-black">
+          <Image
+            src={photo(hero, 12)!}
+            alt={`${hero.name}, fachada de noche`}
+            fill
+            priority
+            sizes="(min-width: 768px) 80vw, 100vw"
+            className="object-cover"
+          />
+          <div className="absolute inset-0 flex items-center justify-center bg-black/35 text-white">
+            <Lockup size="clamp(1.6rem, 3.2vw, 2.6rem)" stacked />
+          </div>
+          <figcaption className="absolute bottom-3 left-4 d-label text-white/80">{hero.name} · {hero.place}</figcaption>
+        </figure>
 
         <dl className="f-rule mt-12 grid max-w-[46rem] grid-cols-2 gap-x-(--gutter) gap-y-6 border-t pt-5 sm:grid-cols-4">
           {[
             ["Versión", version],
             ["Fecha", generated],
             ["Obras cargadas", String(figures.projects)],
-            ["Pendientes", String(pending.length + 1)],
           ].map(([k, v]) => (
             <div key={k}>
               <dt className="f-muted d-label">{k}</dt>
@@ -280,7 +293,33 @@ export default function Fundamentos() {
           ]}
         />
 
-        <div className="mt-12">
+        <div className="mt-16">
+          <Eyebrow>La obra primero</Eyebrow>
+          <ul className="f-cards grid gap-(--gutter) md:grid-cols-3">
+            {showcase.map((c) => (
+              <li key={c.n} className="f-card f-rule group flex flex-col border">
+                <div className="relative aspect-[4/3] overflow-hidden">
+                  <Image
+                    src={photo(hero, c.n)!}
+                    alt={`${hero.name}, ${c.alt}`}
+                    fill
+                    sizes="(min-width: 768px) 28vw, 100vw"
+                    className="object-cover transition-transform duration-[1.2s] ease-[cubic-bezier(0.2,0.7,0.2,1)] group-hover:scale-[1.03]"
+                  />
+                </div>
+                <div className="flex flex-1 flex-col justify-between gap-8 p-5">
+                  <p className="d-h3 text-balance">
+                    {c.head} <span className="f-muted">{c.tail}</span>
+                  </p>
+                  <p className="f-muted d-label">{c.label}</p>
+                </div>
+              </li>
+            ))}
+          </ul>
+          <p className="f-muted mt-4 d-meta">{hero.name}, {hero.place}. Fotos de obra terminada.</p>
+        </div>
+
+        <div className="mt-16">
           <Eyebrow>De dónde se parte</Eyebrow>
           <div className="grid gap-x-(--gutter) gap-y-8 md:grid-cols-3">
             {[
@@ -856,8 +895,8 @@ export default function Fundamentos() {
                 <span className="d-label">Berthet + Taranto</span>
                 <span className="f-muted d-label">Estudio · Proyectos · Contacto</span>
               </div>
-              <div className="f-block relative flex-1">
-                <span className="f-muted absolute bottom-2 left-3 d-label">{sample.name} — foto de obra</span>
+              <div className="f-block relative flex-1 overflow-hidden">
+                <Image src={photo(hero, 2)!} alt="" fill sizes="50vw" className="object-cover" />
               </div>
               <p className="px-3 py-3 d-num">berthet + taranto</p>
             </div>
@@ -869,7 +908,9 @@ export default function Fundamentos() {
                 <span className="d-label">B + T</span>
                 <span className="f-muted d-label">Menú</span>
               </div>
-              <div className="f-block flex-1" />
+              <div className="f-block relative flex-1 overflow-hidden">
+                <Image src={photo(hero, 13)!} alt="" fill sizes="25vw" className="object-cover" />
+              </div>
               <p className="px-2 py-2 d-h3">berthet + taranto</p>
             </div>
           </Mock>
@@ -891,7 +932,9 @@ export default function Fundamentos() {
                   </div>
                 ))}
               </dl>
-              <div className="f-block mt-3 flex-1" />
+              <div className="f-block relative mt-3 flex-1 overflow-hidden">
+                <Image src={photo(hero, 4)!} alt="" fill sizes="25vw" className="object-cover" />
+              </div>
             </div>
           </Mock>
         </div>
@@ -947,8 +990,8 @@ export default function Fundamentos() {
             shows="Una obra por posteo, con el pie del sitio. El usuario de Instagram está pendiente."
           >
             <div className="flex h-full flex-col">
-              <div className="f-block relative flex-1">
-                <span className="f-muted absolute bottom-2 left-2 d-label">Foto de obra</span>
+              <div className="f-block relative flex-1 overflow-hidden">
+                <Image src={photo(projects[1])!} alt="" fill sizes="25vw" className="object-cover" />
               </div>
               <div className="p-2">
                 <p className="d-meta">{projects[1].name}</p>
@@ -959,42 +1002,6 @@ export default function Fundamentos() {
         </div>
       </Sheet>
 
-      {/* 11 ------------------------------------------------------------------ */}
-      <Sheet
-        index={10}
-        page={18}
-        title="Qué falta para publicar"
-        intro="Lista de trabajo, no de reclamos. Sale de los pendientes anotados en el sistema de diseño y se actualiza sola."
-      >
-        <ul>
-          {[
-            { item: "Sistema tipográfico, paleta y grilla", done: true, need: "Nada: está decidido y aplicado." },
-            { item: "Licencia de ABC Areal", done: false, need: "Definir licencia web, tope de visitas y uso impreso." },
-            ...pending.map((p) => ({ item: p, done: false, need: "Material o confirmación del estudio." })),
-          ].map((row) => (
-            <li key={row.item} className="f-rule grid gap-x-(--gutter) gap-y-1 border-b py-4 md:grid-cols-12">
-              <p className="d-meta md:col-span-6">{row.item}</p>
-              <p className={`d-meta md:col-span-2 ${row.done ? "" : "f-muted"}`}>{row.done ? "Decidido" : "Pendiente"}</p>
-              <p className="f-muted d-meta md:col-span-4">{row.need}</p>
-            </li>
-          ))}
-        </ul>
-
-      </Sheet>
-
-      <Sheet index={10} page={19} cont title="Qué falta para publicar">
-        <p className="f-muted mt-10 max-w-[60ch] d-body">
-          Todos los valores de este documento se leen del código del sitio: los tamaños y los colores salen de los
-          tokens, los números de obra del contenido cargado y esta lista de los pendientes anotados en el sistema. Si el
-          sitio cambia, el documento cambia con él.
-        </p>
-        <p className="f-muted mt-6 d-meta">
-          {version} · generado el {generated} ·{" "}
-          <Link href="/" className="underline underline-offset-4">
-            Volver al sitio
-          </Link>
-        </p>
-      </Sheet>
     </Chrome>
   );
 }

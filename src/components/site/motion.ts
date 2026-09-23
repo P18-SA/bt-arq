@@ -35,7 +35,7 @@ export function hero(root: HTMLElement, smoother: ScrollSmoother, playIntro: boo
   const sub = all<SVGGElement>(root, "[data-hero-sub] [data-glyph]");
   const subDrop = 130;
   const frame = one(root, "[data-hero-frame]");
-  const frameInner = one(frame, "[data-ph-inner]");
+  const frameInner = one(frame, "[data-ph-scale]");
   const caption = one(root, "[data-hero-caption]");
   const hint = one(root, "[data-hero-hint]");
   const header = one(root, "[data-header]");
@@ -217,7 +217,7 @@ export function pageIntro(root: HTMLElement) {
 /** Marco que se descubre de abajo hacia arriba, con las marcas "+" apareciendo en las esquinas. */
 function revealFrame(item: HTMLElement) {
   const frame = one(item, "[data-ph]");
-  const inner = one(item, "[data-ph-inner]");
+  const inner = one(item, "[data-ph-scale]");
   const marks = all(item, "[data-ph-mark]");
   const lines = all(item, "[data-reveal-line]");
 
@@ -232,6 +232,34 @@ function revealFrame(item: HTMLElement) {
   if (lines.length) {
     tl.fromTo(lines, { yPercent: 105 }, { yPercent: 0, duration: 1, ease: "power3.out", stagger: 0.08 }, 0.8);
   }
+}
+
+/**
+ * El header va en mix-blend-difference: sobre una foto de tono medio el logo y el nav se apagan.
+ * Los bloques a sangre que le pasan por debajo se marcan con [data-header-over] y encienden un
+ * velo oscuro, que es lo que devuelve el contraste sin tocar el resto de las páginas.
+ */
+export function headerScrim(root: HTMLElement) {
+  const scrim = root.querySelector<HTMLElement>("[data-header-scrim]");
+  const zones = all(root, "[data-header-over]");
+  if (!scrim || !zones.length) return;
+
+  let over = 0;
+  gsap.set(scrim, { autoAlpha: 0 });
+  const sync = () =>
+    gsap.to(scrim, { autoAlpha: over > 0 ? 1 : 0, duration: 0.35, ease: "power2.out", overwrite: true });
+
+  zones.forEach((zone) =>
+    ScrollTrigger.create({
+      trigger: zone,
+      start: "top top",
+      end: "bottom top",
+      onToggle: (self) => {
+        over = Math.max(0, over + (self.isActive ? 1 : -1));
+        sync();
+      },
+    }),
+  );
 }
 
 export function reveals(root: HTMLElement) {
@@ -394,7 +422,7 @@ export function indexPreview(root: HTMLElement, ctx: Ctx) {
   const list = one(root, "[data-index-list]");
   const preview = one(root, "[data-index-preview]");
   const items = all(preview, "[data-index-item]");
-  const inners = items.map((it) => one(it, "[data-ph-inner]"));
+  const inners = items.map((it) => one(it, "[data-ph-scale]"));
   const OPEN = "inset(0% 0% 0% 0%)";
   const SHUT = "inset(50% 50% 50% 50%)";
 

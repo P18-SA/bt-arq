@@ -69,6 +69,28 @@ export function Header({ words, intro = false }: Props) {
     { dependencies: [open], scope },
   );
 
+  // Red de seguridad al navegar: el header se esconde esperando a la intro del hero, que se juega
+  // una sola vez por visita. Si al llegar a la home ya se jugó (marca `intro-done`), nace visible,
+  // sin depender de que el timeline del hero vuelva a correr ni de en qué orden revierte GSAP los
+  // estilos de la página que se desmonta. Va en un frame posterior, después de esos dos.
+  // Va fuera de un contexto de GSAP a propósito: si quedara registrado, al revertirse (cambio de
+  // ruta, desmontaje) GSAP devolvería los estilos previos, que pueden ser los del header escondido.
+  // Se limpian los estilos en línea: con `intro-done` el CSS ya los deja visibles en su lugar.
+  useEffect(() => {
+    let frame = 0;
+    const reset = () => {
+      if (!document.documentElement.classList.contains("intro-done")) return;
+      const el = scope.current;
+      if (!el) return;
+      gsap.set(el.querySelectorAll("[data-header-item], [data-header-menu], [data-header-logo], [data-header-rise], [data-header-clock]"), {
+        clearProps: "opacity,visibility,transform",
+      });
+    };
+    // Dos frames: después de que la página nueva monte sus animaciones y la vieja revierta las suyas
+    frame = requestAnimationFrame(() => (frame = requestAnimationFrame(reset)));
+    return () => cancelAnimationFrame(frame);
+  }, [pathname]);
+
   useEffect(() => {
     if (!open) return;
     const onKey = (e: KeyboardEvent) => e.key === "Escape" && setOpen(false);
@@ -78,6 +100,13 @@ export function Header({ words, intro = false }: Props) {
 
   return (
     <div ref={scope}>
+      {/* Velo bajo el header: va por fuera del mix-blend-difference, y solo se enciende cuando
+          pasa por debajo un bloque a sangre (ver [data-header-over] en motion.ts). */}
+      <span
+        aria-hidden="true"
+        data-header-scrim
+        className="pointer-events-none invisible fixed inset-x-0 top-0 z-40 h-[clamp(5rem,9vw,8rem)] bg-linear-to-b from-black/45 via-black/20 to-transparent opacity-0"
+      />
       <header data-header className="pointer-events-none fixed inset-x-0 top-0 z-50 text-white mix-blend-difference">
         <div className="flex items-center justify-between gap-6 px-[calc(var(--gutter)+var(--edge))] pt-[calc(env(safe-area-inset-top,0px)+1.1rem)]">
           <Link

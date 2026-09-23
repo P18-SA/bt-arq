@@ -12,8 +12,7 @@ export const sections = [
   { id: "signo", title: "El signo +", group: "La marca" },
   { id: "movimiento", title: "Movimiento", group: "La marca" },
   { id: "responsive", title: "Celular", group: "La marca" },
-  { id: "aplicaciones", title: "Aplicaciones", group: "El estado" },
-  { id: "estado", title: "Estado y pendientes", group: "El estado" },
+  { id: "aplicaciones", title: "Aplicaciones", group: "La marca" },
 ] as const;
 
 export type Section = (typeof sections)[number];

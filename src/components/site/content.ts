@@ -253,8 +253,8 @@ export const studio = {
   /** Frase de la página de estudio */
   approach: "Treinta años de oficio, con la obra construida como única carta de presentación.",
   paragraphs: [
-    "Abrimos el estudio después de recorrer juntas la carrera universitaria, y siempre concebimos los diseños en conjunto, seguras de lo que aporta esa forma de trabajo.",
-    "Hacemos anteproyectos, proyectos y direcciones de obra de construcciones nuevas y de edificios a reformar, además de diseño de interiores. También desarrollamos proyectos ejecutivos para colegas.",
+    "Empezamos juntas, en las aulas, y nunca dejamos de dibujar a cuatro manos. Cada casa nace de una conversación: dos miradas que se corrigen hasta que el espacio encuentra su forma.",
+    "Buscamos lo que no se ve en un plano: la luz que entra a cierta hora, el silencio de un patio, el peso de un material bajo la mano. Lo que queda cuando la obra termina y empieza a habitarse.",
   ],
   partners: [
     { name: "Marcela Berthet", role: "Arquitecta, socia fundadora" },

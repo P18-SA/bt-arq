@@ -9,7 +9,7 @@ import { wordmark } from "@/components/site/wordmark";
 export function Lockup({ size = "1.5rem", stacked = false }: { size?: string; stacked?: boolean }) {
   return (
     <span
-      className={`f-lockup inline-flex ${stacked ? "flex-col items-start gap-[0.3em]" : "items-center gap-[0.4em]"}`}
+      className={`f-lockup inline-flex ${stacked ? "flex-col items-center gap-[0.3em]" : "items-center gap-[0.4em]"}`}
       style={{ fontSize: size }}
     >
       <span className="inline-flex items-center gap-[0.4em]">

@@ -42,13 +42,40 @@ export function Chrome({ children }: { children: React.ReactNode }) {
     return () => io.disconnect();
   }, []);
 
+  // Entrada al scrollear: cada encabezado y cuerpo de sección sube y aparece una sola vez.
+  // La clase `f-anim` la pone el script: sin JS, en papel o con movimiento reducido todo queda visible.
+  useEffect(() => {
+    if (matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    const root = document.querySelector(".fnd");
+    root?.classList.add("f-anim");
+    const els = document.querySelectorAll<HTMLElement>(".f-rv, .f-card");
+    const io = new IntersectionObserver(
+      (entries) => {
+        for (const e of entries) {
+          if (!e.isIntersecting) continue;
+          e.target.classList.add("f-in");
+          io.unobserve(e.target);
+        }
+      },
+      { rootMargin: "0px 0px -8% 0px" },
+    );
+    els.forEach((el) => io.observe(el));
+    const done = () => els.forEach((el) => el.classList.add("f-in"));
+    window.addEventListener("beforeprint", done);
+    return () => {
+      io.disconnect();
+      window.removeEventListener("beforeprint", done);
+      root?.classList.remove("f-anim");
+    };
+  }, []);
+
   useEffect(() => {
     place(active);
   }, [active, place]);
 
   return (
     <div className="fnd min-h-svh">
-      <div className="grid grid-cols-4 gap-x-(--gutter) px-(--gutter) md:grid-cols-[14rem_minmax(0,1fr)] md:px-[calc(var(--gutter)*2)]">
+      <div className="mx-auto grid max-w-[84rem] grid-cols-4 gap-x-(--gutter) px-(--gutter) md:grid-cols-[12rem_minmax(0,1fr)] md:gap-x-16 md:px-[calc(var(--gutter)*2)]">
         <aside className="f-screen-only col-span-4 pt-8 md:sticky md:top-0 md:col-span-1 md:flex md:h-svh md:flex-col md:self-start md:py-14">
           <div className="f-rule border-b pb-4 md:border-0 md:pb-0">
             <p className="d-label">Berthet + Taranto</p>
@@ -90,7 +117,7 @@ export function Chrome({ children }: { children: React.ReactNode }) {
           </button>
         </aside>
 
-        <main className="col-span-4 min-w-0 md:col-span-1 md:max-w-7xl print:max-w-none">{children}</main>
+        <main className="col-span-4 min-w-0 md:col-span-1">{children}</main>
       </div>
     </div>
   );

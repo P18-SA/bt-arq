@@ -190,13 +190,13 @@ function Eyebrow({ children }: { children: ReactNode }) {
 export default function DesignGuideline() {
   return (
     <div className="min-h-svh bg-paper text-ink">
-      <div className="grid grid-cols-4 gap-x-(--gutter) px-(--gutter) md:grid-cols-12">
+      <div className="mx-auto grid max-w-[84rem] grid-cols-4 gap-x-(--gutter) px-(--gutter) md:grid-cols-[12rem_minmax(0,1fr)] md:gap-x-16 md:px-[calc(var(--gutter)*2)]">
         {/* Índice: arriba en mobile, fijo a la izquierda en escritorio */}
-        <aside className="col-span-4 pt-10 md:col-span-3 md:sticky md:top-0 md:h-svh md:self-start md:py-10">
+        <aside className="col-span-4 pt-10 md:col-span-1 md:sticky md:top-0 md:h-svh md:self-start md:py-10">
           <GuidelineIndex items={sections} />
         </aside>
 
-        <main className="col-span-4 md:col-span-9">
+        <main className="col-span-4 min-w-0 md:col-span-1">
           <header className="pt-[16vh] pb-[clamp(6rem,14vh,10rem)]">
             <p className="text-label text-graphite uppercase">Berthet + Taranto · Documento interno</p>
             <h1 className="mt-6 text-display">Guía de diseño</h1>

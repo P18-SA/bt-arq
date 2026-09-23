@@ -9,74 +9,55 @@ type Props = {
   ratio?: number;
 };
 
-// Resolución del canvas: arranca tan fina que no se distingue de la foto y baja hasta el mosaico.
-const FINE = 180;
-const COARSE = 22;
-const MS = 420;
-
-// Salida suave, la misma curva que usa el resto del sitio (expo.out)
-const ease = (t: number) => 1 - Math.pow(2, -10 * t);
+// Columnas del mosaico: un solo valor, no una animación. Menos columnas = bloques más grandes.
+const COLS = 30;
 
 /**
- * Hover de la galería: la foto se pixela de verdad, no cruza a una miniatura ya pixelada.
- * El canvas redibuja la misma foto a menos y menos columnas —con el suavizado apagado, así cada
- * paso es un mosaico limpio— y al salir el mosaico se vuelve a afinar hasta desaparecer.
- * Solo se redibuja cuando cambia la cantidad de columnas: son unos veinte cuadros, no sesenta.
+ * Hover de la galería: la foto se pixela. El canvas redibuja la misma foto a pocas columnas, con
+ * el suavizado apagado, y se enciende y apaga de una: no hay barrido progresivo ni vuelta atrás.
+ * El recorte replica el `object-cover` de la foto de abajo, así al aparecer no se nota ningún salto
+ * de encuadre ni de tamaño.
  */
 export function PixelCover({ src, ratio = 4 / 3 }: Props) {
   const canvas = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
     const el = canvas.current;
-    if (!el) return;
-    const card = el.closest("[data-pixel-card]");
-    if (!card) return;
-    if (matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    const card = el?.closest("[data-pixel-card]");
+    if (!el || !card) return;
     // En pantallas táctiles no hay hover: la foto queda nítida y no se descarga nada de más.
     if (!matchMedia("(hover: hover)").matches) return;
 
     const ctx = el.getContext("2d");
     const photo = new Image();
     photo.decoding = "async";
-    let ready = false;
-    photo.onload = () => (ready = true);
+    let drawn = false;
+
+    const draw = () => {
+      if (!ctx || drawn || !photo.naturalWidth) return;
+      el.width = COLS;
+      el.height = Math.round(COLS / ratio);
+      // Mismo recorte que object-cover: se toma del centro la franja que llena el cuadro
+      const scale = Math.max(el.width / photo.naturalWidth, el.height / photo.naturalHeight);
+      const w = el.width / scale;
+      const h = el.height / scale;
+      ctx.imageSmoothingEnabled = false;
+      ctx.drawImage(photo, (photo.naturalWidth - w) / 2, (photo.naturalHeight - h) / 2, w, h, 0, 0, el.width, el.height);
+      drawn = true;
+    };
+    photo.onload = draw;
     photo.src = src;
 
-    let frame = 0;
-    let cols = 0;
-    const draw = (next: number) => {
-      if (!ctx || !ready || next === cols) return;
-      cols = next;
-      el.width = next;
-      el.height = Math.round(next / ratio);
-      ctx.imageSmoothingEnabled = false;
-      ctx.drawImage(photo, 0, 0, el.width, el.height);
+    const enter = () => {
+      draw();
+      el.style.opacity = "1";
     };
-
-    // level 0 = foto nítida, 1 = mosaico
-    let level = 0;
-    const run = (to: number) => {
-      cancelAnimationFrame(frame);
-      const from = level;
-      const start = performance.now();
-      const step = (now: number) => {
-        const t = Math.min(1, (now - start) / MS);
-        level = from + (to - from) * ease(t);
-        draw(Math.round(FINE + (COARSE - FINE) * level));
-        el.style.opacity = level > 0.001 ? "1" : "0";
-        if (t < 1) frame = requestAnimationFrame(step);
-      };
-      frame = requestAnimationFrame(step);
-    };
-
-    const enter = () => run(1);
-    const leave = () => run(0);
+    const leave = () => (el.style.opacity = "0");
     card.addEventListener("pointerenter", enter);
     card.addEventListener("pointerleave", leave);
     card.addEventListener("focusin", enter);
     card.addEventListener("focusout", leave);
     return () => {
-      cancelAnimationFrame(frame);
       card.removeEventListener("pointerenter", enter);
       card.removeEventListener("pointerleave", leave);
       card.removeEventListener("focusin", enter);

@@ -16,6 +16,8 @@ type Props = {
   coverMeta?: { label: string; lines: string[] };
   /** Rótulo en mayúscula del índice (columna derecha) */
   indexLabel: string;
+  /** Baja la foto chica por debajo del pie de la obra (página de estudio). */
+  insetLow?: boolean;
   /** Dato corto al final de la fila del rótulo: año, cantidad, etc. */
   indexMeta?: string;
   /** Filas numeradas con guía punteada */
@@ -35,11 +37,11 @@ type Props = {
  * chica que cierra abajo, alineada al borde derecho (ver referencia en DESIGN.md §5).
  * Los rótulos van en mayúscula y chicos; los textos grandes quedan en caja baja.
  */
-export function Spread({ eyebrow, coverMeta, indexLabel, indexMeta, rows, cover, inset, children, full = false }: Props) {
+export function Spread({ eyebrow, coverMeta, indexLabel, indexMeta, rows, cover, inset, children, full = false, insetLow = false }: Props) {
   return (
     <section className={`grid grid-cols-1 items-stretch md:grid-cols-2 ${full ? "md:min-h-[124svh]" : ""}`}>
       {/* Izquierda: la obra, a sangre contra el borde de la sección */}
-      <div data-reveal className={`relative ${full ? "h-[124svh] md:h-full" : ""}`}>
+      <div data-reveal className={`relative flex flex-col ${full ? "h-[124svh] md:h-full" : ""}`}>
         <Media
           src={cover.src}
           label={cover.label}
@@ -59,9 +61,10 @@ export function Spread({ eyebrow, coverMeta, indexLabel, indexMeta, rows, cover,
             {eyebrow}
           </p>
         )}
-        {/* Ficha mínima al pie de la obra, en vez del rótulo encima de la foto */}
+        {/* Ficha mínima de la obra: en mano va arriba de la foto (abajo chocaba con el índice),
+            desde md vuelve al pie. */}
         {coverMeta && (
-          <div className="px-(--gutter) pt-4 text-graphite">
+          <div className="order-first px-(--gutter) pb-4 text-graphite md:order-none md:pt-4 md:pb-0">
             <p className="text-label">{coverMeta.label}</p>
             <hr className="mt-2 mb-3 border-0 border-t border-ink/20" />
             <p className="max-w-[24ch] text-meta">
@@ -142,7 +145,7 @@ export function Spread({ eyebrow, coverMeta, indexLabel, indexMeta, rows, cover,
             className={`mt-[12vh] self-end ${
               full
                 ? "w-[min(58%,19rem)] md:mt-auto md:mb-[2vh]"
-                : "w-[min(54%,17.5rem)] md:mt-auto md:mb-[3vh]"
+                : `w-[min(54%,17.5rem)] md:mt-auto ${insetLow ? "md:-mb-[14vh]" : "md:mb-[3vh]"}`
             }`}
           >
             <Media

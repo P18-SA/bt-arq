@@ -4,7 +4,6 @@ import { useEffect, useId, useRef, useState } from "react";
 import { gsap, ScrollSmoother, useGSAP } from "@/lib/gsap";
 import { CircleButton } from "./CircleButton";
 import { contact } from "./content";
-import { PlusLabel } from "./Plus";
 
 const { address } = contact;
 const mapsHref = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(address.mapsQuery)}`;
@@ -133,9 +132,10 @@ export function ContactModal({ open, onClose }: Props) {
           className="absolute inset-y-0 right-0 flex w-full flex-col overflow-y-auto bg-paper text-ink shadow-[0_0_6rem_rgb(0_0_0/0.35)] md:w-[72vw] lg:w-[66vw]"
         >
           <div className="flex items-start justify-end px-(--gutter) pt-[calc(env(safe-area-inset-top,0px)+1.1rem)]">
-            <button type="button" onClick={onClose} className="group flex items-center gap-2 text-meta text-ink">
-              <PlusLabel>Cerrar</PlusLabel>
-            </button>
+            {/* Mismo "Cerrar" que el menú de mano: círculo relleno que se vacía al hover */}
+            <CircleButton onClick={onClose} filled className="text-ink">
+              Cerrar
+            </CircleButton>
           </div>
 
           <div className="grid flex-1 content-start gap-[clamp(2.5rem,6vw,4.5rem)] px-(--gutter) pt-[clamp(4rem,14vh,9rem)] pb-[calc(env(safe-area-inset-bottom,0px)+3rem)] lg:grid-cols-[minmax(0,1fr)_max-content] lg:gap-x-[clamp(2.5rem,6vw,5rem)]">

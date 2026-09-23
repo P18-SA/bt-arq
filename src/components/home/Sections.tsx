@@ -83,6 +83,7 @@ export function Hero() {
     <section
       id="inicio"
       data-hero
+      data-header-over
       // AJUSTE A MANO — ancho del negro a cada costado del card (marco del hero).
       // Pisa el --edge global solo dentro del hero: lo usan el card, la banda y las tiras negras.
       //   clamp(<mínimo en pantalla chica>, <proporcional al ancho>, <máximo en pantalla grande>)

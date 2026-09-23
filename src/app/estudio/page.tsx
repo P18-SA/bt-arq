@@ -50,13 +50,14 @@ export default function Estudio() {
             </p>
           </aside>
 
-          <div data-reveal className="col-span-12 mt-[4vh] md:col-span-9 md:mt-[12vh]">
+          <div data-reveal className="col-span-12 mt-4 md:col-span-9 md:mt-[12vh]">
             <Media
               src={photo(hero)}
               tone="graphite"
               label={`${hero.name}, ${hero.place}`}
               preload
-              ratio="16 / 9"
+              // En mano un poco más alta que 16:9, que quedaba muy apaisada
+              className="aspect-[3/2] md:aspect-video"
               bleed="y"
               speed="auto"
               sizes="(min-width: 768px) 75vw, 100vw"
@@ -64,13 +65,13 @@ export default function Estudio() {
           </div>
         </section>
 
-        <section className="grid grid-cols-12 gap-x-(--gutter) px-(--gutter) pt-[12vh] pb-[14vh]">
-          <h2 className="col-span-12 mb-8 text-label text-graphite md:col-span-3 md:mb-0 md:pt-[0.7em]">(Enfoque)</h2>
+        <section className="grid grid-cols-12 gap-x-(--gutter) px-(--gutter) pt-[8vh] pb-[14vh] md:pt-[12vh]">
+          <h2 className="col-span-12 mb-6 text-label text-graphite md:col-span-3 md:mb-0 md:pt-[0.7em] uppercase">Enfoque</h2>
           <div className="col-span-12 md:col-span-9">
             <p data-statement className="max-w-[22ch] text-heading text-balance">
               {studio.approach}
             </p>
-            <div className="mt-[10vh] grid gap-10 text-body text-graphite sm:grid-cols-2 lg:max-w-4xl">
+            <div className="mt-[5vh] grid gap-10 text-body md:mt-[10vh] text-graphite sm:grid-cols-2 lg:max-w-4xl">
               {studio.paragraphs.map((text) => (
                 <p key={text} className="max-w-[60ch]">
                   {text}
@@ -85,15 +86,16 @@ export default function Estudio() {
             label: "(02)",
             lines: [cover.name, cover.place, cover.area ? `${cover.program}, ${cover.area}` : cover.program],
           }}
-          indexLabel="Qué hacemos"
+          indexLabel="Capacidades"
           indexMeta={`(${String(studio.services.length).padStart(2, "0")})`}
           rows={studio.services.map((s) => ({ title: s.title, note: s.note }))}
           cover={{ src: photo(cover), label: `${cover.name}, ${cover.place}`, tone: cover.tone }}
+          insetLow
           inset={{ src: photo(aside), label: `${aside.name}, ${aside.place}`, tone: aside.tone }}
         />
 
         <section className="px-(--gutter) pt-[18vh] pb-[18vh]">
-          <h2 className="mb-[8vh] border-t border-ink pt-5 text-heading">Socias</h2>
+          <h2 className="mb-[8vh] text-heading">Socias</h2>
           {/*
             Retratos en las columnas 1-5 y 8-12, con el "+" del logo en las dos columnas del medio.
             El "+" queda a la altura media entre las dos fotos (la segunda baja 22vh):

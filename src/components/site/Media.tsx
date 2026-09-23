@@ -13,7 +13,7 @@ export const tones: Record<Tone, { bg: string; ink: string }> = {
 // Con data-speed="auto" el recorrido es exactamente este sobrante: poco margen = parallax sutil.
 const bleeds = {
   none: "inset-0",
-  y: "inset-x-0 -inset-y-[7%]",
+  y: "inset-x-0 -inset-y-[12%]",
   x: "inset-y-0 -inset-x-[6%]",
 };
 
@@ -60,12 +60,16 @@ export function Media({
   const t = tones[tone];
   return (
     <figure data-ph-wrap className={`relative m-0 ${className}`} style={{ aspectRatio: ratio, ...style }}>
-      <div data-ph className="absolute inset-0 overflow-hidden">
+      <div data-ph className={`absolute inset-0 overflow-hidden ${src ? "bg-shadow" : ""}`}>
         <div
           data-ph-inner
           data-speed={speed}
           className={`absolute ${bleeds[bleed]} ${src ? "bg-shadow" : `${t.bg} ${t.ink}`} will-change-transform`}
         >
+          {/* La escala del reveal va en una capa aparte: si se aplicara sobre [data-ph-inner],
+              ScrollSmoother mediría esa capa agrandada y el parallax viajaría más que el sobrante,
+              dejando ver el fondo por el borde. */}
+          <div data-ph-scale className="absolute inset-0 will-change-transform">
           {src ? (
             <Image
               src={src}
@@ -88,6 +92,7 @@ export function Media({
               <path d="M12 100 C12 70 28 58 50 58 C72 58 88 70 88 100 Z" fill="currentColor" />
             </svg>
           ) : null}
+          </div>
         </div>
         {src && grain && <span aria-hidden="true" className="grain absolute inset-0" />}
         {!src && placeholder === "void" && (

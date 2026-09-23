@@ -123,7 +123,7 @@ export function ProjectGrid({ projects }: { projects: Project[] }) {
 
       {stuck &&
         createPortal(
-          <div className="pointer-events-none fixed inset-x-0 z-30 px-(--gutter)" style={{ top: stuckTop }}>
+          <div className="pointer-events-none fixed inset-x-0 z-30 px-(--gutter) mix-blend-difference" style={{ top: stuckTop }}>
             <div className="pointer-events-auto">{filterBar(false)}</div>
           </div>,
           document.body,
@@ -142,7 +142,8 @@ export function ProjectGrid({ projects }: { projects: Project[] }) {
                     label={`${p.name}, portada`}
                     tone={p.tone}
                     ratio="4 / 3"
-                    bleed="y"
+                    // Sin sangrado: la capa interior queda a ras del cuadro, así el mosaico del
+                    // hover cae sobre el mismo encuadre y no se ve un salto de tamaño al aparecer.
                     sizes="(min-width: 1280px) 25vw, (min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
                   />
                   {photo(p) && <PixelCover src={photo(p)!} />}

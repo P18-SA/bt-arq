@@ -104,6 +104,37 @@
   background: var(--foreground);
 }
 
+/*
+ * Entrada al scrollear. Una sola curva y una sola distancia en todo el documento: sube 24 px y
+ * aparece, sin rebote. Las tarjetas de obra salen escalonadas y la foto se asienta desde 1.06.
+ */
+.f-anim .f-rv,
+.f-anim .f-card {
+  opacity: 0;
+  transform: translateY(24px);
+  transition:
+    opacity 900ms cubic-bezier(0.2, 0.7, 0.2, 1),
+    transform 900ms cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+.f-anim .f-rv.f-in,
+.f-anim .f-card.f-in { opacity: 1; transform: none; }
+
+.f-anim .f-card:nth-child(2) { transition-delay: 90ms; }
+.f-anim .f-card:nth-child(3) { transition-delay: 180ms; }
+
+.f-anim .f-card img,
+.f-anim .f-cover-photo img {
+  transform: scale(1.06);
+  transition: transform 1600ms cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+.f-anim .f-card.f-in img,
+.f-anim .f-cover-photo.f-in img { transform: none; }
+.f-anim .f-card.f-in:hover img { transform: scale(1.03); }
+
+/* Tarjeta de obra: filete fino, y al pasar el cursor el filete se oscurece. */
+.f-card { transition: border-color 400ms ease; }
+.f-card:hover { border-color: var(--graphite); }
+
 /* Columnas dibujadas de la grilla. */
 .f-grid-demo > span { background: var(--fog); }
 
@@ -127,6 +158,25 @@
 
   .f-screen-only { display: none !important; }
 
+  /* En papel no hay animación: todo en su lugar final. */
+  .fnd .f-rv, .fnd .f-card, .fnd img { opacity: 1 !important; transform: none !important; transition: none !important; }
+
+  /* Hoja de alto fijo: si el contenido se pasa por un pelo, se recorta el aire del final en vez de
+     empujar el pie a una hoja en blanco. */
+  .f-page:not(.f-cover) { height: 209mm; overflow: hidden; }
+
+  /* Portada: la foto de obra con la marca encima, a buen tamaño. */
+  .f-cover .f-cover-photo { aspect-ratio: auto !important; height: 105mm; max-height: none !important; margin-top: 6mm !important; }
+
+  /* Fila de obra: tres tarjetas en línea, foto baja para que entre junto al resto de la hoja. */
+  .f-page .f-cards { display: grid !important; grid-template-columns: repeat(3, 1fr) !important; gap: 4mm !important; }
+  .f-page .f-card > div:first-child { aspect-ratio: auto !important; height: 30mm; max-height: none !important; }
+  .f-page .f-card > div:last-child { padding: 2.5mm 3mm !important; gap: 3mm !important; }
+  .f-page .mt-16 { margin-top: 4mm !important; }
+
+  /* Maquetas de aplicación: alto fijo y contenido recortado, en vez de desbordar la caja. */
+  .f-page .f-mock { aspect-ratio: auto !important; height: 38mm; max-height: none !important; }
+
   /* En papel el índice lateral desaparece y la hoja usa todo el ancho. */
   .fnd > .grid { display: block !important; padding: 0 !important; }
   .fnd main { display: block !important; }
@@ -140,7 +190,7 @@
     box-sizing: border-box;
     display: grid;
     grid-template-columns: 62mm 1fr;
-    grid-template-rows: 1fr auto;
+    grid-template-rows: minmax(0, 1fr) auto;
     width: auto;
     min-height: 209mm;
     padding: 0 !important;
