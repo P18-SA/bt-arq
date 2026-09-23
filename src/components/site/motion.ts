@@ -345,6 +345,50 @@ export function work(root: HTMLElement) {
   });
 }
 
+/**
+ * "Antes de la reforma" (escritorio): la sección se fija y las fotos avanzan en horizontal con el
+ * scroll, mientras la línea de arriba se completa. Dentro de cada foto, un parallax leve en x.
+ */
+export function beforeStrip(root: HTMLElement) {
+  const section = one(root, "[data-before]");
+  const track = one(section, "[data-before-track]");
+  const progress = one(section, "[data-before-progress]");
+  // El track mide lo que miden las fotos (w-max): se corre hasta que la última toca el margen derecho
+  const frame = track.parentElement!;
+  const distance = () => {
+    const { paddingLeft, paddingRight } = getComputedStyle(frame);
+    return Math.max(0, track.scrollWidth - (frame.clientWidth - parseFloat(paddingLeft) - parseFloat(paddingRight)));
+  };
+
+  const tl = gsap
+    .timeline({
+      defaults: { ease: "none" },
+      scrollTrigger: {
+        trigger: section,
+        start: "top top",
+        end: () => `+=${distance()}`,
+        pin: true,
+        scrub: true,
+        anticipatePin: 1,
+        invalidateOnRefresh: true,
+      },
+    })
+    .to(track, { x: () => -distance() }, 0)
+    .fromTo(progress, { scaleX: 0 }, { scaleX: 1 }, 0);
+
+  all(section, "[data-before-shot] [data-ph-inner]").forEach((inner) => {
+    gsap.fromTo(
+      inner,
+      { xPercent: -5 },
+      {
+        xPercent: 5,
+        ease: "none",
+        scrollTrigger: { trigger: inner, containerAnimation: tl, start: "left right", end: "right left", scrub: true },
+      },
+    );
+  });
+}
+
 /** Índice: una ventana sigue al cursor y cada obra se abre desde el centro hacia afuera. */
 export function indexPreview(root: HTMLElement, ctx: Ctx) {
   const list = one(root, "[data-index-list]");

@@ -7,202 +7,201 @@
   src: url('fonts/abc-areal-variable.woff2') format('woff2');
 }
 
+/* La misma paleta del sitio: sin color de acento. */
 :root {
-  --ink: #111111;
-  --graphite: #6f6e69;
-  --muted: #9a9993;
-  --line: #e3e1db;
-  --fog: #f1f0ec;
-  --cream: #faede6;
-  --accent: #9a5528;
-  --orange: #c26f3f;
-  --salmon: #fbf2ec;
+  --paper: #ffffff;
+  --ink: #000000;
+  --fog: #ebeae6;
+  --concrete: #cfcdc7;
+  --graphite: #5e5d59;
+  --rule: #dcdad4;
 }
 
 * { box-sizing: border-box; }
-
 @page { size: A4; margin: 0; }
-
 html, body { margin: 0; padding: 0; }
-
 body {
   font-family: 'ABC Areal', sans-serif;
-  color: var(--ink);
   font-weight: 400;
+  color: var(--ink);
+  font-variant-numeric: tabular-nums;
   -webkit-print-color-adjust: exact;
   print-color-adjust: exact;
 }
+p { margin: 0; }
+figure { margin: 0; }
 
+/* ---------------------------------------------------------------- página */
 .page {
   position: relative;
   width: 210mm;
   height: 297mm;
-  padding: 74pt 51pt 40pt;
-  background: #fff;
+  padding: 64pt 46pt 48pt;
+  background: var(--paper);
   overflow: hidden;
-  page-break-after: always;
   break-after: page;
 }
-.page:last-child { page-break-after: auto; }
-.page.cream { background: var(--cream); }
+.page:last-child { break-after: auto; }
 
-/* ---------- header / footer ---------- */
-.phead {
-  position: absolute;
-  top: 27pt; left: 51pt; right: 51pt;
+.run {
+  position: absolute; top: 24pt; left: 46pt; right: 46pt;
   display: flex; justify-content: space-between; align-items: baseline;
-  padding-bottom: 7pt;
-  border-bottom: 0.6pt solid #dedcd6;
-  font-size: 6pt; letter-spacing: 0.18em; text-transform: uppercase;
-  color: var(--muted);
+  font-size: 6.4pt; font-weight: 500; color: var(--graphite);
 }
-.page.cream .phead { border-bottom-color: #e4cbb9; }
-.pfoot {
-  position: absolute;
-  bottom: 18pt; left: 51pt; right: 51pt;
+.folio {
+  position: absolute; bottom: 22pt; left: 46pt; right: 46pt;
   display: flex; justify-content: space-between;
-  font-size: 6.1pt; color: var(--muted);
+  font-size: 6.4pt; font-weight: 500; color: var(--graphite);
 }
 
-/* ---------- typography ---------- */
-.eyebrow {
-  font-size: 6pt; letter-spacing: 0.2em; text-transform: uppercase;
-  color: var(--muted); font-weight: 400; margin: 0 0 10pt;
+/* ---------------------------------------------------------------- tipografía */
+.num { font-size: 6.8pt; font-weight: 500; color: var(--graphite); margin-bottom: 7pt; }
+h1 {
+  font-size: 23pt; font-weight: 400; line-height: 1.02; letter-spacing: -0.02em;
+  margin: 0; padding-top: 9pt; border-top: 0.8pt solid var(--ink);
 }
-.eyebrow.accent { color: var(--accent); }
-h1.title {
-  font-size: 16.5pt; font-weight: 400; line-height: 1.2;
-  letter-spacing: -0.005em; margin: 0 0 9pt; max-width: 90%;
+.lead { font-size: 10pt; line-height: 1.38; margin-top: 10pt; max-width: 78%; }
+h2 {
+  font-size: 12pt; font-weight: 400; line-height: 1.15; letter-spacing: -0.01em;
+  margin: 0 0 8pt;
 }
-h1.title.big { font-size: 22pt; }
-.lead {
-  font-size: 9.6pt; font-weight: 400; line-height: 1.5;
-  color: var(--ink); margin: 0 0 18pt; max-width: 74%;
+.label { font-size: 6.3pt; font-weight: 500; letter-spacing: 0.04em; text-transform: uppercase; color: var(--graphite); margin-bottom: 6pt; }
+.text { font-size: 8pt; line-height: 1.5; font-weight: 450; color: var(--graphite); }
+.text + .text { margin-top: 6pt; }
+.cap { font-size: 6.6pt; line-height: 1.45; font-weight: 500; color: var(--graphite); margin-top: 5pt; }
+.cap b { color: var(--ink); font-weight: 500; }
+
+/* ---------------------------------------------------------------- estructura */
+.head { margin-bottom: 22pt; }
+.sec { margin-top: 22pt; }
+.sec.tight { margin-top: 14pt; }
+.cols { display: grid; grid-template-columns: 1fr 1fr; gap: 22pt; }
+.cols.a { grid-template-columns: 1.35fr 1fr; }
+.cols.b { grid-template-columns: 1fr 1.35fr; }
+.cols3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16pt; }
+.cols4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12pt; }
+.cols5 { display: grid; grid-template-columns: repeat(5, 1fr); gap: 9pt; }
+
+/* Decisiones: título y explicación, sobre un filete fino */
+.dec { display: grid; grid-template-columns: 1fr 1fr; column-gap: 22pt; }
+.dec.one { grid-template-columns: 1fr; }
+.dec > div { border-top: 0.6pt solid var(--rule); padding: 6pt 0 9pt; }
+.dec dt { font-size: 8.8pt; line-height: 1.3; }
+.dec dd { margin: 3pt 0 0; font-size: 7.6pt; line-height: 1.5; font-weight: 450; color: var(--graphite); }
+
+/* Secuencia numerada: orden de bloques de una página */
+.seq { counter-reset: s; }
+.seq li {
+  list-style: none; display: grid; grid-template-columns: 18pt 1fr; gap: 6pt;
+  border-top: 0.6pt solid var(--rule); padding: 5pt 0;
+  font-size: 8pt; line-height: 1.45;
 }
-h2.sub {
-  font-size: 9.5pt; font-weight: 400; line-height: 1.35;
-  margin: 0 0 7pt;
-}
-p { margin: 0 0 8pt; }
-p.body, .body { font-size: 8.3pt; line-height: 1.52; }
-p.muted, .muted { font-size: 6.9pt; line-height: 1.5; color: var(--graphite); }
-.small { font-size: 7.5pt; line-height: 1.5; }
-.label {
-  font-size: 6.3pt; font-weight: 500; letter-spacing: 0.13em;
-  text-transform: uppercase; color: #555; margin: 0 0 6pt;
-}
-.label.accent { color: var(--accent); }
-.note { font-size: 6.4pt; line-height: 1.45; color: var(--graphite); margin: 6pt 0 0; }
-strong { font-weight: 500; }
-.mono { font-family: 'ABC Areal', monospace; font-size: 7pt; }
+.seq li:last-child { border-bottom: 0.6pt solid var(--rule); }
+.seq li::before { counter-increment: s; content: counter(s, decimal-leading-zero); font-size: 6.6pt; font-weight: 500; color: var(--graphite); padding-top: 1pt; }
+.seq li span { color: var(--graphite); font-weight: 450; }
+.seq { margin: 0; padding: 0; }
 
-/* ---------- layout helpers ---------- */
-.cols { display: grid; grid-template-columns: 1fr 1fr; gap: 26pt; }
-.cols.tight { gap: 18pt; }
-.cols.wide-left { grid-template-columns: 1.15fr 1fr; }
-.cols3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18pt; }
-.mt { margin-top: 16pt; }
-.mt-sm { margin-top: 10pt; }
-.mt-lg { margin-top: 24pt; }
-.rule { border: 0; border-top: 0.6pt solid var(--line); margin: 14pt 0; }
+/* Figuras */
+.shot img { display: block; width: 100%; outline: 0.6pt solid var(--rule); outline-offset: -0.6pt; }
+.shot.crop img { object-fit: cover; object-position: top; }
+.phone img { display: block; width: 100%; border: 0.6pt solid var(--rule); border-radius: 7pt; }
 
-/* ---------- tables / rows ---------- */
-.rows { margin: 0; }
-.rows .r {
-  display: grid; grid-template-columns: 132pt 1fr; gap: 14pt;
-  padding: 5pt 0; border-top: 0.6pt solid var(--line);
-  font-size: 8.3pt; line-height: 1.45;
-}
-.rows .r:last-child { border-bottom: 0.6pt solid var(--line); }
-.rows .r .k { font-weight: 400; color: var(--ink); }
-.rows .r .v { color: var(--ink); }
-.rows .r .v.m { color: var(--graphite); font-size: 8pt; }
+/* ---------------------------------------------------------------- portada */
+.cover { position: relative; width: 210mm; height: 297mm; overflow: hidden; break-after: page; color: #fff; background: #000; }
+.cover img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 50% 70%; }
+.cover .veil { position: absolute; inset: 0; background: linear-gradient(to bottom, rgba(0,0,0,0.6), rgba(0,0,0,0.15) 40%, rgba(0,0,0,0) 60%, rgba(0,0,0,0.55)); }
+.cover .in { position: absolute; inset: 0; padding: 30pt 40pt 30pt; display: flex; flex-direction: column; }
+.cover .ttl { margin-top: 96pt; }
+.cover .bot { margin-top: auto; }
+.cover .top { display: flex; justify-content: space-between; font-size: 7pt; font-weight: 500; }
+.cover h1 { border: 0; padding: 0; font-size: 46pt; line-height: 0.92; letter-spacing: -0.035em; }
+.cover .sub { font-size: 10pt; line-height: 1.38; margin-top: 12pt; max-width: 62%; color: rgba(255,255,255,0.85); }
+.cover .bot { display: flex; justify-content: space-between; font-size: 7pt; font-weight: 500; color: rgba(255,255,255,0.8); border-top: 0.6pt solid rgba(255,255,255,0.35); padding-top: 8pt; }
 
-.defs { }
-.defs .d { padding: 5pt 0; border-top: 0.6pt solid var(--line); display: grid; grid-template-columns: 128pt 1fr; gap: 12pt; }
-.defs .d:last-child { border-bottom: 0.6pt solid var(--line); }
-.defs .d .k { font-size: 8.3pt; }
-.defs .d .v { font-size: 7.6pt; color: var(--graphite); line-height: 1.5; }
+/* ---------------------------------------------------------------- índice */
+.toc { margin-top: 26pt; }
+.toc .grp { font-size: 6.3pt; font-weight: 500; letter-spacing: 0.04em; text-transform: uppercase; color: var(--graphite); margin: 18pt 0 4pt; }
+.toc .it { display: grid; grid-template-columns: 26pt 1fr auto; align-items: baseline; border-top: 0.6pt solid var(--rule); padding: 6pt 0; font-size: 10pt; }
+.toc .it .n, .toc .it .p { font-size: 7pt; font-weight: 500; color: var(--graphite); }
 
-/* index / menu rows */
-.menu { margin-top: 4pt; }
-.menu .grp {
-  font-size: 6.3pt; font-weight: 500; letter-spacing: 0.14em; text-transform: uppercase;
-  color: #555; padding: 13pt 0 6pt;
-}
-.menu .item {
-  display: flex; align-items: baseline; justify-content: space-between;
-  padding: 6pt 0; border-top: 0.6pt solid var(--line);
-  font-size: 8.5pt;
-}
-.menu .item .n { color: var(--muted); width: 22pt; }
-.menu .item .t { flex: 1; }
-.menu .item .pg { color: var(--muted); }
-.menu .item:last-child { border-bottom: 0.6pt solid var(--line); }
+/* ---------------------------------------------------------------- tipografía: tabla de roles */
+.roles { width: 100%; border-collapse: collapse; }
+.roles th { text-align: left; font-size: 6.3pt; font-weight: 500; letter-spacing: 0.04em; text-transform: uppercase; color: var(--graphite); padding: 0 0 5pt; }
+.roles td { border-top: 0.6pt solid var(--rule); padding: 5pt 0; vertical-align: baseline; font-size: 7.4pt; font-weight: 500; color: var(--graphite); }
+.roles tr:last-child td { border-bottom: 0.6pt solid var(--rule); }
+.roles td.w { color: var(--ink); font-size: 8.4pt; font-weight: 400; width: 26%; }
+.roles td.w small { display: block; font-size: 6.6pt; font-weight: 450; color: var(--graphite); margin-top: 1pt; }
+.roles td.s { color: var(--ink); font-weight: 400; width: 38%; white-space: nowrap; overflow: hidden; }
+.roles th.r, .roles td.r { text-align: right; }
 
-/* checklist */
-ul.dash { list-style: none; margin: 0; padding: 0; }
-ul.dash li {
-  position: relative; padding-left: 12pt; margin-bottom: 5pt;
-  font-size: 8.3pt; line-height: 1.45;
-}
-ul.dash li::before { content: '+'; position: absolute; left: 0; top: 0; color: var(--ink); }
+/* Eje de peso */
+.axis { position: relative; height: 30pt; margin-top: 12pt; border-top: 0.6pt solid var(--ink); }
+.axis .m { position: absolute; top: 0; }
+.axis .m::before { content: ''; position: absolute; top: -3pt; left: 0; height: 6pt; width: 0.6pt; background: currentColor; }
+.axis .m.end { transform: translateX(-100%); text-align: right; }
+.axis .m.end::before { left: auto; right: 0; }
+.axis .m b { display: block; font-size: 13pt; margin-top: 6pt; }
+.axis .m span { display: block; font-size: 6.6pt; font-weight: 500; color: var(--graphite); margin-top: 2pt; }
+.axis .m.off { color: var(--graphite); }
 
-/* numbered two column list */
-.usegrid { display: grid; grid-template-columns: 1fr 1fr; gap: 14pt 26pt; }
-.usegrid .u { border-top: 0.6pt solid var(--line); padding-top: 6pt; }
-.usegrid .u .num { font-size: 6.3pt; color: var(--accent); font-weight: 500; letter-spacing: 0.1em; }
-.usegrid .u h4 { font-size: 8.8pt; font-weight: 400; margin: 2pt 0 3pt; }
-.usegrid .u p { font-size: 7.5pt; line-height: 1.5; color: var(--ink); margin: 0; }
+/* ---------------------------------------------------------------- color y grilla */
+.sw .c { height: 74pt; display: flex; align-items: flex-end; padding: 6pt; font-size: 6.6pt; font-weight: 500; }
+.sw .c.line { outline: 0.6pt solid var(--rule); outline-offset: -0.6pt; }
+.sw p.n { font-size: 8.4pt; margin-top: 6pt; }
+.sw p.u { font-size: 7pt; line-height: 1.45; font-weight: 450; color: var(--graphite); margin-top: 2pt; }
 
-/* boxes */
-.box { background: var(--salmon); border-left: 2pt solid var(--orange); padding: 9pt 11pt; }
-.box.cream-box { background: #f6e2d5; border-left-color: var(--accent); }
-.box .label { margin-bottom: 5pt; }
-.box p { font-size: 7.5pt; line-height: 1.5; margin: 0; }
+.grid12 { position: relative; display: grid; grid-template-columns: repeat(12, 1fr); gap: 5pt; height: 70pt; }
+.grid12 i { background: var(--fog); }
+.grid12 .over { position: absolute; inset: auto 0 10pt 0; display: grid; grid-template-columns: repeat(12, 1fr); gap: 5pt; }
+.grid12 .over span { background: var(--ink); color: #fff; font-size: 6.4pt; font-weight: 500; padding: 5pt 6pt; }
+.gridnums { display: grid; grid-template-columns: repeat(12, 1fr); gap: 5pt; font-size: 6pt; font-weight: 500; color: var(--graphite); margin-top: 4pt; }
 
-/* figures */
-figure { margin: 0; }
-figure img { display: block; width: 100%; border: 0.6pt solid var(--line); }
-figure.framed img { border: 0; box-shadow: inset 0 0 0 0.6pt var(--line); }
-figcaption { font-size: 6.4pt; line-height: 1.45; color: var(--graphite); margin-top: 5pt; }
+/* Tres cortes */
+.cut .d { height: 46pt; border: 0.6pt solid var(--rule); position: relative; }
+.cut .d.line::before { content: ''; position: absolute; left: 0; right: 0; top: 14pt; border-top: 0.8pt solid var(--ink); }
+.cut .d.band { background: var(--fog); border-color: var(--fog); }
+.cut .d.block { background: var(--ink); border-color: var(--ink); }
 
-/* color swatches */
-.swatches { display: grid; grid-template-columns: repeat(6, 1fr); }
-.swatches .sw { height: 34pt; border: 0.6pt solid var(--line); }
-.swatches .cap { font-size: 6.3pt; color: var(--graphite); margin-top: 3pt; }
+/* Regla de 4 */
+.four > div { border-top: 0.6pt solid var(--ink); padding-top: 5pt; }
+.four b { display: block; font-size: 20pt; font-weight: 400; letter-spacing: -0.02em; }
+.four span { display: block; font-size: 7pt; line-height: 1.4; font-weight: 450; color: var(--graphite); margin-top: 2pt; }
 
-/* timeline bar */
-.bar { display: flex; gap: 2pt; }
-.bar div { height: 22pt; background: var(--fog); display: flex; align-items: center; justify-content: center; font-size: 6.6pt; color: var(--graphite); }
-.bar div.dark { background: var(--ink); color: #fff; }
+/* El signo */
+.signs { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12pt; }
+.signs .d { height: 78pt; border: 0.6pt solid var(--rule); display: flex; align-items: center; justify-content: center; position: relative; }
+.plus { position: relative; display: inline-block; width: 1em; height: 1em; }
+.plus::before, .plus::after { content: ''; position: absolute; background: currentColor; }
+.plus::before { left: 0; right: 0; top: calc(50% - 0.03em); height: 0.06em; }
+.plus::after { top: 0; bottom: 0; left: calc(50% - 0.03em); width: 0.06em; }
+.plus.thin::before { top: calc(50% - 0.015em); height: 0.03em; }
+.plus.thin::after { left: calc(50% - 0.015em); width: 0.03em; }
+.marks .k { position: absolute; width: 8pt; height: 8pt; }
+.marks .box { position: relative; width: 70pt; height: 48pt; background: var(--fog); }
+.marks .k::before, .marks .k::after { content: ''; position: absolute; background: var(--ink); }
+.marks .k::before { left: 0; right: 0; top: 3.7pt; height: 0.6pt; }
+.marks .k::after { top: 0; bottom: 0; left: 3.7pt; width: 0.6pt; }
+.marks .k.a { top: -4pt; left: -4pt; } .marks .k.b { top: -4pt; right: -4pt; }
+.marks .k.c { bottom: -4pt; left: -4pt; } .marks .k.e { bottom: -4pt; right: -4pt; }
+.act { display: flex; align-items: center; gap: 5pt; font-size: 12pt; }
+.act .plus { width: 0.62em; height: 0.62em; }
+.act u { text-decoration: none; border-bottom: 0.6pt solid currentColor; padding-bottom: 1pt; }
 
-/* ---------- cover ---------- */
-.cover {
-  position: relative; width: 210mm; height: 297mm; overflow: hidden;
-  page-break-after: always; break-after: page; color: #fff;
-}
-.cover img.bg { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
-.cover .shade { position: absolute; inset: 0; background: rgba(10,10,9,0.45); }
-.cover .inner { position: absolute; inset: 0; padding: 40pt 51pt 30pt; display: flex; flex-direction: column; justify-content: space-between; }
-.cover .brand { font-size: 8pt; letter-spacing: 0.34em; text-transform: uppercase; }
-.cover .mid { margin-top: auto; margin-bottom: auto; }
-.cover .kicker { font-size: 6pt; letter-spacing: 0.24em; text-transform: uppercase; color: rgba(255,255,255,0.82); margin-bottom: 12pt; }
-.cover h1 { font-size: 34pt; font-weight: 400; line-height: 1.05; margin: 0 0 16pt; letter-spacing: -0.01em; }
-.cover .sub { font-size: 9pt; font-weight: 400; line-height: 1.55; max-width: 60%; color: rgba(255,255,255,0.9); }
-.cover .foot { display: flex; justify-content: space-between; font-size: 6.2pt; letter-spacing: 0.16em; text-transform: uppercase; color: rgba(255,255,255,0.75); }
+/* Vocabulario de movimiento y anchos */
+.vocab > div { border-top: 0.6pt solid var(--ink); padding-top: 5pt; }
+.vocab b { display: block; font-size: 8.6pt; font-weight: 400; }
+.vocab span { display: block; font-size: 7pt; line-height: 1.45; font-weight: 450; color: var(--graphite); margin-top: 2pt; }
+.widths { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10pt; }
+.widths > div { border-top: 0.6pt solid var(--ink); padding-top: 5pt; }
+.widths b { display: block; font-size: 16pt; font-weight: 400; letter-spacing: -0.02em; }
+.widths span { display: block; font-size: 7pt; line-height: 1.4; font-weight: 450; color: var(--graphite); margin-top: 1pt; }
 
-/* photo strips */
-.strip { display: grid; gap: 6pt; }
-.strip img { width: 100%; display: block; }
-
-/* capped screenshots (avoid overflowing the page footer) */
-.fig-hero img { height: 215pt; object-fit: cover; object-position: center; }
-.fig-tall-300 img { height: 300pt; object-fit: cover; object-position: top; }
-.fig-tall-290 img { height: 290pt; object-fit: cover; object-position: top; }
-.fig-tall-330 img { height: 320pt; object-fit: cover; object-position: top; }
-
-/* dense variant for the merged "criterio" page */
-.dense .defs .d { padding: 3pt 0; }
-.dense .defs .d .k { font-size: 7pt; }
-.dense .defs .d .v { font-size: 6.4pt; line-height: 1.42; }
+/* Orden de la home */
+.flow { display: flex; gap: 2pt; }
+.flow div { height: 26pt; display: flex; align-items: center; padding: 0 7pt; font-size: 6.8pt; font-weight: 500; background: var(--fog); color: var(--ink); }
+.flow div.w { background: #fff; outline: 0.6pt solid var(--rule); outline-offset: -0.6pt; }
+.flow div.k { background: var(--ink); color: #fff; }
+.legend { display: grid; grid-template-columns: 1fr 1fr; gap: 3pt 12pt; }
+.legend p { font-size: 7pt; line-height: 1.4; font-weight: 450; color: var(--graphite); }
+.legend p b { font-weight: 500; color: var(--ink); margin-right: 3pt; }
+.legend p.off b { color: var(--graphite); }

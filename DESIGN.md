@@ -70,6 +70,12 @@ texto en las 4–6 y la obra en las 8–12, a `100svh` y pegada a la de arriba y
 - Solo en escritorio. En mobile no se fija nada: rótulo, texto y obra, uno debajo del otro.
 - Cada etapa se ilustra con una obra distinta, siempre de las carpetas en alta (≥ 2400 px).
 
+### Antes de la reforma (`BeforeStrip`, detalle de proyecto)
+Solo en obras de programa **Reforma**, entre la nota del proyecto y la galería (que en ese caso se titula "Después"). Título en `heading` sobre filete `border-ink`, como la galería, con la cantidad de ambientes entre paréntesis. Cuatro ambientes (regla de 4), cada uno con su nombre en `meta` y numeral tabular.
+- **Escritorio:** la sección se fija y las fotos avanzan en horizontal con el scroll; un filete debajo del título se completa con el recorrido (`motion.beforeStrip`, pin de ScrollTrigger).
+- **Mobile:** no se fija nada; la tira se desliza con el dedo, una foto por vez.
+- Mientras no estén las fotos del estado original, cada ambiente muestra el placeholder en el tono del proyecto.
+
 ### Doble página (`Spread`)
 Patrón editorial de catálogo, usado en Estudio y en Proyectos: obra a sangre en la mitad izquierda, índice numerado a la derecha con guía punteada y numeral tabular, y una foto chica que cierra abajo alineada al borde derecho. Los dos rótulos (sobre la foto y sobre el índice) van en `label` y en mayúscula; todo lo demás, en caja baja. Cuando la obra no va a sangre (`full`), el dato de la foto baja al pie como ficha mínima —`label`, filete y datos en `meta`—, el mismo patrón que abre la página de Estudio.
 

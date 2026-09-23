@@ -45,6 +45,7 @@ export default function SiteMotion({ fixed, children, smooth = true }: Props) {
             heroCleanup = motion.hero(el, smoother, !introPlayed, () => (introPlayed = true));
           }
           if (desktop && has("[data-work]")) motion.work(el);
+          if (desktop && has("[data-before]")) motion.beforeStrip(el);
 
           if (has("[data-page-title]") || has("[data-page-in]")) motion.pageIntro(el);
           if (has("[data-contact-page]")) motion.contactPage(el);

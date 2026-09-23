@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { BeforeStrip } from "@/components/projects/BeforeStrip";
 import { Contact } from "@/components/site/Contact";
 import { EditorialNote } from "@/components/site/EditorialNote";
 import { photo, projectDetail, projectHref, projects, type Project, type Shot } from "@/components/site/content";
@@ -46,9 +47,9 @@ function Pending({ children }: { children: string }) {
   return <span className="border border-dashed border-ink/30 px-2 py-1 text-meta text-graphite">{children}</span>;
 }
 
-/** Página de detalle: datos, portada, texto y galería con la cantidad de fotos de la web anterior. */
+/** Página de detalle: datos, portada, texto, en reformas el antes, y galería con la cantidad de fotos de la web anterior. */
 export function ProjectDetail({ project }: { project: Project }) {
-  const { gallery, next } = projectDetail(project);
+  const { gallery, before, next } = projectDetail(project);
   const index = projects.findIndex((p) => p.slug === project.slug);
   const facts: [string, string | null][] = [
     ["Programa", project.program],
@@ -107,10 +108,12 @@ export function ProjectDetail({ project }: { project: Project }) {
           wide={{ src: gallery[0]?.src ?? photo(project), label: `${project.name}, ${project.place}`, tone: project.tone }}
         />
 
+        {before && <BeforeStrip project={project.name} shots={before} />}
+
         {gallery.length > 0 && (
           <section className="px-(--gutter) pt-[18vh] pb-[18vh]">
             <h2 className="mb-[8vh] flex items-baseline justify-between border-t border-ink pt-5 text-heading">
-              Galería <span className="text-meta text-graphite tabular-nums">({project.shots} fotos)</span>
+              {before ? "Después" : "Galería"} <span className="text-meta text-graphite tabular-nums">({project.shots} fotos)</span>
             </h2>
             <div className="grid grid-cols-1 gap-x-(--gutter) gap-y-[10vh] md:grid-cols-12">
               {gallery.map((shot, i) => (

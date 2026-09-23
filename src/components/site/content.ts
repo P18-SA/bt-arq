@@ -215,10 +215,18 @@ export const featured = [
 ];
 
 export type Shot = { label: string; tone: Tone; ratio: string; src?: string };
+export type BeforeShot = { title: string; tone: Tone; src?: string };
 
 const ratios = ["4 / 5", "1 / 1", "3 / 4", "21 / 9"];
 
-/** Material del detalle: galería con los huecos de la web anterior y el siguiente proyecto. */
+/**
+ * Fotos de antes de la reforma, por slug y en el mismo orden que `beforeRooms`. Todavía no hay
+ * ninguna: hasta que el estudio las pase, la tira dibuja un placeholder por ambiente.
+ */
+const beforePhotos: Record<string, string[]> = {};
+const beforeRooms = ["Fachada", "Cocina", "Living", "Baño"];
+
+/** Material del detalle: galería con los huecos de la web anterior, el "antes" de las reformas y el siguiente proyecto. */
 export function projectDetail(p: Project) {
   const start = toneCycle.indexOf(p.tone);
   const gallery: Shot[] = Array.from({ length: Math.max(p.shots - 1, 0) }, (_, i) => ({
@@ -227,9 +235,13 @@ export function projectDetail(p: Project) {
     ratio: ratios[i % ratios.length],
     src: photo(p, i + 1),
   }));
+  const before: BeforeShot[] | null =
+    p.program === "Reforma"
+      ? beforeRooms.map((title, i) => ({ title, tone: toneCycle[(start + i) % 4], src: beforePhotos[p.slug]?.[i] }))
+      : null;
   const index = projects.findIndex((x) => x.slug === p.slug);
   const next = projects[(index + 1) % projects.length];
-  return { gallery, next };
+  return { gallery, before, next };
 }
 
 export const studio = {
